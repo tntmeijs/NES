@@ -6,7 +6,13 @@ project(NES
     LANGUAGES CXX)
 
 set(SOURCE_LIST
-    main.cpp)
+    main.cpp
+    editor/editor.hpp
+    editor/editor.cpp
+    editor/ui/ui_element.hpp
+    editor/ui/ui_panel.hpp
+    editor/ui/ui_panel.cpp
+    utility/object_id.hpp)
 
 # Easiest way to add ImGui to a project is to simply compile the files with the project itself
 set(IMGUI_FILES
@@ -26,8 +32,11 @@ add_subdirectory(_deps/SFML)
 target_link_libraries(NES PRIVATE sfml-graphics sfml-window)
 target_include_directories(NES PRIVATE _deps/SFML/include)
 
-# Configure ImGui and ImGui SFML bindings
-target_include_directories(NES PRIVATE _deps/imgui _deps/imgui-sfml)
+# Include directories for the NES project
+target_include_directories(NES PRIVATE ./ _deps/imgui _deps/imgui-sfml)
 
 # Directory structure in IDEs that support it
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_LIST} ${IMGUI_FILES})
+
+# Use C++17
+target_compile_features(NES PRIVATE cxx_std_17)
