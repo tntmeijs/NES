@@ -1,12 +1,16 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include "cpu/cpu.hpp"
 #include "editor/editor.hpp"
 
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "NES");
 	window.setVerticalSyncEnabled(true);
+
+	nes::CPU Mos6502;
+	Mos6502.Entry();
 
 	nes::Editor nesEditor(window);
 	nesEditor.Initialize();
