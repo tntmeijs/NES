@@ -1,3 +1,6 @@
 [submodule "_deps/SFML"]
 	path = _deps/SFML
 	url = https://github.com/SFML/SFML
+[submodule "_deps/imgui-sfml"]
+	path = _deps/imgui-sfml
+	url = https://github.com/eliasdaler/imgui-sfml
