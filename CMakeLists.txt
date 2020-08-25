@@ -7,6 +7,8 @@ project(NES
 
 set(SOURCE_LIST
     main.cpp
+    cpu/cpu.hpp
+    cpu/cpu.cpp
     editor/editor.hpp
     editor/editor.cpp
     editor/ui/ui_element.hpp
