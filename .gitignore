@@ -1,0 +1,2 @@
+# Ignore the build folder, those files can be regenerated
+[Bb]uild/
