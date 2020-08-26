@@ -70,6 +70,7 @@ namespace nes
         void LDX(AddressingMode mode);
         void LDY(AddressingMode mode);
         void LSR(AddressingMode mode);
+        void NOP();
 
     private:
         // Accumulator
