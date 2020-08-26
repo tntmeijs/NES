@@ -20,17 +20,19 @@ namespace nes
          */
         enum class AddressingMode
         {
-            Accumulator,
-            Immediate,
-            ZeroPage,
-            ZeroPageX,
-            ZeroPageY,
             Absolute,
             AbsoluteX,
             AbsoluteY,
+            Accumulator,
+            Immediate,
+            Implicit,
             Indirect,
             IndirectX,
-            IndirectY
+            IndirectY,
+            Relative,
+            ZeroPage,
+            ZeroPageX,
+            ZeroPageY,
         };
 
     private:
@@ -40,59 +42,59 @@ namespace nes
         void ADC(AddressingMode mode);
         void AND(AddressingMode mode);
         void ASL(AddressingMode mode);
-        void BCC();
-        void BCS();
-        void BEQ();
+        void BCC(AddressingMode mode);
+        void BCS(AddressingMode mode);
+        void BEQ(AddressingMode mode);
         void BIT(AddressingMode mode);
-        void BMI();
-        void BNE();
-        void BPL();
-        void BRK();
-        void BVC();
-        void BVS();
-        void CLC();
-        void CLD();
-        void CLI();
-        void CLV();
+        void BMI(AddressingMode mode);
+        void BNE(AddressingMode mode);
+        void BPL(AddressingMode mode);
+        void BRK(AddressingMode mode);
+        void BVC(AddressingMode mode);
+        void BVS(AddressingMode mode);
+        void CLC(AddressingMode mode);
+        void CLD(AddressingMode mode);
+        void CLI(AddressingMode mode);
+        void CLV(AddressingMode mode);
         void CMP(AddressingMode mode);
         void CPX(AddressingMode mode);
         void CPY(AddressingMode mode);
         void DEC(AddressingMode mode);
-        void DEX();
-        void DEY();
+        void DEX(AddressingMode mode);
+        void DEY(AddressingMode mode);
         void EOR(AddressingMode mode);
         void INC(AddressingMode mode);
-        void INX();
-        void INY();
+        void INX(AddressingMode mode);
+        void INY(AddressingMode mode);
         void JMP(AddressingMode mode);
-        void JSR();
+        void JSR(AddressingMode mode);
         void LDA(AddressingMode mode);
         void LDX(AddressingMode mode);
         void LDY(AddressingMode mode);
         void LSR(AddressingMode mode);
-        void NOP();
+        void NOP(AddressingMode mode);
         void ORA(AddressingMode mode);
-        void PHA();
-        void PHP();
-        void PLA();
-        void PLP();
+        void PHA(AddressingMode mode);
+        void PHP(AddressingMode mode);
+        void PLA(AddressingMode mode);
+        void PLP(AddressingMode mode);
         void ROL(AddressingMode mode);
         void ROR(AddressingMode mode);
-        void RTI();
-        void RTS();
+        void RTI(AddressingMode mode);
+        void RTS(AddressingMode mode);
         void SBC(AddressingMode mode);
-        void SEC();
-        void SED();
-        void SEI();
+        void SEC(AddressingMode mode);
+        void SED(AddressingMode mode);
+        void SEI(AddressingMode mode);
         void STA(AddressingMode mode);
 		void STX(AddressingMode mode);
 		void STY(AddressingMode mode);
-        void TAX();
-        void TAY();
-        void TSX();
-        void TXA();
-        void TXS();
-        void TYA();
+        void TAX(AddressingMode mode);
+        void TAY(AddressingMode mode);
+        void TSX(AddressingMode mode);
+        void TXA(AddressingMode mode);
+        void TXS(AddressingMode mode);
+        void TYA(AddressingMode mode);
 
     private:
         // Accumulator

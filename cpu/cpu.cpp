@@ -40,7 +40,7 @@ void nes::CPU::Entry()
 			// Force Interrupt
 			// -------------------------------------------------------------------
 			case 0x00:
-				BRK();
+				BRK(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -105,28 +105,28 @@ void nes::CPU::Entry()
 			// Push Processor Status
 			// -------------------------------------------------------------------
 			case 0x08:
-				PHP();
+				PHP(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Branch if Positive
 			// -------------------------------------------------------------------
 			case 0x10:
-				BPL();
+				BPL(AddressingMode::Relative);
 				break;
 
 			// -------------------------------------------------------------------
 			// Clear Carry Flag
 			// -------------------------------------------------------------------
 			case 0x18:
-				CLC();
+				CLC(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Jump to Subroutine
 			// -------------------------------------------------------------------
 			case 0x20:
-				JSR();
+				JSR(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -179,7 +179,7 @@ void nes::CPU::Entry()
 			// Pull Processor Status
 			// -------------------------------------------------------------------
 			case 0x28:
-				PLP();
+				PLP(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -209,21 +209,21 @@ void nes::CPU::Entry()
 			// Branch if Minus
 			// -------------------------------------------------------------------
 			case 0x30:
-				BMI();
+				BMI(AddressingMode::Relative);
 				break;
 
 			// -------------------------------------------------------------------
 			// Set Carry Flag
 			// -------------------------------------------------------------------
 			case 0x38:
-				SEC();
+				SEC(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Return from Interrupt
 			// -------------------------------------------------------------------
 			case 0x40:
-				RTI();
+				RTI(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -288,7 +288,7 @@ void nes::CPU::Entry()
 			// Push Accumulator
 			// -------------------------------------------------------------------
 			case 0x48:
-				PHA();
+				PHA(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -306,28 +306,28 @@ void nes::CPU::Entry()
 			// Branch if Overflow Clear
 			// -------------------------------------------------------------------
 			case 0x50:
-				BVC();
+				BVC(AddressingMode::Relative);
 				break;
 
 			// -------------------------------------------------------------------
 			// Clear Interrupt Disable
 			// -------------------------------------------------------------------
 			case 0x58:
-				CLI();
+				CLI(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Return from Subroutine
 			// -------------------------------------------------------------------
 			case 0x60:
-				RTS();
+				RTS(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Pull Accumulator
 			// -------------------------------------------------------------------
 			case 0x68:
-				PLA();
+				PLA(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -392,14 +392,14 @@ void nes::CPU::Entry()
 			// Branch if Overflow Set
 			// -------------------------------------------------------------------
 			case 0x70:
-				BVS();
+				BVS(AddressingMode::Relative);
 				break;
 
 			// -------------------------------------------------------------------
 			// Set Interrupt Disable
 			// -------------------------------------------------------------------
 			case 0x78:
-				SEI();
+				SEI(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -467,33 +467,33 @@ void nes::CPU::Entry()
 			// Decrement Y Register
 			// -------------------------------------------------------------------
 			case 0x88:
-				DEY();
+				DEY(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Transfer X to Accumulator
 			// -------------------------------------------------------------------
 			case 0x8A:
-				TXA();
+				TXA(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Branch if Carry Clear
 			// -------------------------------------------------------------------
 			case 0x90:
-				BCC();
+				BCC(AddressingMode::Relative);
 				break;
 
 			// -------------------------------------------------------------------
 			// Transfer Y to Accumulator
 			// -------------------------------------------------------------------
 			case 0x98:
-				TYA();
+				TYA(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Transfer X to Stack Pointer
 			// -------------------------------------------------------------------
 			case 0x9A:
-				TXS();
+				TXS(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Load Y Register
@@ -580,33 +580,33 @@ void nes::CPU::Entry()
 			// Transfer Accumulator to Y
 			// -------------------------------------------------------------------
 			case 0xA8:
-				TAY();
+				TAY(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Transfer Accumulator to X
 			// -------------------------------------------------------------------
 			case 0xAA:
-				TAX();
+				TAX(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Branch if Carry Set
 			// -------------------------------------------------------------------
 			case 0xB0:
-				BCS();
+				BCS(AddressingMode::Relative);
 				break;
 
 			// -------------------------------------------------------------------
 			// Clear Overflow Flag
 			// -------------------------------------------------------------------
 			case 0xB8:
-				CLV();
+				CLV(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Transfer Stack Pointer to X
 			// -------------------------------------------------------------------
 			case 0xBA:
-				TSX();
+				TSX(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Compare
@@ -666,7 +666,7 @@ void nes::CPU::Entry()
 			// Decrement X Register
 			// -------------------------------------------------------------------
 			case 0xCA:
-				DEX();
+				DEX(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -687,21 +687,21 @@ void nes::CPU::Entry()
 			// Increment Y Register
 			// -------------------------------------------------------------------
 			case 0xC8:
-				INY();
+				INY(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Branch if not Equal
 			// -------------------------------------------------------------------
 			case 0xD0:
-				BNE();
+				BNE(AddressingMode::Relative);
 				break;
 
 			// -------------------------------------------------------------------
 			// Clear Decimal Mode
 			// -------------------------------------------------------------------
 			case 0xD8:
-				CLD();
+				CLD(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
@@ -777,28 +777,28 @@ void nes::CPU::Entry()
 			// Increment X Register
 			// -------------------------------------------------------------------
 			case 0xE8:
-				INX();
+				INX(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// No Operation
 			// -------------------------------------------------------------------
 			case 0xEA:
-				NOP();
+				NOP(AddressingMode::Implicit);
 				break;
 
 			// -------------------------------------------------------------------
 			// Branch if Equal
 			// -------------------------------------------------------------------
 			case 0xF0:
-				BEQ();
+				BEQ(AddressingMode::Relative);
 				break;
 
 			// -------------------------------------------------------------------
 			// Set Carry Flag
 			// -------------------------------------------------------------------
 			case 0xF8:
-				SED();
+				SED(AddressingMode::Implicit);
 				break;
 
 			default:
@@ -841,17 +841,17 @@ void nes::CPU::ASL(AddressingMode mode)
 	std::cout << "OP ASL" << '\n';
 }
 
-void nes::CPU::BCC()
+void nes::CPU::BCC(AddressingMode mode)
 {
 	std::cout << "OP BCC" << '\n';
 }
 
-void nes::CPU::BCS()
+void nes::CPU::BCS(AddressingMode mode)
 {
 	std::cout << "OP BCS" << '\n';
 }
 
-void nes::CPU::BEQ()
+void nes::CPU::BEQ(AddressingMode mode)
 {
 	std::cout << "OP BEQ" << '\n';
 }
@@ -861,52 +861,52 @@ void nes::CPU::BIT(AddressingMode mode)
 	std::cout << "OP BIT" << '\n';
 }
 
-void nes::CPU::BMI()
+void nes::CPU::BMI(AddressingMode mode)
 {
 	std::cout << "OP BMI" << '\n';
 }
 
-void nes::CPU::BNE()
+void nes::CPU::BNE(AddressingMode mode)
 {
 	std::cout << "OP BNE" << '\n';
 }
 
-void nes::CPU::BPL()
+void nes::CPU::BPL(AddressingMode mode)
 {
 	std::cout << "OP BPL" << '\n';
 }
 
-void nes::CPU::BRK()
+void nes::CPU::BRK(AddressingMode mode)
 {
 	std::cout << "OP BRK" << '\n';
 }
 
-void nes::CPU::BVC()
+void nes::CPU::BVC(AddressingMode mode)
 {
 	std::cout << "OP BVC" << '\n';
 }
 
-void nes::CPU::BVS()
+void nes::CPU::BVS(AddressingMode mode)
 {
 	std::cout << "OP BVS" << '\n';
 }
 
-void nes::CPU::CLC()
+void nes::CPU::CLC(AddressingMode mode)
 {
 	std::cout << "OP CLC" << '\n';
 }
 
-void nes::CPU::CLD()
+void nes::CPU::CLD(AddressingMode mode)
 {
 	std::cout << "OP CLC" << '\n';
 }
 
-void nes::CPU::CLI()
+void nes::CPU::CLI(AddressingMode mode)
 {
 	std::cout << "OP CLI" << '\n';
 }
 
-void nes::CPU::CLV()
+void nes::CPU::CLV(AddressingMode mode)
 {
 	std::cout << "OP CLV" << '\n';
 }
@@ -931,12 +931,12 @@ void nes::CPU::DEC(AddressingMode mode)
 	std::cout << "OP DEC" << '\n';
 }
 
-void nes::CPU::DEX()
+void nes::CPU::DEX(AddressingMode mode)
 {
 	std::cout << "OP DEX" << '\n';
 }
 
-void nes::CPU::DEY()
+void nes::CPU::DEY(AddressingMode mode)
 {
 	std::cout << "OP DEY" << '\n';
 }
@@ -951,12 +951,12 @@ void nes::CPU::INC(AddressingMode mode)
 	std::cout << "OP INC" << '\n';
 }
 
-void nes::CPU::INX()
+void nes::CPU::INX(AddressingMode mode)
 {
 	std::cout << "OP INX" << '\n';
 }
 
-void nes::CPU::INY()
+void nes::CPU::INY(AddressingMode mode)
 {
 	std::cout << "OP INY" << '\n';
 }
@@ -966,7 +966,7 @@ void nes::CPU::JMP(AddressingMode mode)
 	std::cout << "OP JMP" << '\n';
 }
 
-void nes::CPU::JSR()
+void nes::CPU::JSR(AddressingMode mode)
 {
 	std::cout << "OP JSR" << '\n';
 }
@@ -991,7 +991,7 @@ void nes::CPU::LSR(AddressingMode mode)
 	std::cout << "OP LSR" << '\n';
 }
 
-void nes::CPU::NOP()
+void nes::CPU::NOP(AddressingMode mode)
 {
 	std::cout << "OP NOP" << '\n';
 }
@@ -1001,22 +1001,22 @@ void nes::CPU::ORA(AddressingMode mode)
 	std::cout << "OP ORA" << '\n';
 }
 
-void nes::CPU::PHA()
+void nes::CPU::PHA(AddressingMode mode)
 {
 	std::cout << "OP PHA" << '\n';
 }
 
-void nes::CPU::PHP()
+void nes::CPU::PHP(AddressingMode mode)
 {
 	std::cout << "OP PHP" << '\n';
 }
 
-void nes::CPU::PLA()
+void nes::CPU::PLA(AddressingMode mode)
 {
 	std::cout << "OP PLA" << '\n';
 }
 
-void nes::CPU::PLP()
+void nes::CPU::PLP(AddressingMode mode)
 {
 	std::cout << "OP PLP" << '\n';
 }
@@ -1031,12 +1031,12 @@ void nes::CPU::ROR(AddressingMode mode)
 	std::cout << "OP ROR" << '\n';
 }
 
-void nes::CPU::RTI()
+void nes::CPU::RTI(AddressingMode mode)
 {
 	std::cout << "OP RTI" << '\n';
 }
 
-void nes::CPU::RTS()
+void nes::CPU::RTS(AddressingMode mode)
 {
 	std::cout << "OP RTS" << '\n';
 }
@@ -1046,17 +1046,17 @@ void nes::CPU::SBC(AddressingMode mode)
 	std::cout << "OP SBC" << '\n';
 }
 
-void nes::CPU::SEC()
+void nes::CPU::SEC(AddressingMode mode)
 {
 	std::cout << "OP SEC" << '\n';
 }
 
-void nes::CPU::SED()
+void nes::CPU::SED(AddressingMode mode)
 {
 	std::cout << "OP SED" << '\n';
 }
 
-void nes::CPU::SEI()
+void nes::CPU::SEI(AddressingMode mode)
 {
 	std::cout << "OP SEI" << '\n';
 }
@@ -1076,32 +1076,32 @@ void nes::CPU::STY(AddressingMode mode)
 	std::cout << "OP STY" << '\n';
 }
 
-void nes::CPU::TAX()
+void nes::CPU::TAX(AddressingMode mode)
 {
 	std::cout << "OP TAX" << '\n';
 }
 
-void nes::CPU::TAY()
+void nes::CPU::TAY(AddressingMode mode)
 {
 	std::cout << "OP TAY" << '\n';
 }
 
-void nes::CPU::TSX()
+void nes::CPU::TSX(AddressingMode mode)
 {
 	std::cout << "OP TSX" << '\n';
 }
 
-void nes::CPU::TXA()
+void nes::CPU::TXA(AddressingMode mode)
 {
 	std::cout << "OP TXA" << '\n';
 }
 
-void nes::CPU::TXS()
+void nes::CPU::TXS(AddressingMode mode)
 {
 	std::cout << "OP TXS" << '\n';
 }
 
-void nes::CPU::TYA()
+void nes::CPU::TYA(AddressingMode mode)
 {
 	std::cout << "OP TYA" << '\n';
 }
