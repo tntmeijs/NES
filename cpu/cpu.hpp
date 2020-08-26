@@ -87,6 +87,12 @@ namespace nes
         void STA(AddressingMode mode);
 		void STX(AddressingMode mode);
 		void STY(AddressingMode mode);
+        void TAX();
+        void TAY();
+        void TSX();
+        void TXA();
+        void TXS();
+        void TYA();
 
     private:
         // Accumulator
