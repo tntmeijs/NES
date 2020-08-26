@@ -1337,4 +1337,30 @@ void nes::CPU::TXS(AddressingMode mode)
 void nes::CPU::TYA(AddressingMode mode)
 {
 	std::cout << "OP TYA" << '\n';
+
+	// Transfer the Y register to the accumulator
+	A = Y;
+	Cycle += 2;
+
+	if (A == 0)
+	{
+		// Value is zero, set zero flag
+		P |= (1 << 1);
+	}
+	else
+	{
+		// Not zero, unset zero flag
+		P &= ~(1 << 1);
+	}
+
+	if ((A & (1 << 7)) != 0)
+	{
+		// Value is negative, set negative flag
+		P |= (1 << 7);
+	}
+	else
+	{
+		// Value is positive, unset negative flag
+		P &= ~(1 << 7);
+	}
 }
