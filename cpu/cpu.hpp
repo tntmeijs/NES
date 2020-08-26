@@ -38,6 +38,16 @@ namespace nes
         void ADC(AddressingMode mode);
         void AND(AddressingMode mode);
         void ASL(AddressingMode mode);
+        void BCC();
+        void BCS();
+        void BEQ();
+        void BIT(AddressingMode mode);
+        void BMI();
+        void BNE();
+        void BPL();
+        void BRK();
+        void BVC();
+        void BVS();
 
     private:
         // Accumulator
