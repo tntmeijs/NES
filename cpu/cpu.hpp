@@ -24,6 +24,7 @@ namespace nes
             Immediate,
             ZeroPage,
             ZeroPageX,
+            ZeroPageY,
             Absolute,
             AbsoluteX,
             AbsoluteY,
@@ -65,6 +66,10 @@ namespace nes
         void INY();
         void JMP(AddressingMode mode);
         void JSR();
+        void LDA(AddressingMode mode);
+        void LDX(AddressingMode mode);
+        void LDY(AddressingMode mode);
+        void LSR(AddressingMode mode);
 
     private:
         // Accumulator

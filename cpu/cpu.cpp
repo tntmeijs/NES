@@ -176,6 +176,29 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Logical Shift Right
+			// -------------------------------------------------------------------
+			case 0x46:
+				LSR(AddressingMode::ZeroPage);
+				break;
+			
+			case 0x4A:
+				LSR(AddressingMode::Accumulator);
+				break;
+
+			case 0x4E:
+				LSR(AddressingMode::Absolute);
+				break;
+
+			case 0x56:
+				LSR(AddressingMode::ZeroPageX);
+				break;
+
+			case 0x5E:
+				LSR(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
 			// Jump
 			// -------------------------------------------------------------------
 			case 0x4C:
@@ -254,6 +277,87 @@ void nes::CPU::Entry()
 			// -------------------------------------------------------------------
 			case 0x90:
 				BCC();
+				break;
+
+			// -------------------------------------------------------------------
+			// Load Y Register
+			// -------------------------------------------------------------------
+			case 0xA0:
+				LDY(AddressingMode::Immediate);
+				break;
+
+			case 0xA4:
+				LDY(AddressingMode::ZeroPage);
+				break;
+
+			case 0xAC:
+				LDY(AddressingMode::Absolute);
+				break;
+
+			case 0xB4:
+				LDY(AddressingMode::ZeroPageX);
+				break;
+
+			case 0xBC:
+				LDY(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Load Accumulator
+			// -------------------------------------------------------------------
+			case 0xA1:
+				LDA(AddressingMode::IndirectX);
+				break;
+			
+			case 0xA5:
+				LDA(AddressingMode::ZeroPage);
+				break;
+
+			case 0xA9:
+				LDA(AddressingMode::Immediate);
+				break;
+
+			case 0xAD:
+				LDA(AddressingMode::Absolute);
+				break;
+
+			case 0xB1:
+				LDA(AddressingMode::IndirectY);
+				break;
+
+			case 0xB5:
+				LDA(AddressingMode::ZeroPageX);
+				break;
+
+			case 0xB9:
+				LDA(AddressingMode::AbsoluteY);
+				break;
+
+			case 0xBD:
+				LDA(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Load X Register
+			// -------------------------------------------------------------------
+			case 0xA2:
+				LDX(AddressingMode::Immediate);
+				break;
+
+			case 0xA6:
+				LDX(AddressingMode::ZeroPage);
+				break;
+
+			case 0xAE:
+				LDX(AddressingMode::Absolute);
+				break;
+
+			case 0xB6:
+				LDX(AddressingMode::ZeroPageY);
+				break;
+
+			case 0xBE:
+				LDX(AddressingMode::AbsoluteY);
 				break;
 
 			// -------------------------------------------------------------------
@@ -582,4 +686,24 @@ void nes::CPU::JMP(AddressingMode mode)
 void nes::CPU::JSR()
 {
 	std::cout << "OP JSR" << '\n';
+}
+
+void nes::CPU::LDA(AddressingMode mode)
+{
+	std::cout << "OP LDA" << '\n';
+}
+
+void nes::CPU::LDX(AddressingMode mode)
+{
+	std::cout << "OP LDY" << '\n';
+}
+
+void nes::CPU::LDY(AddressingMode mode)
+{
+	std::cout << "OP LDY" << '\n';
+}
+
+void nes::CPU::LSR(AddressingMode mode)
+{
+	std::cout << "OP LSR" << '\n';
 }
