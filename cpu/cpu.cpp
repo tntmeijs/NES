@@ -190,6 +190,13 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Decrement Y Register
+			// -------------------------------------------------------------------
+			case 0x88:
+				DEY();
+				break;
+
+			// -------------------------------------------------------------------
 			// Branch if Carry Clear
 			// -------------------------------------------------------------------
 			case 0x90:
@@ -243,6 +250,32 @@ void nes::CPU::Entry()
 
 			case 0xDD:
 				CMP(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Decrement Memory
+			// -------------------------------------------------------------------
+			case 0xC6:
+				DEC(AddressingMode::ZeroPage);
+				break;
+
+			case 0xD6:
+				DEC(AddressingMode::ZeroPageX);
+				break;
+
+			case 0xCE:
+				DEC(AddressingMode::Absolute);
+				break;
+
+			case 0xDE:
+				DEC(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Decrement X Register
+			// -------------------------------------------------------------------
+			case 0xCA:
+				DEX();
 				break;
 
 			// -------------------------------------------------------------------
@@ -418,4 +451,19 @@ void nes::CPU::CPX(AddressingMode mode)
 void nes::CPU::CPY(AddressingMode mode)
 {
 	std::cout << "OP CPY" << '\n';
+}
+
+void nes::CPU::DEC(AddressingMode mode)
+{
+	std::cout << "OP DEC" << '\n';
+}
+
+void nes::CPU::DEX()
+{
+	std::cout << "OP DEX" << '\n';
+}
+
+void nes::CPU::DEY()
+{
+	std::cout << "OP DEY" << '\n';
 }

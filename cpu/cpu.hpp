@@ -55,6 +55,9 @@ namespace nes
         void CMP(AddressingMode mode);
         void CPX(AddressingMode mode);
         void CPY(AddressingMode mode);
+        void DEC(AddressingMode mode);
+        void DEX();
+        void DEY();
 
     private:
         // Accumulator
