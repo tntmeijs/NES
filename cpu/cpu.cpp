@@ -74,6 +74,13 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Clear Carry Flag
+			// -------------------------------------------------------------------
+			case 0x18:
+				CLC();
+				break;
+
+			// -------------------------------------------------------------------
 			// BIT
 			// -------------------------------------------------------------------
 			case 0x24:
@@ -134,6 +141,13 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Clear Interrupt Disable
+			// -------------------------------------------------------------------
+			case 0x58:
+				CLI();
+				break;
+
+			// -------------------------------------------------------------------
 			// Branch if Overflow Set
 			// -------------------------------------------------------------------
 			case 0x70:
@@ -190,10 +204,88 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Clear Overflow Flag
+			// -------------------------------------------------------------------
+			case 0xB8:
+				CLV();
+				break;
+
+			// -------------------------------------------------------------------
+			// Compare
+			// -------------------------------------------------------------------
+			case 0xC1:
+				CMP(AddressingMode::IndirectX);
+				break;
+
+			case 0xC5:
+				CMP(AddressingMode::ZeroPage);
+				break;
+
+			case 0xC9:
+				CMP(AddressingMode::Immediate);
+				break;
+
+			case 0xCD:
+				CMP(AddressingMode::Absolute);
+				break;
+
+			case 0xD1:
+				CMP(AddressingMode::IndirectY);
+				break;
+
+			case 0xD5:
+				CMP(AddressingMode::ZeroPageX);
+				break;
+
+			case 0xD9:
+				CMP(AddressingMode::AbsoluteY);
+				break;
+
+			case 0xDD:
+				CMP(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Compare Y Register
+			// -------------------------------------------------------------------
+			case 0xC0:
+				CPY(AddressingMode::Immediate);
+				break;
+
+			case 0xC4:
+				CPY(AddressingMode::ZeroPage);
+				break;
+
+			case 0xCC:
+				CPY(AddressingMode::Absolute);
+
+			// -------------------------------------------------------------------
 			// Branch if not Equal
 			// -------------------------------------------------------------------
 			case 0xD0:
 				BNE();
+				break;
+
+			// -------------------------------------------------------------------
+			// Clear Decimal Mode
+			// -------------------------------------------------------------------
+			case 0xD8:
+				CLD();
+				break;
+
+			// -------------------------------------------------------------------
+			// Compare X Register
+			// -------------------------------------------------------------------
+			case 0xE0:
+				CPX(AddressingMode::Immediate);
+				break;
+
+			case 0xE4:
+				CPX(AddressingMode::ZeroPage);
+				break;
+
+			case 0xEC:
+				CPX(AddressingMode::Absolute);
 				break;
 
 			// -------------------------------------------------------------------
@@ -291,4 +383,39 @@ void nes::CPU::BVC()
 void nes::CPU::BVS()
 {
 	std::cout << "OP BVS" << '\n';
+}
+
+void nes::CPU::CLC()
+{
+	std::cout << "OP CLC" << '\n';
+}
+
+void nes::CPU::CLD()
+{
+	std::cout << "OP CLC" << '\n';
+}
+
+void nes::CPU::CLI()
+{
+	std::cout << "OP CLI" << '\n';
+}
+
+void nes::CPU::CLV()
+{
+	std::cout << "OP CLV" << '\n';
+}
+
+void nes::CPU::CMP(AddressingMode mode)
+{
+	std::cout << "OP CMP" << '\n';
+}
+
+void nes::CPU::CPX(AddressingMode mode)
+{
+	std::cout << "OP CPX" << '\n';
+}
+
+void nes::CPU::CPY(AddressingMode mode)
+{
+	std::cout << "OP CPY" << '\n';
 }

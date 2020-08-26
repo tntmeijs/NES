@@ -48,6 +48,13 @@ namespace nes
         void BRK();
         void BVC();
         void BVS();
+        void CLC();
+        void CLD();
+        void CLI();
+        void CLV();
+        void CMP(AddressingMode mode);
+        void CPX(AddressingMode mode);
+        void CPY(AddressingMode mode);
 
     private:
         // Accumulator
