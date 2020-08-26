@@ -80,6 +80,13 @@ namespace nes
         void ROR(AddressingMode mode);
         void RTI();
         void RTS();
+        void SBC(AddressingMode mode);
+        void SEC();
+        void SED();
+        void SEI();
+        void STA(AddressingMode mode);
+		void STX(AddressingMode mode);
+		void STY(AddressingMode mode);
 
     private:
         // Accumulator

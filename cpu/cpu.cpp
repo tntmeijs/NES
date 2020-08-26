@@ -213,6 +213,13 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Set Carry Flag
+			// -------------------------------------------------------------------
+			case 0x38:
+				SEC();
+				break;
+
+			// -------------------------------------------------------------------
 			// Return from Interrupt
 			// -------------------------------------------------------------------
 			case 0x40:
@@ -347,13 +354,6 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
-			// Branch if Overflow Set
-			// -------------------------------------------------------------------
-			case 0x70:
-				BVS();
-				break;
-
-			// -------------------------------------------------------------------
 			// Add with Carry
 			// -------------------------------------------------------------------
 			case 0x61:
@@ -386,6 +386,81 @@ void nes::CPU::Entry()
 
 			case 0x7D:
 				ADC(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Branch if Overflow Set
+			// -------------------------------------------------------------------
+			case 0x70:
+				BVS();
+				break;
+
+			// -------------------------------------------------------------------
+			// Set Interrupt Disable
+			// -------------------------------------------------------------------
+			case 0x78:
+				SEI();
+				break;
+
+			// -------------------------------------------------------------------
+			// Store Accumulator
+			// -------------------------------------------------------------------
+			case 0x81:
+				STA(AddressingMode::IndirectX);
+				break;
+			
+			case 0x85:
+				STA(AddressingMode::ZeroPage);
+				break;
+
+			case 0x8D:
+				STA(AddressingMode::Absolute);
+				break;
+
+			case 0x91:
+				STA(AddressingMode::IndirectY);
+				break;
+
+			case 0x95:
+				STA(AddressingMode::ZeroPageX);
+				break;
+
+			case 0x99:
+				STA(AddressingMode::AbsoluteY);
+				break;
+
+			case 0x9D:
+				STA(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Store Y Register
+			// -------------------------------------------------------------------
+			case 0x84:
+				STY(AddressingMode::ZeroPage);
+				break;
+
+			case 0x8C:
+				STY(AddressingMode::Absolute);
+				break;
+
+			case 0x94:
+				STY(AddressingMode::ZeroPageX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Store X Register
+			// -------------------------------------------------------------------
+			case 0x86:
+				STX(AddressingMode::ZeroPage);
+				break;
+
+			case 0x8E:
+				STX(AddressingMode::Absolute);
+				break;
+
+			case 0x96:
+				STX(AddressingMode::ZeroPageY);
 				break;
 
 			// -------------------------------------------------------------------
@@ -609,6 +684,41 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Subtract with Carry
+			// -------------------------------------------------------------------
+			case 0xE1:
+				SBC(AddressingMode::IndirectX);
+				break;
+
+			case 0xE5:
+				SBC(AddressingMode::ZeroPage);
+				break;
+
+			case 0xE9:
+				SBC(AddressingMode::Immediate);
+				break;
+
+			case 0xED:
+				SBC(AddressingMode::Absolute);
+				break;
+
+			case 0xF1:
+				SBC(AddressingMode::IndirectY);
+				break;
+
+			case 0xF5:
+				SBC(AddressingMode::ZeroPageX);
+				break;
+
+			case 0xFD:
+				SBC(AddressingMode::AbsoluteX);
+				break;
+
+			case 0xF9:
+				SBC(AddressingMode::AbsoluteY);
+				break;
+
+			// -------------------------------------------------------------------
 			// Increment Memory
 			// -------------------------------------------------------------------
 			case 0xE6:
@@ -647,6 +757,68 @@ void nes::CPU::Entry()
 			case 0xF0:
 				BEQ();
 				break;
+
+			// -------------------------------------------------------------------
+			// Set Carry Flag
+			// -------------------------------------------------------------------
+			case 0xF8:
+				SED();
+				break;
+
+
+
+
+
+
+
+
+
+
+
+
+			
+
+			
+
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 			default:
 				std::cerr << "Unknown op-code: " << std::hex << opCode << '\n';
@@ -886,4 +1058,39 @@ void nes::CPU::RTI()
 void nes::CPU::RTS()
 {
 	std::cout << "OP RTS" << '\n';
+}
+
+void nes::CPU::SBC(AddressingMode mode)
+{
+	std::cout << "OP SBC" << '\n';
+}
+
+void nes::CPU::SEC()
+{
+	std::cout << "OP SEC" << '\n';
+}
+
+void nes::CPU::SED()
+{
+	std::cout << "OP SED" << '\n';
+}
+
+void nes::CPU::SEI()
+{
+	std::cout << "OP SEI" << '\n';
+}
+
+void nes::CPU::STA(AddressingMode mode)
+{
+	std::cout << "OP STA" << '\n';
+}
+
+void nes::CPU::STX(AddressingMode mode)
+{
+	std::cout << "OP STX" << '\n';
+}
+
+void nes::CPU::STY(AddressingMode mode)
+{
+	std::cout << "OP STY" << '\n';
 }
