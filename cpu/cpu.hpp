@@ -59,6 +59,9 @@ namespace nes
         void DEX();
         void DEY();
         void EOR(AddressingMode mode);
+        void INC(AddressingMode mode);
+        void INX();
+        void INY();
 
     private:
         // Accumulator

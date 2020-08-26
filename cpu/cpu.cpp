@@ -328,6 +328,13 @@ void nes::CPU::Entry()
 				CPY(AddressingMode::Absolute);
 
 			// -------------------------------------------------------------------
+			// Increment Y Register
+			// -------------------------------------------------------------------
+			case 0xC8:
+				INY();
+				break;
+
+			// -------------------------------------------------------------------
 			// Branch if not Equal
 			// -------------------------------------------------------------------
 			case 0xD0:
@@ -354,6 +361,32 @@ void nes::CPU::Entry()
 
 			case 0xEC:
 				CPX(AddressingMode::Absolute);
+				break;
+
+			// -------------------------------------------------------------------
+			// Increment Memory
+			// -------------------------------------------------------------------
+			case 0xE6:
+				INC(AddressingMode::ZeroPage);
+				break;
+
+			case 0xF6:
+				INC(AddressingMode::ZeroPageX);
+				break;
+
+			case 0xEE:
+				INC(AddressingMode::Absolute);
+				break;
+
+			case 0xFE:
+				INC(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Increment X Register
+			// -------------------------------------------------------------------
+			case 0xE8:
+				INX();
 				break;
 
 			// -------------------------------------------------------------------
@@ -506,4 +539,19 @@ void nes::CPU::DEY()
 void nes::CPU::EOR(AddressingMode mode)
 {
 	std::cout << "OP EOR" << '\n';
+}
+
+void nes::CPU::INC(AddressingMode mode)
+{
+	std::cout << "OP INC" << '\n';
+}
+
+void nes::CPU::INX()
+{
+	std::cout << "OP INX" << '\n';
+}
+
+void nes::CPU::INY()
+{
+	std::cout << "OP INY" << '\n';
 }
