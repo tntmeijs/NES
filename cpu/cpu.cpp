@@ -1268,6 +1268,32 @@ void nes::CPU::TAY(AddressingMode mode)
 void nes::CPU::TSX(AddressingMode mode)
 {
 	std::cout << "OP TSX" << '\n';
+
+	// Transfer the stack pointer to the X register
+	X = S;
+	Cycle += 2;
+
+	if (X == 0)
+	{
+		// Value is zero, set zero flag
+		P |= (1 << 1);
+	}
+	else
+	{
+		// Not zero, unset zero flag
+		P &= ~(1 << 1);
+	}
+
+	if ((X & (1 << 7)) != 0)
+	{
+		// Value is negative, set negative flag
+		P |= (1 << 7);
+	}
+	else
+	{
+		// Value is positive, unset negative flag
+		P &= ~(1 << 7);
+	}
 }
 
 void nes::CPU::TXA(AddressingMode mode)
