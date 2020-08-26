@@ -956,7 +956,13 @@ void nes::CPU::DEX(AddressingMode mode)
 		// Value is zero, set zero flag
 		P |= (1 << 1);
 	}
-	else if ((X & (1 << 7)) != 0)
+	else
+	{
+		// Not zero, unset zero flag
+		P &= ~(1 << 1);
+	}
+
+	if ((X & (1 << 7)) != 0)
 	{
 		// Value is negative, set negative flag
 		P |= (1 << 7);
@@ -981,7 +987,13 @@ void nes::CPU::DEY(AddressingMode mode)
 		// Value is zero, set zero flag
 		P |= (1 << 1);
 	}
-	else if ((Y & (1 << 7)) != 0)
+	else
+	{
+		// Not zero, unset zero flag
+		P &= ~(1 << 1);
+	}
+
+	if ((Y & (1 << 7)) != 0)
 	{
 		// Value is negative, set negative flag
 		P |= (1 << 7);
