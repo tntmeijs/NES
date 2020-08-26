@@ -1110,6 +1110,8 @@ void nes::CPU::LSR(AddressingMode mode)
 void nes::CPU::NOP(AddressingMode mode)
 {
 	std::cout << "OP NOP" << '\n';
+
+	Cycle += 2;
 }
 
 void nes::CPU::ORA(AddressingMode mode)
