@@ -1206,11 +1206,63 @@ void nes::CPU::STY(AddressingMode mode)
 void nes::CPU::TAX(AddressingMode mode)
 {
 	std::cout << "OP TAX" << '\n';
+
+	// Transfer the accumulator to the X register
+	X = A;
+	Cycle += 2;
+
+	if (X == 0)
+	{
+		// Value is zero, set zero flag
+		P |= (1 << 1);
+	}
+	else
+	{
+		// Not zero, unset zero flag
+		P &= ~(1 << 1);
+	}
+
+	if ((X & (1 << 7)) != 0)
+	{
+		// Value is negative, set negative flag
+		P |= (1 << 7);
+	}
+	else
+	{
+		// Value is positive, unset negative flag
+		P &= ~(1 << 7);
+	}
 }
 
 void nes::CPU::TAY(AddressingMode mode)
 {
 	std::cout << "OP TAY" << '\n';
+
+	// Transfer the accumulator to the Y register
+	Y = A;
+	Cycle += 2;
+
+	if (Y == 0)
+	{
+		// Value is zero, set zero flag
+		P |= (1 << 1);
+	}
+	else
+	{
+		// Not zero, unset zero flag
+		P &= ~(1 << 1);
+	}
+
+	if ((Y & (1 << 7)) != 0)
+	{
+		// Value is negative, set negative flag
+		P |= (1 << 7);
+	}
+	else
+	{
+		// Value is positive, unset negative flag
+		P &= ~(1 << 7);
+	}
 }
 
 void nes::CPU::TSX(AddressingMode mode)
