@@ -44,6 +44,41 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Logical Inclusive OR
+			// -------------------------------------------------------------------
+			case 0x01:
+				ORA(AddressingMode::IndirectX);
+				break;
+			
+			case 0x05:
+				ORA(AddressingMode::ZeroPage);
+				break;
+			
+			case 0x09:
+				ORA(AddressingMode::Immediate);
+				break;
+
+			case 0x0D:
+				ORA(AddressingMode::Absolute);
+				break;
+
+			case 0x11:
+				ORA(AddressingMode::IndirectY);
+				break;
+
+			case 0x15:
+				ORA(AddressingMode::ZeroPageX);
+				break;
+
+			case 0x19:
+				ORA(AddressingMode::AbsoluteY);
+				break;
+
+			case 0x1D:
+				ORA(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
 			// Arithmetic Shift Left
 			// -------------------------------------------------------------------
 			case 0x06:
@@ -718,4 +753,9 @@ void nes::CPU::LSR(AddressingMode mode)
 void nes::CPU::NOP()
 {
 	std::cout << "OP NOP" << '\n';
+}
+
+void nes::CPU::ORA(AddressingMode mode)
+{
+	std::cout << "OP ORA" << '\n';
 }

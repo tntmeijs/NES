@@ -71,6 +71,7 @@ namespace nes
         void LDY(AddressingMode mode);
         void LSR(AddressingMode mode);
         void NOP();
+        void ORA(AddressingMode mode);
 
     private:
         // Accumulator
