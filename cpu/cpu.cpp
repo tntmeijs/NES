@@ -1330,6 +1330,8 @@ void nes::CPU::TXA(AddressingMode mode)
 void nes::CPU::TXS(AddressingMode mode)
 {
 	std::cout << "OP TXS" << '\n';
+
+	S = X;
 }
 
 void nes::CPU::TYA(AddressingMode mode)
