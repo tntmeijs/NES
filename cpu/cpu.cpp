@@ -896,6 +896,7 @@ void nes::CPU::CLC(AddressingMode mode)
 	std::cout << "OP CLC" << '\n';
 
 	P &= ~(1 << 0);
+	Cycle += 2;
 }
 
 void nes::CPU::CLD(AddressingMode mode)
@@ -903,6 +904,7 @@ void nes::CPU::CLD(AddressingMode mode)
 	std::cout << "OP CLC" << '\n';
 
 	P &= ~(1 << 3);
+	Cycle += 2;
 }
 
 void nes::CPU::CLI(AddressingMode mode)
@@ -910,6 +912,7 @@ void nes::CPU::CLI(AddressingMode mode)
 	std::cout << "OP CLI" << '\n';
 
 	P &= ~(1 << 2);
+	Cycle += 2;
 }
 
 void nes::CPU::CLV(AddressingMode mode)
@@ -917,6 +920,7 @@ void nes::CPU::CLV(AddressingMode mode)
 	std::cout << "OP CLV" << '\n';
 
 	P &= ~(1 << 6);
+	Cycle += 2;
 }
 
 void nes::CPU::CMP(AddressingMode mode)
@@ -945,6 +949,7 @@ void nes::CPU::DEX(AddressingMode mode)
 
 	// Decrement X
 	X -= 1;
+	Cycle += 2;
 
 	if (X == 0)
 	{
@@ -969,6 +974,7 @@ void nes::CPU::DEY(AddressingMode mode)
 
 	// Decrement Y
 	Y -= 1;
+	Cycle += 2;
 
 	if (Y == 0)
 	{
