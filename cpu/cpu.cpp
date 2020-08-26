@@ -183,10 +183,40 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Rotate Left
+			// -------------------------------------------------------------------
+			case 0x26:
+				ROL(AddressingMode::ZeroPage);
+				break;
+
+			case 0x2A:
+				ROL(AddressingMode::Accumulator);
+				break;
+
+			case 0x2E:
+				ROL(AddressingMode::Absolute);
+				break;
+
+			case 0x36:
+				ROL(AddressingMode::ZeroPageX);
+				break;
+
+			case 0x3E:
+				ROL(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
 			// Branch if Minus
 			// -------------------------------------------------------------------
 			case 0x30:
 				BMI();
+				break;
+
+			// -------------------------------------------------------------------
+			// Return from Interrupt
+			// -------------------------------------------------------------------
+			case 0x40:
+				RTI();
 				break;
 
 			// -------------------------------------------------------------------
@@ -280,10 +310,40 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Return from Subroutine
+			// -------------------------------------------------------------------
+			case 0x60:
+				RTS();
+				break;
+
+			// -------------------------------------------------------------------
 			// Pull Accumulator
 			// -------------------------------------------------------------------
 			case 0x68:
 				PLA();
+				break;
+
+			// -------------------------------------------------------------------
+			// Rotate Right
+			// -------------------------------------------------------------------
+			case 0x66:
+				ROR(AddressingMode::ZeroPage);
+				break;
+
+			case 0x6A:
+				ROR(AddressingMode::Accumulator);
+				break;
+
+			case 0x6E:
+				ROR(AddressingMode::Absolute);
+				break;
+
+			case 0x76:
+				ROR(AddressingMode::ZeroPageX);
+				break;
+
+			case 0x7E:
+				ROR(AddressingMode::AbsoluteX);
 				break;
 
 			// -------------------------------------------------------------------
@@ -806,4 +866,24 @@ void nes::CPU::PLA()
 void nes::CPU::PLP()
 {
 	std::cout << "OP PLP" << '\n';
+}
+
+void nes::CPU::ROL(AddressingMode mode)
+{
+	std::cout << "OP ROL" << '\n';
+}
+
+void nes::CPU::ROR(AddressingMode mode)
+{
+	std::cout << "OP ROR" << '\n';
+}
+
+void nes::CPU::RTI()
+{
+	std::cout << "OP RTI" << '\n';
+}
+
+void nes::CPU::RTS()
+{
+	std::cout << "OP RTS" << '\n';
 }

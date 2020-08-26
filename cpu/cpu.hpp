@@ -76,6 +76,10 @@ namespace nes
         void PHP();
         void PLA();
         void PLP();
+        void ROL(AddressingMode mode);
+        void ROR(AddressingMode mode);
+        void RTI();
+        void RTS();
 
     private:
         // Accumulator
