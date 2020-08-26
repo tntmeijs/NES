@@ -894,21 +894,29 @@ void nes::CPU::BVS(AddressingMode mode)
 void nes::CPU::CLC(AddressingMode mode)
 {
 	std::cout << "OP CLC" << '\n';
+
+	P &= ~(1 << 0);
 }
 
 void nes::CPU::CLD(AddressingMode mode)
 {
 	std::cout << "OP CLC" << '\n';
+
+	P &= ~(1 << 3);
 }
 
 void nes::CPU::CLI(AddressingMode mode)
 {
 	std::cout << "OP CLI" << '\n';
+
+	P &= ~(1 << 2);
 }
 
 void nes::CPU::CLV(AddressingMode mode)
 {
 	std::cout << "OP CLV" << '\n';
+
+	P &= ~(1 << 6);
 }
 
 void nes::CPU::CMP(AddressingMode mode)
