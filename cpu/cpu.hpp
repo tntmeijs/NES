@@ -72,6 +72,10 @@ namespace nes
         void LSR(AddressingMode mode);
         void NOP();
         void ORA(AddressingMode mode);
+        void PHA();
+        void PHP();
+        void PLA();
+        void PLP();
 
     private:
         // Accumulator
