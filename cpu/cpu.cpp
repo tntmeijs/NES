@@ -81,6 +81,13 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Jump to Subroutine
+			// -------------------------------------------------------------------
+			case 0x20:
+				JSR();
+				break;
+
+			// -------------------------------------------------------------------
 			// BIT
 			// -------------------------------------------------------------------
 			case 0x24:
@@ -166,6 +173,17 @@ void nes::CPU::Entry()
 
 			case 0x5D:
 				EOR(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
+			// Jump
+			// -------------------------------------------------------------------
+			case 0x4C:
+				JMP(AddressingMode::Absolute);
+				break;
+
+			case 0x6C:
+				JMP(AddressingMode::Indirect);
 				break;
 
 			// -------------------------------------------------------------------
@@ -554,4 +572,14 @@ void nes::CPU::INX()
 void nes::CPU::INY()
 {
 	std::cout << "OP INY" << '\n';
+}
+
+void nes::CPU::JMP(AddressingMode mode)
+{
+	std::cout << "OP JMP" << '\n';
+}
+
+void nes::CPU::JSR()
+{
+	std::cout << "OP JSR" << '\n';
 }

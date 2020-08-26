@@ -27,6 +27,7 @@ namespace nes
             Absolute,
             AbsoluteX,
             AbsoluteY,
+            Indirect,
             IndirectX,
             IndirectY
         };
@@ -62,6 +63,8 @@ namespace nes
         void INC(AddressingMode mode);
         void INX();
         void INY();
+        void JMP(AddressingMode mode);
+        void JSR();
 
     private:
         // Accumulator
