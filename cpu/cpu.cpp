@@ -942,11 +942,49 @@ void nes::CPU::DEC(AddressingMode mode)
 void nes::CPU::DEX(AddressingMode mode)
 {
 	std::cout << "OP DEX" << '\n';
+
+	// Decrement X
+	X -= 1;
+
+	if (X == 0)
+	{
+		// Value is zero, set zero flag
+		P |= (1 << 1);
+	}
+	else if ((X & (1 << 7)) != 0)
+	{
+		// Value is negative, set negative flag
+		P |= (1 << 7);
+	}
+	else
+	{
+		// Value is positive, unset negative flag
+		P &= ~(1 << 7);
+	}
 }
 
 void nes::CPU::DEY(AddressingMode mode)
 {
 	std::cout << "OP DEY" << '\n';
+
+	// Decrement Y
+	Y -= 1;
+
+	if (Y == 0)
+	{
+		// Value is zero, set zero flag
+		P |= (1 << 1);
+	}
+	else if ((Y & (1 << 7)) != 0)
+	{
+		// Value is negative, set negative flag
+		P |= (1 << 7);
+	}
+	else
+	{
+		// Value is positive, unset negative flag
+		P &= ~(1 << 7);
+	}
 }
 
 void nes::CPU::EOR(AddressingMode mode)
