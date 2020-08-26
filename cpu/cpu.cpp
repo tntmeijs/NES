@@ -1299,6 +1299,32 @@ void nes::CPU::TSX(AddressingMode mode)
 void nes::CPU::TXA(AddressingMode mode)
 {
 	std::cout << "OP TXA" << '\n';
+
+	// Transfer the X register to the accumulator
+	A = X;
+	Cycle += 2;
+
+	if (A == 0)
+	{
+		// Value is zero, set zero flag
+		P |= (1 << 1);
+	}
+	else
+	{
+		// Not zero, unset zero flag
+		P &= ~(1 << 1);
+	}
+
+	if ((A & (1 << 7)) != 0)
+	{
+		// Value is negative, set negative flag
+		P |= (1 << 7);
+	}
+	else
+	{
+		// Value is positive, unset negative flag
+		P &= ~(1 << 7);
+	}
 }
 
 void nes::CPU::TXS(AddressingMode mode)
