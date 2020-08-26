@@ -58,6 +58,7 @@ namespace nes
         void DEC(AddressingMode mode);
         void DEX();
         void DEY();
+        void EOR(AddressingMode mode);
 
     private:
         // Accumulator

@@ -134,6 +134,41 @@ void nes::CPU::Entry()
 				break;
 
 			// -------------------------------------------------------------------
+			// Exclusive OR
+			// -------------------------------------------------------------------
+			case 0x41:
+				EOR(AddressingMode::IndirectX);
+				break;
+
+			case 0x45:
+				EOR(AddressingMode::ZeroPage);
+				break;
+
+			case 0x49:
+				EOR(AddressingMode::Immediate);
+				break;
+
+			case 0x4D:
+				EOR(AddressingMode::Absolute);
+				break;
+
+			case 0x51:
+				EOR(AddressingMode::IndirectY);
+				break;
+
+			case 0x55:
+				EOR(AddressingMode::ZeroPageX);
+				break;
+
+			case 0x59:
+				EOR(AddressingMode::AbsoluteY);
+				break;
+
+			case 0x5D:
+				EOR(AddressingMode::AbsoluteX);
+				break;
+
+			// -------------------------------------------------------------------
 			// Branch if Overflow Clear
 			// -------------------------------------------------------------------
 			case 0x50:
@@ -466,4 +501,9 @@ void nes::CPU::DEX()
 void nes::CPU::DEY()
 {
 	std::cout << "OP DEY" << '\n';
+}
+
+void nes::CPU::EOR(AddressingMode mode)
+{
+	std::cout << "OP EOR" << '\n';
 }
