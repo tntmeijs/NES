@@ -1167,16 +1167,25 @@ void nes::CPU::SBC(AddressingMode mode)
 void nes::CPU::SEC(AddressingMode mode)
 {
 	std::cout << "OP SEC" << '\n';
+
+	Cycle += 2;
+	P |= (1 << 0);
 }
 
 void nes::CPU::SED(AddressingMode mode)
 {
 	std::cout << "OP SED" << '\n';
+
+	Cycle += 2;
+	P |= (1 << 3);
 }
 
 void nes::CPU::SEI(AddressingMode mode)
 {
 	std::cout << "OP SEI" << '\n';
+
+	Cycle += 2;
+	P |= (1 << 2);
 }
 
 void nes::CPU::STA(AddressingMode mode)
