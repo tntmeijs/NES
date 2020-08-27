@@ -885,6 +885,14 @@ void nes::CPU::BMI(AddressingMode mode)
 void nes::CPU::BNE(AddressingMode mode)
 {
 	std::cout << "OP BNE" << '\n';
+
+	// Zero flag is clear
+	if ((P & (1 << 1)) == 0)
+	{
+		// Perform branching
+		std::int8_t displacement = Memory[PC + 1];
+		PC += displacement;
+	}
 }
 
 void nes::CPU::BPL(AddressingMode mode)
