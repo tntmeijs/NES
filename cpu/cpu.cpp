@@ -34,6 +34,7 @@ void nes::CPU::Entry()
 	while (true)
 	{
 		std::uint8_t opCode = Memory[PC++];
+		++Cycle;
 		switch (opCode)
 		{
 			// -------------------------------------------------------------------
