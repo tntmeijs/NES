@@ -841,6 +841,14 @@ void nes::CPU::BCC(AddressingMode mode)
 void nes::CPU::BCS(AddressingMode mode)
 {
 	std::cout << "OP BCS" << '\n';
+
+	// Carry flag is set
+	if ((P & (1 << 0)) != 0)
+	{
+		// Perform branching
+		std::int8_t displacement = Memory[PC + 1];
+		PC += displacement;
+	}
 }
 
 void nes::CPU::BEQ(AddressingMode mode)
