@@ -916,6 +916,14 @@ void nes::CPU::BRK(AddressingMode mode)
 void nes::CPU::BVC(AddressingMode mode)
 {
 	std::cout << "OP BVC" << '\n';
+
+	// Overflow flag is clear
+	if ((P & (1 << 6)) == 0)
+	{
+		// Perform branching
+		std::int8_t displacement = Memory[PC + 1];
+		PC += displacement;
+	}
 }
 
 void nes::CPU::BVS(AddressingMode mode)
