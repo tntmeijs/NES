@@ -34,7 +34,6 @@ void nes::CPU::Entry()
 	while (true)
 	{
 		std::uint8_t opCode = Memory[PC++];
-		++Cycle;
 		switch (opCode)
 		{
 			// -------------------------------------------------------------------
@@ -811,22 +810,6 @@ void nes::CPU::Entry()
 	delete[] Memory;
 }
 
-// DEBUG FUNCTION, PRINT A BYTE
-void PrintByte(std::uint8_t byte)
-{
-	for (int i = 7; i >= 0; --i)
-	{
-		std::cout << ((byte & (1 << i)) != 0) ? '1' : '0';
-	}
-}
-
-char nes::CPU::ReadAtPC()
-{
-	PrintByte(Memory[PC]);
-
-	return 0;
-}
-
 void nes::CPU::ADC(AddressingMode mode)
 {
 	std::cout << "OP ADC" << '\n';
@@ -845,6 +828,14 @@ void nes::CPU::ASL(AddressingMode mode)
 void nes::CPU::BCC(AddressingMode mode)
 {
 	std::cout << "OP BCC" << '\n';
+
+	// Carry flag is clear
+	if ((P & (1 << 0)) == 0)
+	{
+		// Perform branching
+		std::int8_t displacement = Memory[PC + 1];
+		PC += displacement;
+	}
 }
 
 void nes::CPU::BCS(AddressingMode mode)
@@ -897,7 +888,6 @@ void nes::CPU::CLC(AddressingMode mode)
 	std::cout << "OP CLC" << '\n';
 
 	P &= ~(1 << 0);
-	Cycle += 2;
 }
 
 void nes::CPU::CLD(AddressingMode mode)
@@ -905,7 +895,6 @@ void nes::CPU::CLD(AddressingMode mode)
 	std::cout << "OP CLC" << '\n';
 
 	P &= ~(1 << 3);
-	Cycle += 2;
 }
 
 void nes::CPU::CLI(AddressingMode mode)
@@ -913,7 +902,6 @@ void nes::CPU::CLI(AddressingMode mode)
 	std::cout << "OP CLI" << '\n';
 
 	P &= ~(1 << 2);
-	Cycle += 2;
 }
 
 void nes::CPU::CLV(AddressingMode mode)
@@ -921,7 +909,6 @@ void nes::CPU::CLV(AddressingMode mode)
 	std::cout << "OP CLV" << '\n';
 
 	P &= ~(1 << 6);
-	Cycle += 2;
 }
 
 void nes::CPU::CMP(AddressingMode mode)
@@ -950,7 +937,6 @@ void nes::CPU::DEX(AddressingMode mode)
 
 	// Decrement X
 	X -= 1;
-	Cycle += 2;
 
 	if (X == 0)
 	{
@@ -981,7 +967,6 @@ void nes::CPU::DEY(AddressingMode mode)
 
 	// Decrement Y
 	Y -= 1;
-	Cycle += 2;
 
 	if (Y == 0)
 	{
@@ -1022,7 +1007,6 @@ void nes::CPU::INX(AddressingMode mode)
 
 	// Increment X
 	X += 1;
-	Cycle += 2;
 
 	if (X == 0)
 	{
@@ -1053,7 +1037,6 @@ void nes::CPU::INY(AddressingMode mode)
 
 	// Increment Y
 	Y += 1;
-	Cycle += 2;
 
 	if (Y == 0)
 	{
@@ -1111,8 +1094,6 @@ void nes::CPU::LSR(AddressingMode mode)
 void nes::CPU::NOP(AddressingMode mode)
 {
 	std::cout << "OP NOP" << '\n';
-
-	Cycle += 2;
 }
 
 void nes::CPU::ORA(AddressingMode mode)
@@ -1169,23 +1150,18 @@ void nes::CPU::SEC(AddressingMode mode)
 {
 	std::cout << "OP SEC" << '\n';
 
-	Cycle += 2;
 	P |= (1 << 0);
 }
 
 void nes::CPU::SED(AddressingMode mode)
 {
 	std::cout << "OP SED" << '\n';
-
-	Cycle += 2;
 	P |= (1 << 3);
 }
 
 void nes::CPU::SEI(AddressingMode mode)
 {
 	std::cout << "OP SEI" << '\n';
-
-	Cycle += 2;
 	P |= (1 << 2);
 }
 
@@ -1210,7 +1186,6 @@ void nes::CPU::TAX(AddressingMode mode)
 
 	// Transfer the accumulator to the X register
 	X = A;
-	Cycle += 2;
 
 	if (X == 0)
 	{
@@ -1241,7 +1216,6 @@ void nes::CPU::TAY(AddressingMode mode)
 
 	// Transfer the accumulator to the Y register
 	Y = A;
-	Cycle += 2;
 
 	if (Y == 0)
 	{
@@ -1272,7 +1246,6 @@ void nes::CPU::TSX(AddressingMode mode)
 
 	// Transfer the stack pointer to the X register
 	X = S;
-	Cycle += 2;
 
 	if (X == 0)
 	{
@@ -1303,7 +1276,6 @@ void nes::CPU::TXA(AddressingMode mode)
 
 	// Transfer the X register to the accumulator
 	A = X;
-	Cycle += 2;
 
 	if (A == 0)
 	{
@@ -1341,7 +1313,6 @@ void nes::CPU::TYA(AddressingMode mode)
 
 	// Transfer the Y register to the accumulator
 	A = Y;
-	Cycle += 2;
 
 	if (A == 0)
 	{

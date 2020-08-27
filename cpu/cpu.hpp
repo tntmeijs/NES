@@ -123,8 +123,6 @@ namespace nes
         // Program counter
         std::uint16_t PC;
 
-        std::uint64_t Cycle;
-
         //#DEBUG: RAM
         std::uint8_t* Memory;
     };
