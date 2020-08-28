@@ -58,7 +58,7 @@ namespace nes
     private:
         sf::RenderWindow& WindowRef;
 
-        const UIPanel const* TestPanel;
+        const UIPanel* TestPanel;
     };
 }
 
