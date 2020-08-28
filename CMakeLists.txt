@@ -9,6 +9,8 @@ set(SOURCE_LIST
     main.cpp
     cpu/cpu.hpp
     cpu/cpu.cpp
+    ram/ram.hpp
+    ram/ram.cpp
     editor/editor.hpp
     editor/editor.cpp
     editor/ui/ui_element.hpp
