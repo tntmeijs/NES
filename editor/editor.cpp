@@ -10,8 +10,7 @@
 nes::Editor::Editor(sf::RenderWindow& window, const CPU& cpu, const RAM& ram) :
 	WindowRef(window),
 	CpuRef(cpu),
-	RamRef(ram),
-	TestPanel(nullptr)
+	RamRef(ram)
 {}
 
 void nes::Editor::Initialize()
@@ -19,8 +18,6 @@ void nes::Editor::Initialize()
 	ImGui::SFML::Init(WindowRef);
 
 	ApplyStyle();
-
-	TestPanel = new UIPanel(1280, 720, 0, 0, 0.25f, 0.5f);
 }
 
 void nes::Editor::Update(sf::Time deltaTime)
@@ -35,19 +32,12 @@ void nes::Editor::ProcessEvent(sf::Event event) const
 
 void nes::Editor::DrawUI() const
 {
-	TestPanel->Draw();
 	ImGui::SFML::Render(WindowRef);
 }
 
 void nes::Editor::Destroy()
 {
 	ImGui::SFML::Shutdown();
-
-	if (TestPanel)
-	{
-		delete TestPanel;
-		TestPanel = nullptr;
-	}
 }
 
 void nes::Editor::ApplyStyle()

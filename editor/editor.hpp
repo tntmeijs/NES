@@ -11,7 +11,6 @@ namespace sf
 
 namespace nes
 {
-    class UIPanel;
     class CPU;
     class RAM;
 
@@ -64,8 +63,6 @@ namespace nes
 
         const CPU& CpuRef;
         const RAM& RamRef;
-
-        const UIPanel* TestPanel;
     };
 }
 
