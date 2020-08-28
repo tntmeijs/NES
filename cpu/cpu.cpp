@@ -26,7 +26,7 @@ void nes::CPU::Entry()
 	rom.seekg(0, rom.beg);
 
 	// Dump the entire binary blob
-	rom.read(reinterpret_cast<char*>(RamRef.GetMemory()), romSize);
+	rom.read(reinterpret_cast<char*>(RamRef.GetRaw()), romSize);
 	rom.close();
 
 	// Start reading at PC = 0x0400

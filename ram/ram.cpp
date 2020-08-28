@@ -29,7 +29,7 @@ void nes::RAM::WriteByte(std::uint16_t address, std::uint8_t value)
 	Memory[address] = value;
 }
 
-std::uint8_t* const nes::RAM::GetMemory() const
+std::uint8_t* const nes::RAM::GetRaw() const
 {
 	return Memory;
 }

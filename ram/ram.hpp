@@ -42,7 +42,7 @@ namespace nes
 		 * Retrieve a pointer to the block of memory that backs the RAM object
 		 * @return	Pointer to the raw memory block
 		 */
-		std::uint8_t* const GetMemory() const;
+		std::uint8_t* const GetRaw() const;
 
 	public:
 		/** Size of the memory block in bytes */
