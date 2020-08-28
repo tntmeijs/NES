@@ -2,6 +2,7 @@
 #include <SFML/Window/Event.hpp>
 
 #include "cpu/cpu.hpp"
+#include "ram/ram.hpp"
 #include "editor/editor.hpp"
 
 int main()
@@ -9,7 +10,10 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "NES");
 	window.setVerticalSyncEnabled(true);
 
-	nes::CPU Mos6502;
+	nes::RAM ram;
+	ram.Initialize();
+
+	nes::CPU Mos6502(ram);
 	Mos6502.Entry();
 
 	nes::Editor nesEditor(window);
@@ -45,4 +49,5 @@ int main()
 	}
 
 	nesEditor.Destroy();
+	ram.Delete();
 }

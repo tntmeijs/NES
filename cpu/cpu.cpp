@@ -1,7 +1,12 @@
 #include "cpu.hpp"
+#include "ram/ram.hpp"
 
 #include <iostream>
 #include <fstream>
+
+nes::CPU::CPU(const RAM& ramRef) :
+	RamRef(ramRef)
+{}
 
 void nes::CPU::Entry()
 {
@@ -20,10 +25,8 @@ void nes::CPU::Entry()
 	size_t romSize = rom.tellg();
 	rom.seekg(0, rom.beg);
 
-	Memory = new std::uint8_t[romSize];
-
 	// Dump the entire binary blob
-	rom.read(reinterpret_cast<char*>(Memory), romSize);
+	rom.read(reinterpret_cast<char*>(RamRef.GetMemory()), romSize);
 	rom.close();
 
 	// Start reading at PC = 0x0400
@@ -33,7 +36,7 @@ void nes::CPU::Entry()
 	//#TODO: use a function table to tidy this up a little
 	while (true)
 	{
-		std::uint8_t opCode = Memory[PC++];
+		std::uint8_t opCode = RamRef.ReadByte(PC++);
 		switch (opCode)
 		{
 			// -------------------------------------------------------------------
@@ -806,8 +809,6 @@ void nes::CPU::Entry()
 				break;
 		}
 	}
-
-	delete[] Memory;
 }
 
 void nes::CPU::ADC(AddressingMode mode)
@@ -833,7 +834,7 @@ void nes::CPU::BCC(AddressingMode mode)
 	if ((P & (1 << 0)) == 0)
 	{
 		// Perform branching
-		std::int8_t displacement = Memory[PC + 1];
+		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 		PC += displacement;
 	}
 }
@@ -846,7 +847,7 @@ void nes::CPU::BCS(AddressingMode mode)
 	if ((P & (1 << 0)) != 0)
 	{
 		// Perform branching
-		std::int8_t displacement = Memory[PC + 1];
+		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 		PC += displacement;
 	}
 }
@@ -859,7 +860,7 @@ void nes::CPU::BEQ(AddressingMode mode)
 	if ((P & (1 << 1)) != 0)
 	{
 		// Perform branching
-		std::int8_t displacement = Memory[PC + 1];
+		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 		PC += displacement;
 	}
 }
@@ -877,7 +878,7 @@ void nes::CPU::BMI(AddressingMode mode)
 	if ((P & (1 << 7)) != 0)
 	{
 		// Perform branching
-		std::int8_t displacement = Memory[PC + 1];
+		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 		PC += displacement;
 	}
 }
@@ -890,7 +891,7 @@ void nes::CPU::BNE(AddressingMode mode)
 	if ((P & (1 << 1)) == 0)
 	{
 		// Perform branching
-		std::int8_t displacement = Memory[PC + 1];
+		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 		PC += displacement;
 	}
 }
@@ -903,7 +904,7 @@ void nes::CPU::BPL(AddressingMode mode)
 	if ((P & (1 << 7)) == 0)
 	{
 		// Perform branching
-		std::int8_t displacement = Memory[PC + 1];
+		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 		PC += displacement;
 	}
 }
@@ -921,7 +922,7 @@ void nes::CPU::BVC(AddressingMode mode)
 	if ((P & (1 << 6)) == 0)
 	{
 		// Perform branching
-		std::int8_t displacement = Memory[PC + 1];
+		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 		PC += displacement;
 	}
 }
@@ -934,7 +935,7 @@ void nes::CPU::BVS(AddressingMode mode)
 	if ((P & (1 << 6)) != 0)
 	{
 		// Perform branching
-		std::int8_t displacement = Memory[PC + 1];
+		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 		PC += displacement;
 	}
 }

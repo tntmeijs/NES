@@ -5,12 +5,20 @@
 
 namespace nes
 {
+    class RAM;
+
     /**
      * Emulates a MOS Technology 6502 microprocessor as seen in the NES
      */
     class CPU
     {
     public:
+        /**
+         * Create a new CPU object
+         * @param   ramRef  Reference to the RAM
+         */
+        CPU(const RAM& ramRef);
+
         // DEBUG CODE, JUST NEED A WAY TO RUN THIS CODE FROM main.cpp
         void Entry();
 
@@ -123,8 +131,8 @@ namespace nes
         // Program counter
         std::uint16_t PC;
 
-        //#DEBUG: RAM
-        std::uint8_t* Memory;
+        // RAM
+        const RAM& RamRef;
     };
 }
 
