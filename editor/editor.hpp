@@ -12,6 +12,8 @@ namespace sf
 namespace nes
 {
     class UIPanel;
+    class CPU;
+    class RAM;
 
     class Editor
     {
@@ -19,8 +21,10 @@ namespace nes
         /**
          * Create a new editor instance
          * @param   window  SFML window to render the UI to
+         * @param   cpu     Reference to the emulator's CPU object
+         * @param   ram     Reference to the emulator's RAM object
          */
-        Editor(sf::RenderWindow& window);
+        Editor(sf::RenderWindow& window, const CPU& cpu, const RAM& ram);
 
         /*
          * Initialize the NES editor
@@ -57,6 +61,9 @@ namespace nes
 
     private:
         sf::RenderWindow& WindowRef;
+
+        const CPU& CpuRef;
+        const RAM& RamRef;
 
         const UIPanel* TestPanel;
     };

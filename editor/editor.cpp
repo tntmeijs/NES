@@ -7,8 +7,10 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
-nes::Editor::Editor(sf::RenderWindow& window) :
+nes::Editor::Editor(sf::RenderWindow& window, const CPU& cpu, const RAM& ram) :
 	WindowRef(window),
+	CpuRef(cpu),
+	RamRef(ram),
 	TestPanel(nullptr)
 {}
 

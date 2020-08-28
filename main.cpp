@@ -16,7 +16,7 @@ int main()
 	nes::CPU Mos6502(ram);
 	Mos6502.Entry();
 
-	nes::Editor nesEditor(window);
+	nes::Editor nesEditor(window, Mos6502, ram);
 	nesEditor.Initialize();
 
 	sf::Color clearColor = sf::Color::Black;
