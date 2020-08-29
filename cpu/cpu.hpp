@@ -22,6 +22,17 @@ namespace nes
         // DEBUG CODE, JUST NEED A WAY TO RUN THIS CODE FROM main.cpp
         void Entry();
 
+        /**
+         * Step to the next instruction and process it
+         */
+        void NextInstruction();
+
+        /**
+         * Get the current value of the program counter
+         * @return  Current value of the program counter
+         */
+        const std::uint16_t GetProgramCounter() const;
+
     private:
         /**
          * All possible addressing modes

@@ -14,10 +14,9 @@ namespace nes
 		RAM();
 
 		/**
-		 * Initialize the RAM
-		 * Allocates 2048 bytes of memory for the emulator to use
+		 * Initialize the RAM by allocating the specified number of bytes
 		 */
-		void Initialize();
+		void Initialize(std::uint32_t size);
 
 		/**
 		 * Deallocates the block of memory
@@ -45,8 +44,8 @@ namespace nes
 		std::uint8_t* const GetRaw() const;
 
 	public:
-		/** Size of the memory block in bytes */
-		const std::uint32_t SIZE;
+		/** Size of the RAM in bytes */
+		std::uint32_t Size;
 
 	private:
 		std::uint8_t* Memory;

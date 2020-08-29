@@ -1,13 +1,17 @@
 #include "ram.hpp"
 
+#include <cstring>
+
 nes::RAM::RAM() :
-	SIZE(2048),
 	Memory(nullptr)
 {}
 
-void nes::RAM::Initialize()
+void nes::RAM::Initialize(std::uint32_t size)
 {
-	Memory = new std::uint8_t[SIZE];
+	Memory = new std::uint8_t[size];
+	memset(Memory, 0, size);
+
+	Size = size;
 }
 
 void nes::RAM::Delete()

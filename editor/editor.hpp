@@ -23,7 +23,7 @@ namespace nes
          * @param   cpu     Reference to the emulator's CPU object
          * @param   ram     Reference to the emulator's RAM object
          */
-        Editor(sf::RenderWindow& window, const CPU& cpu, const RAM& ram);
+        Editor(sf::RenderWindow& window, CPU& cpu, RAM& ram);
 
         /*
          * Initialize the NES editor
@@ -61,8 +61,8 @@ namespace nes
     private:
         sf::RenderWindow& WindowRef;
 
-        const CPU& CpuRef;
-        const RAM& RamRef;
+        CPU& CpuRef;
+        RAM& RamRef;
     };
 }
 
