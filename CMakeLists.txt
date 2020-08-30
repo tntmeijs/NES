@@ -7,6 +7,8 @@ project(NES
 
 set(SOURCE_LIST
     main.cpp
+    io/ines.hpp
+    io/ines.cpp
     cpu/cpu.hpp
     cpu/cpu.cpp
     ram/ram.hpp
