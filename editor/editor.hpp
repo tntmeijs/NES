@@ -1,6 +1,8 @@
 #ifndef NES_EDITOR_HPP
 #define NES_EDITOR_HPP
 
+#include <string>
+
 // SFML forward declarations
 namespace sf
 {
@@ -45,7 +47,7 @@ namespace nes
         /**
          * Render all UI
          */
-        void DrawUI() const;
+        void DrawUI();
 
         /**
          * Clean up all editor resources
@@ -58,11 +60,18 @@ namespace nes
          */
         void ApplyStyle();
 
+        /**
+         * Load a ROM into memory
+         */
+        void LoadROM();
+
     private:
         sf::RenderWindow& WindowRef;
 
         CPU& CpuRef;
         RAM& RamRef;
+
+        std::string ActiveRomName;
     };
 }
 
