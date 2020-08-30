@@ -2,6 +2,7 @@
 #include "ui/ui_panel.hpp"
 #include "cpu/cpu.hpp"
 #include "ram/ram.hpp"
+#include "io/ines.hpp"
 
 #include <imgui.h>
 #include <imgui-SFML.h>
@@ -18,12 +19,14 @@ nes::Editor::Editor(sf::RenderWindow& window, CPU& cpu, RAM& ram) :
 	WindowRef(window),
 	CpuRef(cpu),
 	RamRef(ram),
+	ActiveRom(nullptr),
 	ActiveRomName("")
 {}
 
 void nes::Editor::Initialize()
 {
 	ImGui::SFML::Init(WindowRef);
+	ActiveRom = new INES();
 
 	ApplyStyle();
 }
@@ -157,6 +160,12 @@ void nes::Editor::DrawUI()
 
 void nes::Editor::Destroy()
 {
+	if (ActiveRom)
+	{
+		delete ActiveRom;
+		ActiveRom = nullptr;
+	}
+
 	ImGui::SFML::Shutdown();
 }
 
@@ -168,5 +177,15 @@ void nes::Editor::ApplyStyle()
 
 void nes::Editor::LoadROM()
 {
-	//#TODO: not implemented
+	if (!ActiveRom->LoadFromDisk(ActiveRomName))
+	{
+		// ROM failed to load from disk
+		ActiveRomName = "";
+	}
+
+	if (!ActiveRom->IsValidRom())
+	{
+		// ROM is invalid
+		ActiveRomName = "";
+	}
 }

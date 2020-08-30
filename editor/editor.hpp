@@ -15,6 +15,7 @@ namespace nes
 {
     class CPU;
     class RAM;
+    class INES;
 
     class Editor
     {
@@ -70,6 +71,8 @@ namespace nes
 
         CPU& CpuRef;
         RAM& RamRef;
+
+        INES* ActiveRom;
 
         std::string ActiveRomName;
     };
