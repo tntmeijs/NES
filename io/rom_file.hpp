@@ -1,5 +1,5 @@
-#ifndef NES_INES_HPP
-#define NES_INES_HPP
+#ifndef NES_ROM_FILE_HPP
+#define NES_ROM_FILE_HPP
 
 #include <cstdint>
 #include <string_view>
@@ -7,10 +7,7 @@
 
 namespace nes
 {
-	/**
-	 * NES file format implementation
-	 */
-	class INES
+	class RomFile
 	{
 	public:
 		/**
@@ -37,4 +34,4 @@ namespace nes
 	};
 }
 
-#endif //! NES_INES_HPP
+#endif //! NES_ROM_FILE_HPP

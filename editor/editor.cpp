@@ -2,7 +2,7 @@
 #include "ui/ui_panel.hpp"
 #include "cpu/cpu.hpp"
 #include "ram/ram.hpp"
-#include "io/ines.hpp"
+#include "io/rom_file.hpp"
 
 #include <imgui.h>
 #include <imgui-SFML.h>
@@ -26,7 +26,7 @@ nes::Editor::Editor(sf::RenderWindow& window, CPU& cpu, RAM& ram) :
 void nes::Editor::Initialize()
 {
 	ImGui::SFML::Init(WindowRef);
-	ActiveRom = new INES();
+	ActiveRom = new RomFile();
 
 	ApplyStyle();
 }

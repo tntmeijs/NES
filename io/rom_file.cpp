@@ -1,10 +1,10 @@
-#include "ines.hpp"
+#include "rom_file.hpp"
 
 #include <cstring>
 #include <fstream>
 #include <string>
 
-bool nes::INES::LoadFromDisk(std::string_view path)
+bool nes::RomFile::LoadFromDisk(std::string_view path)
 {
 	std::ifstream rom(path.data(), std::ios_base::in | std::ios_base::binary);
 	if (!rom.is_open())
@@ -25,7 +25,7 @@ bool nes::INES::LoadFromDisk(std::string_view path)
 	return true;
 }
 
-bool nes::INES::IsValidRom() const
+bool nes::RomFile::IsValidRom() const
 {
 	std::uint8_t magicNumber[5];
 	std::memcpy(magicNumber, RawData.data(), 5);
@@ -33,7 +33,7 @@ bool nes::INES::IsValidRom() const
 	return std::strcmp(reinterpret_cast<char*>(magicNumber), "NES^Z");
 }
 
-const std::vector<std::uint8_t>& nes::INES::GetRaw() const
+const std::vector<std::uint8_t>& nes::RomFile::GetRaw() const
 {
 	return RawData;
 }
