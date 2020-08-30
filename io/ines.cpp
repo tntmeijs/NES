@@ -32,3 +32,8 @@ bool nes::INES::IsValidRom() const
 
 	return std::strcmp(reinterpret_cast<char*>(magicNumber), "NES^Z");
 }
+
+const std::vector<std::uint8_t>& nes::INES::GetRaw() const
+{
+	return RawData;
+}

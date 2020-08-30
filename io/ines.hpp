@@ -26,6 +26,12 @@ namespace nes
 		 */
 		bool IsValidRom() const;
 
+		/**
+		 * Get the raw ROM data
+		 * @return	Bytes that make up the entire ROM
+		 */
+		const std::vector<std::uint8_t>& GetRaw() const;
+
 	private:
 		std::vector<std::uint8_t> RawData;
 	};
