@@ -11,6 +11,16 @@ namespace nes
 	{
 	public:
 		/**
+		 * Nametable mirroring types
+		 */
+		enum class MirroringType
+		{
+			Vertical,
+			Horizontal
+		};
+
+	public:
+		/**
 		 * Read a NES file from disk
 		 * @param	path	Path to the NES file
 		 * @return	True when the loading succeeded, false otherwise
@@ -28,6 +38,68 @@ namespace nes
 		 * @return	Bytes that make up the entire ROM
 		 */
 		const std::vector<std::uint8_t>& GetRaw() const;
+
+		/**
+		 * Get the number of ROM banks
+		 * @return	Number of ROM banks
+		 */
+		std::uint8_t GetNumberOfRomBanks() const;
+
+		/**
+		 * Get the number of VROM banks
+		 * @return	Number of VROM banks
+		 */
+		std::uint8_t GetNumberOfVRomBanks() const;
+
+		/**
+		 * Get the number of RAM banks
+		 * For compatibility with old .nes files, assume 1x8kB RAM page when this
+		 * return value equals zero
+		 * @return	Number of RAM banks
+		 */
+		std::uint8_t GetNumberOfRamBanks() const;
+
+		/**
+		 * Retrieve the ROM mapper type ID
+		 * @return	ROM mapper type ID
+		 */
+		std::uint8_t GetRomMapperTypeId() const;
+
+		/**
+		 * Get the nametable mirroring type
+		 * @return	Mirroring type
+		 */
+		MirroringType GetNametableMirroringType() const;
+
+		/**
+		 * Check if this ROM expects battery-backed PRG RAM at 0x6000 - 0x7FFF
+		 * @return	True when the ROM expects battery-backed PRG RAM, false when it does not
+		 */
+		bool HasBatteryBackedPRGRam() const;
+
+		/**
+		 * Check if this ROM has a trainer at 0x7000 - 0x71FF
+		 * @return	True when the ROM contains a trainer, false when it does not
+		 */
+		bool HasTrainer() const;
+
+		/**
+		 * Ignore mirroring control or mirroring bit, instead, provide four-screen VRAM
+		 * @return	True when the ROM expects four-screen VRAM mode
+		 */
+		bool UseFourScreenVRam() const;
+
+		/**
+		 * Check if this ROM is from a VS-system cartridge
+		 * @return	True when the ROM is from a VS-system cartridge, false when it is not
+		 */
+		bool IsVsSystem() const;
+
+		/**
+		 * Check if this is a PAL cartridge
+		 * @return	True when the ROM is from a PAL cartridge, otherwise assume NTSC
+		 */
+		bool IsPal() const;
 
 	private:
 		std::vector<std::uint8_t> RawData;
