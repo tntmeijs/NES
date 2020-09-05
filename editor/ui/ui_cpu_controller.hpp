@@ -20,6 +20,9 @@ namespace nes
 		UICpuController(CPU& cpuRef);
 
 	protected:
+		/**
+		 * Render the UI for this panel
+		 */
 		virtual void DrawImpl() const override;
 
 	private:
