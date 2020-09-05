@@ -190,4 +190,5 @@ void nes::Editor::LoadROM()
 	}
 
 	RamRef.StoreRomData(*ActiveRom);
+	CpuRef.SetProgramCounterToResetVector();
 }

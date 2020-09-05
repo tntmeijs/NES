@@ -14,6 +14,18 @@ nes::CPU::CPU(const RAM& ramRef) :
 	RamRef(ramRef)
 {}
 
+void nes::CPU::SetProgramCounterToResetVector()
+{
+	// The low byte of the reset vector address is stored at 0xFFFD
+	// The high byte of the reset vector address is stored at 0xFFFC
+	std::uint8_t low = RamRef.ReadByte(0xFFFD);
+	std::uint8_t high = RamRef.ReadByte(0xFFFC);
+
+	// Combine the low and high components into a 16 bit address
+	// Note that the NES is a little-endian system
+	PC = ((low << 8) | high);
+}
+
 void nes::CPU::NextInstruction()
 {
 	std::uint8_t opCode = RamRef.ReadByte(PC++);
