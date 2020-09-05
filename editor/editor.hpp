@@ -3,6 +3,7 @@
 
 #include "io/rom_file.hpp"
 #include "ui/ui_cpu_controller.hpp"
+#include "ui/ui_ram_visualizer.hpp"
 
 #include <string>
 
@@ -77,6 +78,7 @@ namespace nes
         RomFile ActiveRom;
 
         UICpuController CpuControllerUI;
+        UIRamVisualizer RamVisualizerUI;
 
         std::string ActiveRomName;
     };

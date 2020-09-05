@@ -20,6 +20,8 @@ set(SOURCE_LIST
     editor/ui/ui_panel.cpp
     editor/ui/ui_cpu_controller.hpp
     editor/ui/ui_cpu_controller.cpp
+    editor/ui/ui_ram_visualizer.hpp
+    editor/ui/ui_ram_visualizer.cpp
     utility/object_id.hpp
     utility/literals.hpp)
 

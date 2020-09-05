@@ -10,16 +10,14 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
-#include <cmath>		// std::ceil
 #include <filesystem>
-#include <iomanip>		// std::hex / std::setw / std::setfill
-#include <sstream>
 
 nes::Editor::Editor(sf::RenderWindow& window, CPU& cpu, RAM& ram) :
 	WindowRef(window),
 	CpuRef(cpu),
 	RamRef(ram),
 	CpuControllerUI(cpu),
+	RamVisualizerUI(ram, cpu),
 	ActiveRomName("")
 {}
 
@@ -30,7 +28,11 @@ void nes::Editor::Initialize()
 
 	std::uint32_t windowWidth = WindowRef.getSize().x;
 	std::uint32_t windowHeight = WindowRef.getSize().y;
+
+	std::uint32_t ramVisualizerHeight = static_cast<std::uint32_t>(static_cast<float>(windowHeight) * 0.075f);
+	
 	CpuControllerUI.Create(windowWidth, windowHeight, 0, 0, 1.0f, 0.075f);
+	RamVisualizerUI.Create(windowWidth, windowHeight, 0, ramVisualizerHeight, 0.5f, 0.925f);
 }
 
 void nes::Editor::Update(sf::Time deltaTime)
@@ -49,48 +51,7 @@ void nes::Editor::DrawUI()
 	//#TODO: Make this function const again!
 	
 	CpuControllerUI.Draw();
-
-	// RAM visualizer
-	{
-		ImGui::Begin("RAM visualization");
-		ImGuiListClipper clipper(static_cast<std::int32_t>(std::ceil(static_cast<float>(RamRef.Size) / 16.0f)));
-		while (clipper.Step())
-		{
-			for (std::int32_t row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row)
-			{
-				// Stream with default settings
-				std::stringstream rowText;
-				rowText << std::hex << std::uppercase << std::setfill('0');
-
-				// Represent the base address for this row using four hexadecimal characters
-				rowText << "0x" << std::setw(4) << (row * 16) << "  |  ";
-
-				// Render 16 bytes per row
-				for (std::uint16_t column = 0; column < 16; ++column)
-				{
-					std::uint16_t address = (row * 16) + column;
-
-					// Need to cast the value in RAM to a wider type to force it to be treated as a number rather than a character
-					std::uint16_t valueAtAddress = static_cast<std::uint16_t>(RamRef.ReadByte(address++));
-
-					if (CpuRef.GetProgramCounter() == address - 1)
-					{
-						// If the program counter points to this byte, highlight it
-						rowText << "(" << std::setw(2) << valueAtAddress << ")";
-					}
-					else
-					{
-						// Else, display it with the usual spacing
-						rowText << " " << std::setw(2) << valueAtAddress << " ";
-					}
-				}
-
-				// Display this row
-				ImGui::Text(rowText.str().c_str());
-			}
-		}
-		ImGui::End();
-	}
+	RamVisualizerUI.Draw();
 
 	// File explorer
 	{
