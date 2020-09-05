@@ -85,12 +85,12 @@ void nes::Editor::DrawUI()
 					if (CpuRef.GetProgramCounter() == address - 1)
 					{
 						// If the program counter points to this byte, highlight it
-						rowText << "( " << std::setw(2) << valueAtAddress << " )";
+						rowText << "(" << std::setw(2) << valueAtAddress << ")";
 					}
 					else
 					{
 						// Else, display it with the usual spacing
-						rowText << "  " << std::setw(2) << valueAtAddress << "  ";
+						rowText << " " << std::setw(2) << valueAtAddress << " ";
 					}
 				}
 
@@ -188,4 +188,6 @@ void nes::Editor::LoadROM()
 		// ROM is invalid
 		ActiveRomName = "";
 	}
+
+	RamRef.StoreRomData(*ActiveRom);
 }

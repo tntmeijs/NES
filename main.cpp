@@ -11,10 +11,9 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	nes::RAM ram;
-	ram.Initialize(0x10000);	//#DEBUG: Allocate plenty of memory to store a test ROM in
+	ram.Initialize(0x10000);
 
 	nes::CPU Mos6502(ram);
-	Mos6502.Entry();
 
 	nes::Editor nesEditor(window, Mos6502, ram);
 	nesEditor.Initialize();

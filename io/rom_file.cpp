@@ -89,3 +89,24 @@ bool nes::RomFile::IsPal() const
 {
 	return ((RawData[9] & (1 << 0)) != 0);
 }
+
+std::uint16_t nes::RomFile::GetFirstRomBankByteIndex() const
+{
+	// The first ROM bank starts at the 16th byte
+	std::uint16_t startIndex = 16;
+
+	if (HasTrainer())
+	{
+		// Skip the trainer
+		startIndex += ROM_TRAINER_SIZE;
+	}
+
+	return startIndex;
+}
+
+std::uint16_t nes::RomFile::GetSecondRomBankByteIndex() const
+{
+	// The second bank comes right after the first index
+	std::uint16_t firstBankIndex = GetFirstRomBankByteIndex();
+	return firstBankIndex + ROM_BANK_SIZE;
+}

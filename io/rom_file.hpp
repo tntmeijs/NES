@@ -1,6 +1,8 @@
 #ifndef NES_ROM_FILE_HPP
 #define NES_ROM_FILE_HPP
 
+#include "utility/literals.hpp"
+
 #include <cstdint>
 #include <string_view>
 #include <vector>
@@ -18,6 +20,12 @@ namespace nes
 			Vertical,
 			Horizontal
 		};
+
+		/** Size of a single ROM bank in bytes */
+		static constexpr std::uint16_t ROM_BANK_SIZE = 16_KB;
+
+		/** Size of a trainer in bytes */
+		static constexpr std::uint16_t ROM_TRAINER_SIZE = 512;
 
 	public:
 		/**
@@ -100,6 +108,18 @@ namespace nes
 		 * @return	True when the ROM is from a PAL cartridge, otherwise assume NTSC
 		 */
 		bool IsPal() const;
+
+		/**
+		 * Get the index of the first ROM bank byte
+		 * @return	Start index of the first ROM bank
+		 */
+		std::uint16_t GetFirstRomBankByteIndex() const;
+
+		/**
+		 * Get the index of the second ROM bank byte
+		 * @return	Start index of the second ROM bank
+		 */
+		std::uint16_t GetSecondRomBankByteIndex() const;
 
 	private:
 		std::vector<std::uint8_t> RawData;

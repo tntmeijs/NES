@@ -14,28 +14,6 @@ nes::CPU::CPU(const RAM& ramRef) :
 	RamRef(ramRef)
 {}
 
-void nes::CPU::Entry()
-{
-	// Grab a test rom (hard-coded location, fine for now
-	std::ifstream rom("D:/6502_functional_test.bin", std::ios_base::binary | std::ios_base::in);
-
-	if (!rom.is_open())
-	{
-		std::cerr << "Unable to open test ROM." << std::endl;
-	}
-
-	rom.seekg(0, rom.end);
-	size_t romSize = rom.tellg();
-	rom.seekg(0, rom.beg);
-
-	// Dump the entire binary blob
-	rom.read(reinterpret_cast<char*>(RamRef.GetRaw()), romSize);
-	rom.close();
-
-	// Start reading at PC = 0x0400
-	PC = 0x0400;
-}
-
 void nes::CPU::NextInstruction()
 {
 	std::uint8_t opCode = RamRef.ReadByte(PC++);

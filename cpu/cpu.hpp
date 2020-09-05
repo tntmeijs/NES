@@ -19,9 +19,6 @@ namespace nes
          */
         CPU(const RAM& ramRef);
 
-        // DEBUG CODE, JUST NEED A WAY TO RUN THIS CODE FROM main.cpp
-        void Entry();
-
         /**
          * Step to the next instruction and process it
          */

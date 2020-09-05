@@ -5,8 +5,17 @@
 
 namespace nes
 {
+	class RomFile;
+
 	class RAM
 	{
+	public:
+		/** Starting address of the first ROM bank */
+		const std::uint16_t FIRST_ROM_BANK_ADDRESS;
+
+		/** Starting address of the second ROM bank */
+		const std::uint16_t SECOND_ROM_BANK_ADDRESS;
+
 	public:
 		/**
 		 * Create a new RAM object
@@ -42,6 +51,12 @@ namespace nes
 		 * @return	Pointer to the raw memory block
 		 */
 		std::uint8_t* const GetRaw() const;
+
+		/**
+		 * Store a ROM into memory
+		 * @param	romFile		ROM data to store
+		 */
+		void StoreRomData(const RomFile& romFile);
 
 	public:
 		/** Size of the RAM in bytes */

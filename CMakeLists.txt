@@ -18,7 +18,8 @@ set(SOURCE_LIST
     editor/ui/ui_element.hpp
     editor/ui/ui_panel.hpp
     editor/ui/ui_panel.cpp
-    utility/object_id.hpp)
+    utility/object_id.hpp
+    utility/literals.hpp)
 
 # Easiest way to add ImGui to a project is to simply compile the files with the project itself
 set(IMGUI_FILES
