@@ -24,7 +24,7 @@ void nes::UIPanel::Create(
 
 void nes::UIPanel::Draw() const
 {
-	ImGui::Begin(PanelName.c_str(), nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration);
+	ImGui::Begin(PanelName.c_str(), nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 
 	float panelWidth	= std::ceil(Width * static_cast<float>(ViewportWidth));
 	float panelHeight	= std::ceil(Height * static_cast<float>(ViewportHeight));
