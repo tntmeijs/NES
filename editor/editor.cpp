@@ -19,16 +19,18 @@ nes::Editor::Editor(sf::RenderWindow& window, CPU& cpu, RAM& ram) :
 	WindowRef(window),
 	CpuRef(cpu),
 	RamRef(ram),
-	ActiveRom(nullptr),
+	CpuControllerUI(cpu),
 	ActiveRomName("")
 {}
 
 void nes::Editor::Initialize()
 {
 	ImGui::SFML::Init(WindowRef);
-	ActiveRom = new RomFile();
-
 	ApplyStyle();
+
+	std::uint32_t windowWidth = WindowRef.getSize().x;
+	std::uint32_t windowHeight = WindowRef.getSize().y;
+	CpuControllerUI.Create(windowWidth, windowHeight, 0, 0, 1.0f, 0.075f);
 }
 
 void nes::Editor::Update(sf::Time deltaTime)
@@ -46,18 +48,7 @@ void nes::Editor::DrawUI()
 	//#TODO: Move this to a specialized UI object
 	//#TODO: Make this function const again!
 	
-	// CPU controller
-	{
-		ImGui::Begin("CPU controller");
-		ImGui::Text("Current Address:\t0x%04X", CpuRef.GetProgramCounter());
-		ImGui::PushButtonRepeat(true);
-		if (ImGui::Button("Next Instruction"))
-		{
-			CpuRef.NextInstruction();
-		}
-		ImGui::PopButtonRepeat();
-		ImGui::End();
-	}
+	CpuControllerUI.Draw();
 
 	// RAM visualizer
 	{
@@ -160,12 +151,6 @@ void nes::Editor::DrawUI()
 
 void nes::Editor::Destroy()
 {
-	if (ActiveRom)
-	{
-		delete ActiveRom;
-		ActiveRom = nullptr;
-	}
-
 	ImGui::SFML::Shutdown();
 }
 
@@ -177,18 +162,18 @@ void nes::Editor::ApplyStyle()
 
 void nes::Editor::LoadROM()
 {
-	if (!ActiveRom->LoadFromDisk(ActiveRomName))
+	if (!ActiveRom.LoadFromDisk(ActiveRomName))
 	{
 		// ROM failed to load from disk
 		ActiveRomName = "";
 	}
 
-	if (!ActiveRom->IsValidRom())
+	if (!ActiveRom.IsValidRom())
 	{
 		// ROM is invalid
 		ActiveRomName = "";
 	}
 
-	RamRef.StoreRomData(*ActiveRom);
+	RamRef.StoreRomData(ActiveRom);
 	CpuRef.SetProgramCounterToResetVector();
 }

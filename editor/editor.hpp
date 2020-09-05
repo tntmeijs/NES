@@ -1,6 +1,9 @@
 #ifndef NES_EDITOR_HPP
 #define NES_EDITOR_HPP
 
+#include "io/rom_file.hpp"
+#include "ui/ui_cpu_controller.hpp"
+
 #include <string>
 
 // SFML forward declarations
@@ -15,7 +18,6 @@ namespace nes
 {
     class CPU;
     class RAM;
-    class RomFile;
 
     class Editor
     {
@@ -72,7 +74,9 @@ namespace nes
         CPU& CpuRef;
         RAM& RamRef;
 
-        RomFile* ActiveRom;
+        RomFile ActiveRom;
+
+        UICpuController CpuControllerUI;
 
         std::string ActiveRomName;
     };

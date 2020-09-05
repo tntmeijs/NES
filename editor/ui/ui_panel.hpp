@@ -20,7 +20,7 @@ namespace nes
          * @param   width           Width of the panel as a percentage (0.0f - 1.0f) of the viewport width
          * @param   height          Height of the panel as a percentage (0.0f - 1.0f) of the viewport height
          */
-        UIPanel(
+        void Create(
             std::uint32_t viewportWidth,
             std::uint32_t viewportHeight,
             std::uint32_t x,

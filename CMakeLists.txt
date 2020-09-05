@@ -18,6 +18,8 @@ set(SOURCE_LIST
     editor/ui/ui_element.hpp
     editor/ui/ui_panel.hpp
     editor/ui/ui_panel.cpp
+    editor/ui/ui_cpu_controller.hpp
+    editor/ui/ui_cpu_controller.cpp
     utility/object_id.hpp
     utility/literals.hpp)
 

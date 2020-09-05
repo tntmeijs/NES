@@ -5,21 +5,22 @@
 #include <cstdint>
 #include <cmath>
 
-nes::UIPanel::UIPanel(
+void nes::UIPanel::Create(
 	std::uint32_t viewportWidth,
 	std::uint32_t viewportHeight,
 	std::uint32_t x,
 	std::uint32_t y,
 	float width,
-	float height) :
-	X(x),
-	Y(y),
-	ViewportWidth(viewportWidth),
-	ViewportHeight(viewportHeight),
-	Width(width),
-	Height(height),
-	PanelName("UI_PANEL_" + std::to_string(ElementID))
-{}
+	float height)
+{
+	X = x;
+	Y = y;
+	ViewportWidth = viewportWidth;
+	ViewportHeight = viewportHeight;
+	Width = width;
+	Height = height;
+	PanelName = "UI_PANEL_" + std::to_string(ElementID);
+}
 
 void nes::UIPanel::Draw() const
 {
@@ -30,6 +31,8 @@ void nes::UIPanel::Draw() const
 
 	ImGui::SetWindowPos(PanelName.c_str(), { static_cast<float>(X), static_cast<float>(Y) });
 	ImGui::SetWindowSize(PanelName.c_str(), { panelWidth, panelHeight });
+
+	DrawImpl();
 
 	ImGui::End();
 }
