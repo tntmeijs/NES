@@ -14,7 +14,7 @@ namespace nes
 	{
 	public:
 		/**
-		 * Create a new CPU visualizer object
+		 * Create a new CPU controller object
 		 * @param	cpuRef	Reference to the CPU object to control
 		 */
 		UICpuController(CPU& cpuRef);
