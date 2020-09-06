@@ -4,6 +4,7 @@
 #include "io/rom_file.hpp"
 #include "ui/ui_cpu_controller.hpp"
 #include "ui/ui_ram_visualizer.hpp"
+#include "ui/ui_rom_browser.hpp"
 
 #include <string>
 
@@ -51,7 +52,7 @@ namespace nes
         /**
          * Render all UI
          */
-        void DrawUI();
+        void DrawUI() const;
 
         /**
          * Clean up all editor resources
@@ -67,7 +68,7 @@ namespace nes
         /**
          * Load a ROM into memory
          */
-        void LoadROM();
+        void LoadROM(const std::string& romPath);
 
     private:
         sf::RenderWindow& WindowRef;
@@ -79,8 +80,7 @@ namespace nes
 
         UICpuController CpuControllerUI;
         UIRamVisualizer RamVisualizerUI;
-
-        std::string ActiveRomName;
+        UIRomBrowser RomBrowserUI;
     };
 }
 

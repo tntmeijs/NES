@@ -22,6 +22,8 @@ set(SOURCE_LIST
     editor/ui/ui_cpu_controller.cpp
     editor/ui/ui_ram_visualizer.hpp
     editor/ui/ui_ram_visualizer.cpp
+    editor/ui/ui_rom_browser.hpp
+    editor/ui/ui_rom_browser.cpp
     utility/object_id.hpp
     utility/literals.hpp)
 
