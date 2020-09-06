@@ -26,9 +26,27 @@ namespace nes
         void SetProgramCounterToResetVector();
 
         /**
+         * Manually move the program counter to a specific address in memory
+         * @param   address     Address to set the program counter to
+         */
+        void SetProgramCounterToAddress(std::uint16_t address);
+
+        /**
          * Step to the next instruction and process it
          */
-        void NextInstruction();
+        void ExecuteNextInstruction();
+
+        /**
+         * Manually move the program counter N number of bytes relative to its
+         * current memory address
+         * @param   offset  Number of bytes to move the program counter
+         */
+        void MoveProgramCounter(std::int32_t offset);
+
+        /**
+         * Execute the instruction at the current address
+         */
+        void ExecuteCurrentInstruction();
 
         /**
          * Get the current value of the program counter
@@ -58,9 +76,13 @@ namespace nes
         };
 
     private:
-        // DEBUG CODE, READ WHATEVER BYTE IS AT THE PC
-        char ReadAtPC();
+        /**
+         * Execute the proper op-code
+         * @param   opCode  Op-code to execute
+         */
+        void ProcessOpCode(std::uint8_t opCode);
 
+    private:
         void ADC(AddressingMode mode);
         void AND(AddressingMode mode);
         void ASL(AddressingMode mode);

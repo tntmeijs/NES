@@ -26,9 +26,35 @@ void nes::CPU::SetProgramCounterToResetVector()
 	PC = ((low << 8) | high);
 }
 
-void nes::CPU::NextInstruction()
+void nes::CPU::SetProgramCounterToAddress(std::uint16_t address)
+{
+	PC = address;
+}
+
+void nes::CPU::ExecuteNextInstruction()
 {
 	std::uint8_t opCode = RamRef.ReadByte(PC++);
+	ProcessOpCode(opCode);
+}
+
+void nes::CPU::MoveProgramCounter(std::int32_t offset)
+{
+	PC += offset;
+}
+
+void nes::CPU::ExecuteCurrentInstruction()
+{
+	std::uint8_t opCode = RamRef.ReadByte(PC);
+	ProcessOpCode(opCode);
+}
+
+const std::uint16_t nes::CPU::GetProgramCounter() const
+{
+	return PC;
+}
+
+void nes::CPU::ProcessOpCode(std::uint8_t opCode)
+{
 	switch (opCode)
 	{
 		// -------------------------------------------------------------------
@@ -800,11 +826,6 @@ void nes::CPU::NextInstruction()
 			std::cerr << "Unknown op-code: " << std::hex << opCode << '\n';
 			break;
 	}
-}
-
-const std::uint16_t nes::CPU::GetProgramCounter() const
-{
-	return PC;
 }
 
 void nes::CPU::ADC(AddressingMode mode)

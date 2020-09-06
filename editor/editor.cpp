@@ -34,9 +34,7 @@ void nes::Editor::Initialize()
 	std::uint32_t ramVisualizerHeight = static_cast<std::uint32_t>(static_cast<float>(windowHeight) * 0.075f);
 	std::uint32_t romBrowserHorizontalOffset = static_cast<std::uint32_t>(static_cast<float>(windowWidth) * 0.65f);
 	
-	CpuControllerUI.Create(windowWidth, windowHeight, 0, 0, 0.65f, 0.075f);
 	RamVisualizerUI.Create(windowWidth, windowHeight, 0, ramVisualizerHeight, 0.5f, 0.925f);
-	RomBrowserUI.Create(windowWidth, windowHeight, romBrowserHorizontalOffset, 0, 0.35f, 0.075f);
 }
 
 void nes::Editor::Update(sf::Time deltaTime)
@@ -51,9 +49,24 @@ void nes::Editor::ProcessEvent(sf::Event event) const
 
 void nes::Editor::DrawUI() const
 {
-	CpuControllerUI.Draw();
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("CPU"))
+		{
+			CpuControllerUI.Draw();
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Load"))
+		{
+			RomBrowserUI.Draw();
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+
 	RamVisualizerUI.Draw();
-	RomBrowserUI.Draw();
 
 	ImGui::SFML::Render(WindowRef);
 }

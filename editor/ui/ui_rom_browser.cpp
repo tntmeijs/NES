@@ -2,14 +2,18 @@
 
 #include <imgui.h>
 
+#include <algorithm>	// std::sort / std::clamp
 #include <filesystem>
+#include <vector>
 
-void nes::UIRomBrowser::DrawImpl() const
+void nes::UIRomBrowser::Draw() const
 {
 	// Scan the directory for NES roms
 	std::filesystem::path romPath(std::filesystem::absolute("./roms"));
 	if (std::filesystem::exists(romPath))
 	{
+		std::vector<std::filesystem::path> foundRomPaths;
+
 		std::uint32_t entryCount = 0;
 		for (const auto& entry : std::filesystem::directory_iterator(romPath))
 		{
@@ -22,53 +26,44 @@ void nes::UIRomBrowser::DrawImpl() const
 				continue;
 			}
 
-			// Manual "tab" character length as Dear ImGui does not seem to respect
-			// tabs properly, it always inserts 4 spaces
-			std::uint32_t numberOfCharactersInCount = 0;
-			std::uint32_t multiplier = 1;
-			while (multiplier <= entryCount + 1)
-			{
-				multiplier *= 10;
-				++numberOfCharactersInCount;
-			}
-
-			// By default a tab character is 4 spaces
-			std::uint32_t numberOfSpaces = 4 - numberOfCharactersInCount;
-
-			std::string fileName = '(' + std::to_string(entryCount + 1) + ')';
-			
-			// Insert "tabs"
-			for (std::uint32_t i = 0; i < numberOfSpaces; ++i)
-			{
-				fileName += ' ';
-			}
-
-			// Add one full-length "tab" character to add some more padding
-			fileName += '\t';
-
-			// Add the ROM name
-			fileName += filePath.filename().string();
-
-			// Display the entry
-			if (ImGui::Selectable(fileName.c_str()))
-			{
-				// Load ROM
-				if (OnLoadRom)
-				{
-					OnLoadRom(filePath.string());
-				}
-			}
-
-			++entryCount;
+			foundRomPaths.push_back(filePath);
 		}
 
-		// No ROMs available
-		if (entryCount == 0)
+		if (foundRomPaths.empty())
 		{
-			std::string message = "No NES ROMs found in \"";
-			message.append(romPath.string());
-			message.append("\"");
-			ImGui::Text(message.c_str());
+			// No ROMs available
+			if (entryCount == 0)
+			{
+				std::string message = "No NES ROMs found in \"";
+				message.append(romPath.string());
+				message.append("\"");
+				ImGui::Text(message.c_str());
+			}
+		}
+		else
+		{
+			// Sort the list of ROMs alphabetically to make it easy to find ROMs
+			std::sort(foundRomPaths.begin(), foundRomPaths.end());
+
+			// Display a maximum of 10 ROMs at the same time
+			int displayCount = std::clamp(static_cast<int>(foundRomPaths.size()), 1, 10);
+
+			if (ImGui::ListBoxHeader("##available_rom_names", foundRomPaths.size(), displayCount))
+			{
+				for (const auto& path : foundRomPaths)
+				{
+					if (ImGui::Selectable(path.filename().string().c_str()))
+					{
+						// Load ROM
+						if (OnLoadRom)
+						{
+							OnLoadRom(path.string());
+						}
+					}
+				}
+
+				ImGui::ListBoxFooter();
+			}
 		}
 	}
 	else

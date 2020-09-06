@@ -1,8 +1,6 @@
 #ifndef NES_UI_ROM_BROWSER_HPP
 #define NES_UI_ROM_BROWSER_HPP
 
-#include "ui_panel.hpp"
-
 #include <functional>
 #include <string>
 
@@ -10,8 +8,10 @@ namespace nes
 {
 	/**
 	 * Editor UI element that allows users to load ROMs
+	 * This element does not create an ImGui window, therefore, it is expected to
+	 * either be part of an existing window, or a menu bar
 	 */
-	class UIRomBrowser : public UIPanel
+	class UIRomBrowser
 	{
 	public:
 		/**
@@ -20,11 +20,11 @@ namespace nes
 		 */
 		std::function<void(const std::string& romPath)> OnLoadRom;
 
-	protected:
+	public:
 		/**
 		 * Render the UI for this panel
 		 */
-		virtual void DrawImpl() const override;
+		void Draw() const;
 	};
 }
 

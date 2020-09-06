@@ -1,16 +1,16 @@
 #ifndef NES_UI_CPU_CONTROLLER_HPP
 #define NES_UI_CPU_CONTROLLER_HPP
 
-#include "ui_panel.hpp"
-
 namespace nes
 {
 	class CPU;
 
 	/**
 	 * Editor UI element that helps visualize and / or control the state of the CPU
+	 * This element does not create an ImGui window, therefore, it is expected to
+	 * either be part of an existing window, or a menu bar
 	 */
-	class UICpuController : public UIPanel
+	class UICpuController
 	{
 	public:
 		/**
@@ -19,11 +19,10 @@ namespace nes
 		 */
 		UICpuController(CPU& cpuRef);
 
-	protected:
 		/**
 		 * Render the UI for this panel
 		 */
-		virtual void DrawImpl() const override;
+		void Draw() const;
 
 	private:
 		CPU& CpuRef;
