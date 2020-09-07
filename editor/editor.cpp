@@ -27,14 +27,6 @@ void nes::Editor::Initialize()
 	{
 		LoadROM(romPath);
 	};
-
-	std::uint32_t windowWidth = WindowRef.getSize().x;
-	std::uint32_t windowHeight = WindowRef.getSize().y;
-
-	std::uint32_t ramVisualizerHeight = static_cast<std::uint32_t>(static_cast<float>(windowHeight) * 0.075f);
-	std::uint32_t romBrowserHorizontalOffset = static_cast<std::uint32_t>(static_cast<float>(windowWidth) * 0.65f);
-	
-	RamVisualizerUI.Create(windowWidth, windowHeight, 0, ramVisualizerHeight, 0.5f, 0.925f);
 }
 
 void nes::Editor::Update(sf::Time deltaTime)
@@ -49,24 +41,47 @@ void nes::Editor::ProcessEvent(sf::Event event) const
 
 void nes::Editor::DrawUI() const
 {
-	if (ImGui::BeginMainMenuBar())
+	// Height of the main menu bar, can be used as an offset to position elements
+	// right underneath the main menu bar
+	float mainMenuBarHeight = 0.0f;
+
+	// Main menu bar
 	{
-		if (ImGui::BeginMenu("CPU"))
+		if (ImGui::BeginMainMenuBar())
 		{
-			CpuControllerUI.Draw();
-			ImGui::EndMenu();
-		}
+			mainMenuBarHeight = ImGui::GetWindowSize().y;
 
-		if (ImGui::BeginMenu("Load"))
-		{
-			RomBrowserUI.Draw();
-			ImGui::EndMenu();
-		}
+			if (ImGui::BeginMenu("CPU"))
+			{
+				CpuControllerUI.Draw();
+				ImGui::EndMenu();
+			}
 
-		ImGui::EndMainMenuBar();
+			if (ImGui::BeginMenu("Load"))
+			{
+				RomBrowserUI.Draw();
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMainMenuBar();
+		}
 	}
 
-	RamVisualizerUI.Draw();
+	// RAM visualizer
+	{
+		ImGui::Begin("##ram_visualizer", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+		float windowWidth = static_cast<float>(WindowRef.getSize().x) * 0.5f;
+		float windowHeight = static_cast<float>(WindowRef.getSize().y) - mainMenuBarHeight;
+
+		// Fixed position and size
+		ImGui::SetWindowPos("##ram_visualizer", { windowWidth, mainMenuBarHeight });
+		ImGui::SetWindowSize("##ram_visualizer", { windowWidth, windowHeight });
+
+		RamVisualizerUI.Draw();
+
+		ImGui::End();
+	}
 
 	ImGui::SFML::Render(WindowRef);
 }

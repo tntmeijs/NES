@@ -1,8 +1,6 @@
 #ifndef NES_UI_RAM_VISUALIZER_HPP
 #define NES_UI_RAM_VISUALIZER_HPP
 
-#include "ui_panel.hpp"
-
 namespace nes
 {
 	class RAM;
@@ -10,8 +8,10 @@ namespace nes
 
 	/**
 	 * Editor UI element to visualize the current state of the RAM
+	 * This element does not create an ImGui window, therefore, it is expected to
+	 * either be part of an existing window, or a menu bar
 	 */
-	class UIRamVisualizer : public UIPanel
+	class UIRamVisualizer
 	{
 	public:
 		/**
@@ -21,11 +21,10 @@ namespace nes
 		 */
 		UIRamVisualizer(const RAM& ramRef, const CPU& cpuRef);
 
-	protected:
 		/**
 		 * Render the UI for this panel
 		 */
-		virtual void DrawImpl() const override;
+		void Draw() const;
 
 	private:
 		const RAM& RamRef;

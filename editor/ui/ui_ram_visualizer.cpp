@@ -13,7 +13,7 @@ nes::UIRamVisualizer::UIRamVisualizer(const RAM& ramRef, const CPU& cpuRef) :
 	CpuRef(cpuRef)
 {}
 
-void nes::UIRamVisualizer::DrawImpl() const
+void nes::UIRamVisualizer::Draw() const
 {
 	ImGuiListClipper clipper(static_cast<std::int32_t>(std::ceil(static_cast<float>(RamRef.Size) / 16.0f)));
 	while (clipper.Step())

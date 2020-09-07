@@ -15,16 +15,12 @@ set(SOURCE_LIST
     ram/ram.cpp
     editor/editor.hpp
     editor/editor.cpp
-    editor/ui/ui_element.hpp
-    editor/ui/ui_panel.hpp
-    editor/ui/ui_panel.cpp
     editor/ui/ui_cpu_controller.hpp
     editor/ui/ui_cpu_controller.cpp
     editor/ui/ui_ram_visualizer.hpp
     editor/ui/ui_ram_visualizer.cpp
     editor/ui/ui_rom_browser.hpp
     editor/ui/ui_rom_browser.cpp
-    utility/object_id.hpp
     utility/literals.hpp)
 
 # Easiest way to add ImGui to a project is to simply compile the files with the project itself
