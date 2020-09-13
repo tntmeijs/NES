@@ -1,7 +1,10 @@
 #ifndef NES_CPU_HPP
 #define NES_CPU_HPP
 
+#include "cpu_logger.hpp"
+
 #include <cstdint>
+#include <string_view>
 
 namespace nes
 {
@@ -14,10 +17,28 @@ namespace nes
     {
     public:
         /**
+         * All available registers
+         */
+        enum class RegisterType
+        {
+            A,  // A register
+            X,  // X register
+            Y,  // Y register
+            P,  // P register (flags)
+            SP  // Stack pointer
+        };
+
+    public:
+        /**
          * Create a new CPU object
          * @param   ramRef  Reference to the RAM
          */
         CPU(const RAM& ramRef);
+
+        /**
+         * Deallocate resources
+         */
+        void Destroy();
 
         /**
          * Reset the vector back to the default memory address
@@ -34,7 +55,7 @@ namespace nes
         /**
          * Step to the next instruction and process it
          */
-        void ExecuteNextInstruction();
+        void ExecuteAndIncrementPC();
 
         /**
          * Manually move the program counter N number of bytes relative to its
@@ -52,7 +73,14 @@ namespace nes
          * Get the current value of the program counter
          * @return  Current value of the program counter
          */
-        const std::uint16_t GetProgramCounter() const;
+        std::uint16_t GetProgramCounter() const;
+
+        /**
+         * Retrieve the value of a register
+         * @param   type    Register to retrieve its value for
+         * @return  Register's value
+         */
+        std::uint8_t GetRegister(RegisterType type) const;
 
     private:
         /**
@@ -162,13 +190,16 @@ namespace nes
         // Stack pointer
         // Lives in address 0x100 to 0x1FF
         // Wraps around when its capacity is exceeded
-        std::uint8_t S;
+        std::uint8_t SP;
 
         // Program counter
         std::uint16_t PC;
 
         // RAM
         const RAM& RamRef;
+
+        // CPU logger
+        CpuLogger Logger;
     };
 }
 

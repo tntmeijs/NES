@@ -9,10 +9,21 @@ nes::CPU::CPU(const RAM& ramRef) :
 	X(0),
 	Y(0),
 	P(0),
-	S(0),
+	SP(0),
 	PC(0),
-	RamRef(ramRef)
-{}
+	RamRef(ramRef),
+	Logger(*this, ramRef)
+{
+	if (!Logger.Initialize())
+	{
+		std::cerr << "Unable to initialize CPU instruction logger." << std::endl;
+	}
+}
+
+void nes::CPU::Destroy()
+{
+	Logger.FlushAndClose();
+}
 
 void nes::CPU::SetProgramCounterToResetVector()
 {
@@ -31,10 +42,19 @@ void nes::CPU::SetProgramCounterToAddress(std::uint16_t address)
 	PC = address;
 }
 
-void nes::CPU::ExecuteNextInstruction()
+void nes::CPU::ExecuteAndIncrementPC()
 {
-	std::uint8_t opCode = RamRef.ReadByte(PC++);
+	std::uint16_t initialPC = PC;
+
+	std::uint8_t opCode = RamRef.ReadByte(initialPC);
 	ProcessOpCode(opCode);
+
+	// If the program counter has not been changed in the "ProcessOpCode()"
+	// function, move the program counter one byte ahead manually
+	if (initialPC == PC)
+	{
+		++PC;
+	}
 }
 
 void nes::CPU::MoveProgramCounter(std::int32_t offset)
@@ -48,9 +68,34 @@ void nes::CPU::ExecuteCurrentInstruction()
 	ProcessOpCode(opCode);
 }
 
-const std::uint16_t nes::CPU::GetProgramCounter() const
+std::uint16_t nes::CPU::GetProgramCounter() const
 {
 	return PC;
+}
+
+std::uint8_t nes::CPU::GetRegister(RegisterType type) const
+{
+	switch (type)
+	{
+		case nes::CPU::RegisterType::A:
+			return A;
+			break;
+		case nes::CPU::RegisterType::X:
+			return X;
+			break;
+		case nes::CPU::RegisterType::Y:
+			return Y;
+			break;
+		case nes::CPU::RegisterType::P:
+			return P;
+			break;
+		case nes::CPU::RegisterType::SP:
+			return SP;
+			break;
+		default:
+			return 0;
+			break;
+	}
 }
 
 void nes::CPU::ProcessOpCode(std::uint8_t opCode)
@@ -61,6 +106,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 		// Force Interrupt
 		// -------------------------------------------------------------------
 		case 0x00:
+			Logger.LogOperation("BRK", 1);
 			BRK(AddressingMode::Implicit);
 			break;
 
@@ -68,34 +114,42 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Logical Inclusive OR
 			// -------------------------------------------------------------------
 		case 0x01:
+			Logger.LogOperation("ORA", 2);
 			ORA(AddressingMode::IndirectX);
 			break;
 
 		case 0x05:
+			Logger.LogOperation("ORA", 2);
 			ORA(AddressingMode::ZeroPage);
 			break;
 
 		case 0x09:
+			Logger.LogOperation("ORA", 2);
 			ORA(AddressingMode::Immediate);
 			break;
 
 		case 0x0D:
+			Logger.LogOperation("ORA", 3);
 			ORA(AddressingMode::Absolute);
 			break;
 
 		case 0x11:
+			Logger.LogOperation("ORA", 2);
 			ORA(AddressingMode::IndirectY);
 			break;
 
 		case 0x15:
+			Logger.LogOperation("ORA", 2);
 			ORA(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x19:
+			Logger.LogOperation("ORA", 3);
 			ORA(AddressingMode::AbsoluteY);
 			break;
 
 		case 0x1D:
+			Logger.LogOperation("ORA", 3);
 			ORA(AddressingMode::AbsoluteX);
 			break;
 
@@ -103,22 +157,27 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Arithmetic Shift Left
 			// -------------------------------------------------------------------
 		case 0x06:
+			Logger.LogOperation("ASL", 2);
 			ASL(AddressingMode::ZeroPage);
 			break;
 
 		case 0x0A:
+			Logger.LogOperation("ASL", 1);
 			ASL(AddressingMode::Accumulator);
 			break;
 
 		case 0x0E:
+			Logger.LogOperation("ASL", 3);
 			ASL(AddressingMode::Absolute);
 			break;
 
 		case 0x16:
+			Logger.LogOperation("ASL", 2);
 			ASL(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x1E:
+			Logger.LogOperation("ASL", 3);
 			ASL(AddressingMode::AbsoluteX);
 			break;
 
@@ -126,6 +185,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Push Processor Status
 			// -------------------------------------------------------------------
 		case 0x08:
+			Logger.LogOperation("PHP", 1);
 			PHP(AddressingMode::Implicit);
 			break;
 
@@ -133,6 +193,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Branch if Positive
 			// -------------------------------------------------------------------
 		case 0x10:
+			Logger.LogOperation("BPL", 2);
 			BPL(AddressingMode::Relative);
 			break;
 
@@ -140,6 +201,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Clear Carry Flag
 			// -------------------------------------------------------------------
 		case 0x18:
+			Logger.LogOperation("CLC", 1);
 			CLC(AddressingMode::Implicit);
 			break;
 
@@ -147,6 +209,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Jump to Subroutine
 			// -------------------------------------------------------------------
 		case 0x20:
+			Logger.LogOperation("JSR", 3);
 			JSR(AddressingMode::Implicit);
 			break;
 
@@ -154,10 +217,12 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// BIT
 			// -------------------------------------------------------------------
 		case 0x24:
+			Logger.LogOperation("BIT", 2);
 			BIT(AddressingMode::ZeroPage);
 			break;
 
 		case 0x2C:
+			Logger.LogOperation("BIT", 3);
 			BIT(AddressingMode::Absolute);
 			break;
 
@@ -165,34 +230,42 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Logical AND
 			// -------------------------------------------------------------------
 		case 0x21:
+			Logger.LogOperation("AND", 2);
 			AND(AddressingMode::IndirectX);
 			break;
 
 		case 0x25:
+			Logger.LogOperation("AND", 2);
 			AND(AddressingMode::ZeroPage);
 			break;
 
 		case 0x29:
+			Logger.LogOperation("AND", 2);
 			AND(AddressingMode::Immediate);
 			break;
 
 		case 0x2D:
+			Logger.LogOperation("AND", 3);
 			AND(AddressingMode::Absolute);
 			break;
 
 		case 0x31:
+			Logger.LogOperation("AND", 2);
 			AND(AddressingMode::IndirectY);
 			break;
 
 		case 0x35:
+			Logger.LogOperation("AND", 2);
 			AND(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x39:
+			Logger.LogOperation("AND", 3);
 			AND(AddressingMode::AbsoluteY);
 			break;
 
 		case 0x3D:
+			Logger.LogOperation("AND", 3);
 			AND(AddressingMode::AbsoluteX);
 			break;
 
@@ -200,6 +273,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Pull Processor Status
 			// -------------------------------------------------------------------
 		case 0x28:
+			Logger.LogOperation("PLP", 1);
 			PLP(AddressingMode::Implicit);
 			break;
 
@@ -207,22 +281,27 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Rotate Left
 			// -------------------------------------------------------------------
 		case 0x26:
+			Logger.LogOperation("ROL", 2);
 			ROL(AddressingMode::ZeroPage);
 			break;
 
 		case 0x2A:
+			Logger.LogOperation("ROL", 1);
 			ROL(AddressingMode::Accumulator);
 			break;
 
 		case 0x2E:
+			Logger.LogOperation("ROL", 3);
 			ROL(AddressingMode::Absolute);
 			break;
 
 		case 0x36:
+			Logger.LogOperation("ROL", 2);
 			ROL(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x3E:
+			Logger.LogOperation("ROL", 3);
 			ROL(AddressingMode::AbsoluteX);
 			break;
 
@@ -230,6 +309,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Branch if Minus
 			// -------------------------------------------------------------------
 		case 0x30:
+			Logger.LogOperation("BMI", 2);
 			BMI(AddressingMode::Relative);
 			break;
 
@@ -237,6 +317,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Set Carry Flag
 			// -------------------------------------------------------------------
 		case 0x38:
+			Logger.LogOperation("SEC", 1);
 			SEC(AddressingMode::Implicit);
 			break;
 
@@ -244,6 +325,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Return from Interrupt
 			// -------------------------------------------------------------------
 		case 0x40:
+			Logger.LogOperation("RTI", 1);
 			RTI(AddressingMode::Implicit);
 			break;
 
@@ -251,34 +333,42 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Exclusive OR
 			// -------------------------------------------------------------------
 		case 0x41:
+			Logger.LogOperation("EOR", 2);
 			EOR(AddressingMode::IndirectX);
 			break;
 
 		case 0x45:
+			Logger.LogOperation("EOR", 2);
 			EOR(AddressingMode::ZeroPage);
 			break;
 
 		case 0x49:
+			Logger.LogOperation("EOR", 2);
 			EOR(AddressingMode::Immediate);
 			break;
 
 		case 0x4D:
+			Logger.LogOperation("EOR", 3);
 			EOR(AddressingMode::Absolute);
 			break;
 
 		case 0x51:
+			Logger.LogOperation("EOR", 2);
 			EOR(AddressingMode::IndirectY);
 			break;
 
 		case 0x55:
+			Logger.LogOperation("EOR", 2);
 			EOR(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x59:
+			Logger.LogOperation("EOR", 3);
 			EOR(AddressingMode::AbsoluteY);
 			break;
 
 		case 0x5D:
+			Logger.LogOperation("EOR", 3);
 			EOR(AddressingMode::AbsoluteX);
 			break;
 
@@ -286,22 +376,27 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Logical Shift Right
 			// -------------------------------------------------------------------
 		case 0x46:
+			Logger.LogOperation("LSR", 2);
 			LSR(AddressingMode::ZeroPage);
 			break;
 
 		case 0x4A:
+			Logger.LogOperation("LSR", 1);
 			LSR(AddressingMode::Accumulator);
 			break;
 
 		case 0x4E:
+			Logger.LogOperation("LSR", 3);
 			LSR(AddressingMode::Absolute);
 			break;
 
 		case 0x56:
+			Logger.LogOperation("LSR", 2);
 			LSR(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x5E:
+			Logger.LogOperation("LSR", 3);
 			LSR(AddressingMode::AbsoluteX);
 			break;
 
@@ -309,6 +404,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Push Accumulator
 			// -------------------------------------------------------------------
 		case 0x48:
+			Logger.LogOperation("PHA", 1);
 			PHA(AddressingMode::Implicit);
 			break;
 
@@ -316,10 +412,12 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Jump
 			// -------------------------------------------------------------------
 		case 0x4C:
+			Logger.LogOperation("JMP", 3);
 			JMP(AddressingMode::Absolute);
 			break;
 
 		case 0x6C:
+			Logger.LogOperation("JMP", 3);
 			JMP(AddressingMode::Indirect);
 			break;
 
@@ -327,6 +425,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Branch if Overflow Clear
 			// -------------------------------------------------------------------
 		case 0x50:
+			Logger.LogOperation("BVC", 2);
 			BVC(AddressingMode::Relative);
 			break;
 
@@ -334,6 +433,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Clear Interrupt Disable
 			// -------------------------------------------------------------------
 		case 0x58:
+			Logger.LogOperation("CLI", 1);
 			CLI(AddressingMode::Implicit);
 			break;
 
@@ -341,6 +441,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Return from Subroutine
 			// -------------------------------------------------------------------
 		case 0x60:
+			Logger.LogOperation("RTS", 1);
 			RTS(AddressingMode::Implicit);
 			break;
 
@@ -348,6 +449,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Pull Accumulator
 			// -------------------------------------------------------------------
 		case 0x68:
+			Logger.LogOperation("PLA", 3);
 			PLA(AddressingMode::Implicit);
 			break;
 
@@ -355,22 +457,27 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Rotate Right
 			// -------------------------------------------------------------------
 		case 0x66:
+			Logger.LogOperation("ROR", 2);
 			ROR(AddressingMode::ZeroPage);
 			break;
 
 		case 0x6A:
+			Logger.LogOperation("ROR", 1);
 			ROR(AddressingMode::Accumulator);
 			break;
 
 		case 0x6E:
+			Logger.LogOperation("ROR", 3);
 			ROR(AddressingMode::Absolute);
 			break;
 
 		case 0x76:
+			Logger.LogOperation("ROR", 2);
 			ROR(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x7E:
+			Logger.LogOperation("ROR", 3);
 			ROR(AddressingMode::AbsoluteX);
 			break;
 
@@ -378,34 +485,42 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Add with Carry
 			// -------------------------------------------------------------------
 		case 0x61:
+			Logger.LogOperation("ADC", 2);
 			ADC(AddressingMode::IndirectX);
 			break;
 
 		case 0x65:
+			Logger.LogOperation("ADC", 2);
 			ADC(AddressingMode::ZeroPage);
 			break;
 
 		case 0x69:
+			Logger.LogOperation("ADC", 2);
 			ADC(AddressingMode::Immediate);
 			break;
 
 		case 0x6D:
+			Logger.LogOperation("ADC", 3);
 			ADC(AddressingMode::Absolute);
 			break;
 
 		case 0x71:
+			Logger.LogOperation("ADC", 2);
 			ADC(AddressingMode::IndirectY);
 			break;
 
 		case 0x75:
+			Logger.LogOperation("ADC", 2);
 			ADC(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x79:
+			Logger.LogOperation("ADC", 3);
 			ADC(AddressingMode::AbsoluteY);
 			break;
 
 		case 0x7D:
+			Logger.LogOperation("ADC", 3);
 			ADC(AddressingMode::AbsoluteX);
 			break;
 
@@ -413,6 +528,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Branch if Overflow Set
 			// -------------------------------------------------------------------
 		case 0x70:
+			Logger.LogOperation("BVS", 2);
 			BVS(AddressingMode::Relative);
 			break;
 
@@ -420,6 +536,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Set Interrupt Disable
 			// -------------------------------------------------------------------
 		case 0x78:
+			Logger.LogOperation("SEI", 1);
 			SEI(AddressingMode::Implicit);
 			break;
 
@@ -427,30 +544,37 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Store Accumulator
 			// -------------------------------------------------------------------
 		case 0x81:
+			Logger.LogOperation("STA", 2);
 			STA(AddressingMode::IndirectX);
 			break;
 
 		case 0x85:
+			Logger.LogOperation("STA", 2);
 			STA(AddressingMode::ZeroPage);
 			break;
 
 		case 0x8D:
+			Logger.LogOperation("STA", 3);
 			STA(AddressingMode::Absolute);
 			break;
 
 		case 0x91:
+			Logger.LogOperation("STA", 2);
 			STA(AddressingMode::IndirectY);
 			break;
 
 		case 0x95:
+			Logger.LogOperation("STA", 2);
 			STA(AddressingMode::ZeroPageX);
 			break;
 
 		case 0x99:
+			Logger.LogOperation("STA", 3);
 			STA(AddressingMode::AbsoluteY);
 			break;
 
 		case 0x9D:
+			Logger.LogOperation("STA", 3);
 			STA(AddressingMode::AbsoluteX);
 			break;
 
@@ -458,14 +582,17 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Store Y Register
 			// -------------------------------------------------------------------
 		case 0x84:
+			Logger.LogOperation("STY", 2);
 			STY(AddressingMode::ZeroPage);
 			break;
 
 		case 0x8C:
+			Logger.LogOperation("STY", 3);
 			STY(AddressingMode::Absolute);
 			break;
 
 		case 0x94:
+			Logger.LogOperation("STY", 2);
 			STY(AddressingMode::ZeroPageX);
 			break;
 
@@ -473,14 +600,17 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Store X Register
 			// -------------------------------------------------------------------
 		case 0x86:
+			Logger.LogOperation("STX", 2);
 			STX(AddressingMode::ZeroPage);
 			break;
 
 		case 0x8E:
+			Logger.LogOperation("STX", 3);
 			STX(AddressingMode::Absolute);
 			break;
 
 		case 0x96:
+			Logger.LogOperation("STX", 2);
 			STX(AddressingMode::ZeroPageY);
 			break;
 
@@ -488,6 +618,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Decrement Y Register
 			// -------------------------------------------------------------------
 		case 0x88:
+			Logger.LogOperation("DEY", 1);
 			DEY(AddressingMode::Implicit);
 			break;
 
@@ -495,12 +626,14 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Transfer X to Accumulator
 			// -------------------------------------------------------------------
 		case 0x8A:
+			Logger.LogOperation("TXA", 1);
 			TXA(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Branch if Carry Clear
 			// -------------------------------------------------------------------
 		case 0x90:
+			Logger.LogOperation("BCC", 2);
 			BCC(AddressingMode::Relative);
 			break;
 
@@ -508,34 +641,41 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Transfer Y to Accumulator
 			// -------------------------------------------------------------------
 		case 0x98:
+			Logger.LogOperation("TYA", 1);
 			TYA(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Transfer X to Stack Pointer
 			// -------------------------------------------------------------------
 		case 0x9A:
+			Logger.LogOperation("TXS", 1);
 			TXS(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Load Y Register
 			// -------------------------------------------------------------------
 		case 0xA0:
+			Logger.LogOperation("LDY", 2);
 			LDY(AddressingMode::Immediate);
 			break;
 
 		case 0xA4:
+			Logger.LogOperation("LDY", 2);
 			LDY(AddressingMode::ZeroPage);
 			break;
 
 		case 0xAC:
+			Logger.LogOperation("LDY", 3);
 			LDY(AddressingMode::Absolute);
 			break;
 
 		case 0xB4:
+			Logger.LogOperation("LDY", 2);
 			LDY(AddressingMode::ZeroPageX);
 			break;
 
 		case 0xBC:
+			Logger.LogOperation("LDY", 3);
 			LDY(AddressingMode::AbsoluteX);
 			break;
 
@@ -543,34 +683,42 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Load Accumulator
 			// -------------------------------------------------------------------
 		case 0xA1:
+			Logger.LogOperation("LDA", 2);
 			LDA(AddressingMode::IndirectX);
 			break;
 
 		case 0xA5:
+			Logger.LogOperation("LDA", 2);
 			LDA(AddressingMode::ZeroPage);
 			break;
 
 		case 0xA9:
+			Logger.LogOperation("LDA", 2);
 			LDA(AddressingMode::Immediate);
 			break;
 
 		case 0xAD:
+			Logger.LogOperation("LDA", 3);
 			LDA(AddressingMode::Absolute);
 			break;
 
 		case 0xB1:
+			Logger.LogOperation("LDA", 2);
 			LDA(AddressingMode::IndirectY);
 			break;
 
 		case 0xB5:
+			Logger.LogOperation("LDA", 2);
 			LDA(AddressingMode::ZeroPageX);
 			break;
 
 		case 0xB9:
+			Logger.LogOperation("LDA", 3);
 			LDA(AddressingMode::AbsoluteY);
 			break;
 
 		case 0xBD:
+			Logger.LogOperation("LDA", 3);
 			LDA(AddressingMode::AbsoluteX);
 			break;
 
@@ -578,22 +726,27 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Load X Register
 			// -------------------------------------------------------------------
 		case 0xA2:
+			Logger.LogOperation("LDX", 2);
 			LDX(AddressingMode::Immediate);
 			break;
 
 		case 0xA6:
+			Logger.LogOperation("LDX", 2);
 			LDX(AddressingMode::ZeroPage);
 			break;
 
 		case 0xAE:
+			Logger.LogOperation("LDX", 3);
 			LDX(AddressingMode::Absolute);
 			break;
 
 		case 0xB6:
+			Logger.LogOperation("LDX", 2);
 			LDX(AddressingMode::ZeroPageY);
 			break;
 
 		case 0xBE:
+			Logger.LogOperation("LDX", 3);
 			LDX(AddressingMode::AbsoluteY);
 			break;
 
@@ -601,18 +754,21 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Transfer Accumulator to Y
 			// -------------------------------------------------------------------
 		case 0xA8:
+			Logger.LogOperation("TAY", 1);
 			TAY(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Transfer Accumulator to X
 			// -------------------------------------------------------------------
 		case 0xAA:
+			Logger.LogOperation("TAX", 1);
 			TAX(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Branch if Carry Set
 			// -------------------------------------------------------------------
 		case 0xB0:
+			Logger.LogOperation("BCS", 2);
 			BCS(AddressingMode::Relative);
 			break;
 
@@ -620,6 +776,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Clear Overflow Flag
 			// -------------------------------------------------------------------
 		case 0xB8:
+			Logger.LogOperation("CLV", 1);
 			CLV(AddressingMode::Implicit);
 			break;
 
@@ -627,40 +784,49 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Transfer Stack Pointer to X
 			// -------------------------------------------------------------------
 		case 0xBA:
+			Logger.LogOperation("TSX", 1);
 			TSX(AddressingMode::Implicit);
 
 			// -------------------------------------------------------------------
 			// Compare
 			// -------------------------------------------------------------------
 		case 0xC1:
+			Logger.LogOperation("CMP", 2);
 			CMP(AddressingMode::IndirectX);
 			break;
 
 		case 0xC5:
+			Logger.LogOperation("CMP", 2);
 			CMP(AddressingMode::ZeroPage);
 			break;
 
 		case 0xC9:
+			Logger.LogOperation("CMP", 2);
 			CMP(AddressingMode::Immediate);
 			break;
 
 		case 0xCD:
+			Logger.LogOperation("CMP", 3);
 			CMP(AddressingMode::Absolute);
 			break;
 
 		case 0xD1:
+			Logger.LogOperation("CMP", 2);
 			CMP(AddressingMode::IndirectY);
 			break;
 
 		case 0xD5:
+			Logger.LogOperation("CMP", 2);
 			CMP(AddressingMode::ZeroPageX);
 			break;
 
 		case 0xD9:
+			Logger.LogOperation("CMP", 3);
 			CMP(AddressingMode::AbsoluteY);
 			break;
 
 		case 0xDD:
+			Logger.LogOperation("CMP", 3);
 			CMP(AddressingMode::AbsoluteX);
 			break;
 
@@ -668,18 +834,22 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Decrement Memory
 			// -------------------------------------------------------------------
 		case 0xC6:
+			Logger.LogOperation("DEC", 2);
 			DEC(AddressingMode::ZeroPage);
 			break;
 
 		case 0xD6:
+			Logger.LogOperation("DEC", 2);
 			DEC(AddressingMode::ZeroPageX);
 			break;
 
 		case 0xCE:
+			Logger.LogOperation("DEC", 3);
 			DEC(AddressingMode::Absolute);
 			break;
 
 		case 0xDE:
+			Logger.LogOperation("DEC", 3);
 			DEC(AddressingMode::AbsoluteX);
 			break;
 
@@ -687,6 +857,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Decrement X Register
 			// -------------------------------------------------------------------
 		case 0xCA:
+			Logger.LogOperation("DEX", 1);
 			DEX(AddressingMode::Implicit);
 			break;
 
@@ -694,20 +865,24 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Compare Y Register
 			// -------------------------------------------------------------------
 		case 0xC0:
+			Logger.LogOperation("CPY", 2);
 			CPY(AddressingMode::Immediate);
 			break;
 
 		case 0xC4:
+			Logger.LogOperation("CPY", 2);
 			CPY(AddressingMode::ZeroPage);
 			break;
 
 		case 0xCC:
+			Logger.LogOperation("CPY", 3);
 			CPY(AddressingMode::Absolute);
 
 			// -------------------------------------------------------------------
 			// Increment Y Register
 			// -------------------------------------------------------------------
 		case 0xC8:
+			Logger.LogOperation("INY", 1);
 			INY(AddressingMode::Implicit);
 			break;
 
@@ -715,6 +890,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Branch if not Equal
 			// -------------------------------------------------------------------
 		case 0xD0:
+			Logger.LogOperation("BNE", 2);
 			BNE(AddressingMode::Relative);
 			break;
 
@@ -722,6 +898,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Clear Decimal Mode
 			// -------------------------------------------------------------------
 		case 0xD8:
+			Logger.LogOperation("CLD", 1);
 			CLD(AddressingMode::Implicit);
 			break;
 
@@ -729,14 +906,17 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Compare X Register
 			// -------------------------------------------------------------------
 		case 0xE0:
+			Logger.LogOperation("CPX", 2);
 			CPX(AddressingMode::Immediate);
 			break;
 
 		case 0xE4:
+			Logger.LogOperation("CPX", 2);
 			CPX(AddressingMode::ZeroPage);
 			break;
 
 		case 0xEC:
+			Logger.LogOperation("CPX", 3);
 			CPX(AddressingMode::Absolute);
 			break;
 
@@ -744,34 +924,42 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Subtract with Carry
 			// -------------------------------------------------------------------
 		case 0xE1:
+			Logger.LogOperation("SBC", 2);
 			SBC(AddressingMode::IndirectX);
 			break;
 
 		case 0xE5:
+			Logger.LogOperation("SBC", 2);
 			SBC(AddressingMode::ZeroPage);
 			break;
 
 		case 0xE9:
+			Logger.LogOperation("SBC", 2);
 			SBC(AddressingMode::Immediate);
 			break;
 
 		case 0xED:
+			Logger.LogOperation("SBC", 3);
 			SBC(AddressingMode::Absolute);
 			break;
 
 		case 0xF1:
+			Logger.LogOperation("SBC", 2);
 			SBC(AddressingMode::IndirectY);
 			break;
 
 		case 0xF5:
+			Logger.LogOperation("SBC", 2);
 			SBC(AddressingMode::ZeroPageX);
 			break;
 
 		case 0xFD:
+			Logger.LogOperation("SBC", 3);
 			SBC(AddressingMode::AbsoluteX);
 			break;
 
 		case 0xF9:
+			Logger.LogOperation("SBC", 3);
 			SBC(AddressingMode::AbsoluteY);
 			break;
 
@@ -779,18 +967,22 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Increment Memory
 			// -------------------------------------------------------------------
 		case 0xE6:
+			Logger.LogOperation("INC", 2);
 			INC(AddressingMode::ZeroPage);
 			break;
 
 		case 0xF6:
+			Logger.LogOperation("INC", 2);
 			INC(AddressingMode::ZeroPageX);
 			break;
 
 		case 0xEE:
+			Logger.LogOperation("INC", 3);
 			INC(AddressingMode::Absolute);
 			break;
 
 		case 0xFE:
+			Logger.LogOperation("INC", 3);
 			INC(AddressingMode::AbsoluteX);
 			break;
 
@@ -798,6 +990,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Increment X Register
 			// -------------------------------------------------------------------
 		case 0xE8:
+			Logger.LogOperation("INX", 1);
 			INX(AddressingMode::Implicit);
 			break;
 
@@ -805,6 +998,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// No Operation
 			// -------------------------------------------------------------------
 		case 0xEA:
+			Logger.LogOperation("NOP", 1);
 			NOP(AddressingMode::Implicit);
 			break;
 
@@ -812,6 +1006,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Branch if Equal
 			// -------------------------------------------------------------------
 		case 0xF0:
+			Logger.LogOperation("BEQ", 2);
 			BEQ(AddressingMode::Relative);
 			break;
 
@@ -819,10 +1014,12 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Set Carry Flag
 			// -------------------------------------------------------------------
 		case 0xF8:
+			Logger.LogOperation("SED", 1);
 			SED(AddressingMode::Implicit);
 			break;
 
 		default:
+			Logger.LogOperation("UNKNOWN OP-CODE, THIS SHOULD NEVER HAPPEN", 0);
 			std::cerr << "Unknown op-code: " << std::hex << opCode << '\n';
 			break;
 	}
@@ -1319,7 +1516,7 @@ void nes::CPU::TSX(AddressingMode mode)
 	std::cout << "OP TSX" << '\n';
 
 	// Transfer the stack pointer to the X register
-	X = S;
+	X = SP;
 
 	if (X == 0)
 	{
@@ -1378,7 +1575,7 @@ void nes::CPU::TXS(AddressingMode mode)
 {
 	std::cout << "OP TXS" << '\n';
 
-	S = X;
+	SP = X;
 }
 
 void nes::CPU::TYA(AddressingMode mode)

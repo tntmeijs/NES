@@ -11,6 +11,8 @@ set(SOURCE_LIST
     io/rom_file.cpp
     cpu/cpu.hpp
     cpu/cpu.cpp
+    cpu/cpu_logger.hpp
+    cpu/cpu_logger.cpp
     ram/ram.hpp
     ram/ram.cpp
     editor/editor.hpp

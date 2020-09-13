@@ -2,6 +2,7 @@
 #define NES_EDITOR_HPP
 
 #include "io/rom_file.hpp"
+
 #include "ui/ui_cpu_controller.hpp"
 #include "ui/ui_ram_visualizer.hpp"
 #include "ui/ui_rom_browser.hpp"
