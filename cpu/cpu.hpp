@@ -53,9 +53,10 @@ namespace nes
         void SetProgramCounterToAddress(std::uint16_t address);
 
         /**
-         * Step to the next instruction and process it
+         * Fetch the opcode at the program counter and attempt to execute the
+         * instruction
          */
-        void ExecuteAndIncrementPC();
+        void ExecuteInstruction();
 
         /**
          * Manually move the program counter N number of bytes relative to its
@@ -63,11 +64,6 @@ namespace nes
          * @param   offset  Number of bytes to move the program counter
          */
         void MoveProgramCounter(std::int32_t offset);
-
-        /**
-         * Execute the instruction at the current address
-         */
-        void ExecuteCurrentInstruction();
 
         /**
          * Get the current value of the program counter

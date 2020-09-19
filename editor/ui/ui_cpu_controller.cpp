@@ -42,15 +42,7 @@ void nes::UICpuController::Draw() const
 	ImGui::PushButtonRepeat(true);
 	if (ImGui::Button("Execute Instruction"))
 	{
-		CpuRef.ExecuteAndIncrementPC();
+		CpuRef.ExecuteInstruction();
 	}
 	ImGui::PopButtonRepeat();
-
-	ImGui::SameLine();
-
-	// Execute the current instruction
-	if (ImGui::Button("Repeat Instruction"))
-	{
-		CpuRef.ExecuteCurrentInstruction(); 
-	}
 }

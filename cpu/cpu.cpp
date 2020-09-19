@@ -42,30 +42,15 @@ void nes::CPU::SetProgramCounterToAddress(std::uint16_t address)
 	PC = address;
 }
 
-void nes::CPU::ExecuteAndIncrementPC()
+void nes::CPU::ExecuteInstruction()
 {
-	std::uint16_t initialPC = PC;
-
-	std::uint8_t opCode = RamRef.ReadByte(initialPC);
+	std::uint8_t opCode = RamRef.ReadByte(PC);
 	ProcessOpCode(opCode);
-
-	// If the program counter has not been changed in the "ProcessOpCode()"
-	// function, move the program counter one byte ahead manually
-	if (initialPC == PC)
-	{
-		++PC;
-	}
 }
 
 void nes::CPU::MoveProgramCounter(std::int32_t offset)
 {
 	PC += offset;
-}
-
-void nes::CPU::ExecuteCurrentInstruction()
-{
-	std::uint8_t opCode = RamRef.ReadByte(PC);
-	ProcessOpCode(opCode);
 }
 
 std::uint16_t nes::CPU::GetProgramCounter() const
