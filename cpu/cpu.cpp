@@ -19,6 +19,9 @@ nes::CPU::CPU(RAM& ramRef) :
 	P = 0x24;
 	SP = 0xFD;
 
+	// http://forum.6502.org/viewtopic.php?f=4&t=5704#:~:text=On%20the%206502%2C%20the%20reset,all%20interrupts)%20takes%207%20cycles.
+	CurrentCycle = 7;
+
 	if (!Logger.Initialize())
 	{
 		std::cerr << "Unable to initialize CPU instruction logger." << std::endl;
