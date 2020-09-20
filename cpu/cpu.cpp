@@ -1343,7 +1343,7 @@ void nes::CPU::JMP(AddressingMode mode)
 	}
 	else
 	{
-		std::cerr << "JMP - Unkown addressing mode.\n";
+		std::cerr << "JMP - Unknown addressing mode.\n";
 	}
 }
 
@@ -1400,7 +1400,7 @@ void nes::CPU::LDX(AddressingMode mode)
 	}
 	else
 	{
-		std::cerr << "LDX - Unkown addressing mode.\n";
+		std::cerr << "LDX - Unknown addressing mode.\n";
 	}
 
 	// Set zero flag
@@ -1462,7 +1462,7 @@ void nes::CPU::LDY(AddressingMode mode)
 	}
 	else
 	{
-		std::cerr << "LDY - Unkown addressing mode.\n";
+		std::cerr << "LDY - Unknown addressing mode.\n";
 	}
 
 	// Set zero flag
