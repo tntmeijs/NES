@@ -206,6 +206,9 @@ namespace nes
 
         // CPU logger
         CpuLogger Logger;
+
+        // Keep track of the current CPU cycle to allow for synchronization
+        std::uint64_t CurrentCycle;
     };
 }
 

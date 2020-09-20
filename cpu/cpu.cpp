@@ -12,7 +12,8 @@ nes::CPU::CPU(RAM& ramRef) :
 	SP(0),
 	PC(0),
 	RamRef(ramRef),
-	Logger(*this, ramRef)
+	Logger(*this, ramRef),
+	CurrentCycle(0)
 {
 	// https://wiki.nesdev.com/w/index.php/CPU_power_up_state
 	P = 0x24;
