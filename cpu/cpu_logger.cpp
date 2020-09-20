@@ -73,7 +73,7 @@ void nes::CpuLogger::LogOperation(std::string_view name, std::uint8_t num)
 	OutputFile << "P: " << P << ',';
 	OutputFile << "SP: " << SP << ',';
 	OutputFile << "PPU: " << "NOT IMPLEMENTED" << ',';
-	OutputFile << "CYC: " << CpuRef.GetCurrentCycle();
+	OutputFile << "CYC: " << std::dec << CpuRef.GetCurrentCycle();
 
 	// End of line and flush
 	OutputFile << std::endl;
