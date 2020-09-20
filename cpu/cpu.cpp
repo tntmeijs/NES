@@ -1568,6 +1568,32 @@ void nes::CPU::STA(AddressingMode mode)
 void nes::CPU::STX(AddressingMode mode)
 {
 	std::cout << "OP STX" << '\n';
+
+	if (mode == AddressingMode::ZeroPage)
+	{
+		std::uint16_t address = RamRef.ReadByte(PC + 1);
+		RamRef.WriteByte(address, X);
+		PC += 2;
+	}
+	else if (mode == AddressingMode::ZeroPageY)
+	{
+		std::uint16_t address = RamRef.ReadByte(PC + 1);
+		address += Y;
+		RamRef.WriteByte(address, X);
+		PC += 2;
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+		std::uint8_t msb = RamRef.ReadByte(PC + 2);
+		std::uint16_t address = ((msb << 8) | lsb);
+		RamRef.WriteByte(address, X);
+		PC += 3;
+	}
+	else
+	{
+		std::cerr << "STX - Unknown addressing mode.\n";
+	}
 }
 
 void nes::CPU::STY(AddressingMode mode)
