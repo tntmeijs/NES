@@ -1,6 +1,7 @@
 #include "cpu.hpp"
 #include "ram/ram.hpp"
 
+#include <cmath>	// std::floor
 #include <iostream>
 #include <fstream>
 
@@ -1420,12 +1421,16 @@ void nes::CPU::LDX(AddressingMode mode)
 	{
 		value = RamRef.ReadByte(PC + 1);
 		PC += 2;
+
+		CurrentCycle += 2;
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
 		std::uint16_t address = RamRef.ReadByte(PC + 1);
 		value = RamRef.ReadByte(address);
 		PC += 2;
+
+		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageY)
 	{
@@ -1433,6 +1438,8 @@ void nes::CPU::LDX(AddressingMode mode)
 		address += Y;
 		value = RamRef.ReadByte(address);
 		PC += 2;
+
+		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
@@ -1441,6 +1448,8 @@ void nes::CPU::LDX(AddressingMode mode)
 		std::uint16_t address = ((msb << 8) | lsb);
 		value = RamRef.ReadByte(address);
 		PC += 3;
+
+		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::AbsoluteY)
 	{
@@ -1449,7 +1458,18 @@ void nes::CPU::LDX(AddressingMode mode)
 		std::uint16_t address = ((msb << 8) | lsb);
 		address += Y;
 		value = RamRef.ReadByte(address);
+
+		std::uint16_t pageIndexBeforeIncrement = std::floor(PC / 256);
 		PC += 3;
+		std::uint16_t pageIndexAfterIncrement = std::floor(PC / 256);
+
+		CurrentCycle += 4;
+
+		// Crossed a page boundary
+		if (pageIndexBeforeIncrement != pageIndexAfterIncrement)
+		{
+			++CurrentCycle;
+		}
 	}
 	else
 	{
