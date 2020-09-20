@@ -1337,6 +1337,10 @@ void nes::CPU::JMP(AddressingMode mode)
 		msb = RamRef.ReadByte(address + 1);
 		PC = ((msb << 8) | lsb);
 	}
+	else
+	{
+		std::cerr << "JMP - Unkown addressing mode.\n";
+	}
 }
 
 void nes::CPU::JSR(AddressingMode mode)
@@ -1351,7 +1355,62 @@ void nes::CPU::LDA(AddressingMode mode)
 
 void nes::CPU::LDX(AddressingMode mode)
 {
-	std::cout << "OP LDY" << '\n';
+	std::cout << "OP LDX" << '\n';
+
+	std::uint8_t value = 0;
+
+	if (mode == AddressingMode::Immediate)
+	{
+		value = RamRef.ReadByte(PC + 1);
+	}
+	else if (mode == AddressingMode::ZeroPage)
+	{
+		std::uint16_t address = RamRef.ReadByte(PC + 1);
+		value = RamRef.ReadByte(address);
+	}
+	else if (mode == AddressingMode::ZeroPageY)
+	{
+		std::uint16_t address = RamRef.ReadByte(PC + 1);
+		address += Y;
+		value = RamRef.ReadByte(address);
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+		std::uint8_t msb = RamRef.ReadByte(PC + 2);
+		std::uint16_t address = ((msb << 8) | lsb);
+		value = RamRef.ReadByte(address);
+	}
+	else if (mode == AddressingMode::AbsoluteY)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+		std::uint8_t msb = RamRef.ReadByte(PC + 2);
+		std::uint16_t address = ((msb << 8) | lsb);
+		address += Y;
+		value = RamRef.ReadByte(address);
+	}
+	else
+	{
+		std::cerr << "LDX - Unkown addressing mode.\n";
+	}
+
+	// Set zero flag
+	if (value == 0)
+	{
+		P |= (1 << 1);
+	}
+
+	// Set negative flag
+	if ((value & (1 << 7)) != 0)
+	{
+		P |= (1 << 7);
+	}
+
+	// Store in the X register
+	X = value;
+
+	// Next instruction
+	++PC;
 }
 
 void nes::CPU::LDY(AddressingMode mode)
