@@ -1399,6 +1399,8 @@ void nes::CPU::JSR(AddressingMode mode)
 		lsb = RamRef.ReadByte(PC + 1);
 		msb = RamRef.ReadByte(PC + 2);
 		PC = ((msb << 8) | lsb);
+
+		CurrentCycle += 6;
 	}
 	else
 	{
