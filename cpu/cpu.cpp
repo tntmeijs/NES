@@ -88,6 +88,11 @@ std::uint8_t nes::CPU::GetRegister(RegisterType type) const
 	}
 }
 
+std::uint64_t nes::CPU::GetCurrentCycle() const
+{
+	return CurrentCycle;
+}
+
 void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 {
 	switch (opCode)

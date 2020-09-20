@@ -78,6 +78,12 @@ namespace nes
          */
         std::uint8_t GetRegister(RegisterType type) const;
 
+        /**
+         * Retrieve the current cycle index
+         * @return  Current cycle
+         */
+        std::uint64_t GetCurrentCycle() const;
+
     private:
         /**
          * All possible addressing modes
