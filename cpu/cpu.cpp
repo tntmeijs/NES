@@ -199,7 +199,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// -------------------------------------------------------------------
 		case 0x20:
 			Logger.LogOperation("JSR", 3);
-			JSR(AddressingMode::Implicit);
+			JSR(AddressingMode::Absolute);
 			break;
 
 			// -------------------------------------------------------------------
@@ -1014,6 +1014,27 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 	}
 }
 
+void nes::CPU::PushStack(std::uint8_t value)
+{
+	// Stack grows downwards
+	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
+	RamRef.WriteByte(address, value);
+
+	// Move stack pointer
+	--SP;
+}
+
+std::uint8_t nes::CPU::PopStack()
+{
+	// Stack grows downwards
+	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
+	
+	// Move stack pointer
+	++SP;
+
+	return RamRef.ReadByte(address);
+}
+
 void nes::CPU::ADC(AddressingMode mode)
 {
 	std::cout << "OP ADC" << '\n';
@@ -1350,6 +1371,25 @@ void nes::CPU::JMP(AddressingMode mode)
 void nes::CPU::JSR(AddressingMode mode)
 {
 	std::cout << "OP JSR" << '\n';
+
+	if (mode == AddressingMode::Absolute)
+	{
+		// Store the current address minus one on the stack
+		std::uint16_t address = PC - 1;
+		std::uint8_t lsb = (address & 0x00FF);
+		std::uint8_t msb = ((address & 0xFF00) >> 8);
+		PushStack(lsb);
+		PushStack(msb);
+
+		// Jump to the target location
+		lsb = RamRef.ReadByte(PC + 1);
+		msb = RamRef.ReadByte(PC + 2);
+		PC = ((msb << 8) | lsb);
+	}
+	else
+	{
+		std::cerr << "JSR - Unknown addressing mode.\n";
+	}
 }
 
 void nes::CPU::LDA(AddressingMode mode)

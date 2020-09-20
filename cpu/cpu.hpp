@@ -106,6 +106,18 @@ namespace nes
          */
         void ProcessOpCode(std::uint8_t opCode);
 
+        /**
+         * Push a value to the stack
+         * @param   value   Value to push to the stack
+         */
+        void PushStack(std::uint8_t value);
+
+        /**
+         * Pop a value from the stack
+         * @return  Value popped from the stack
+         */
+        std::uint8_t PopStack();
+
     private:
         void ADC(AddressingMode mode);
         void AND(AddressingMode mode);
@@ -184,8 +196,6 @@ namespace nes
         std::uint8_t P;
 
         // Stack pointer
-        // Lives in address 0x100 to 0x1FF
-        // Wraps around when its capacity is exceeded
         std::uint8_t SP;
 
         // Program counter
