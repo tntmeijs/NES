@@ -1585,6 +1585,8 @@ void nes::CPU::NOP(AddressingMode mode)
 	std::cout << "OP NOP" << '\n';
 
 	++PC;
+
+	CurrentCycle += 2;
 }
 
 void nes::CPU::ORA(AddressingMode mode)
