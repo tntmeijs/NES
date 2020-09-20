@@ -14,6 +14,10 @@ nes::CPU::CPU(const RAM& ramRef) :
 	RamRef(ramRef),
 	Logger(*this, ramRef)
 {
+	// https://wiki.nesdev.com/w/index.php/CPU_power_up_state
+	P = 0x24;
+	SP = 0xFD;
+
 	if (!Logger.Initialize())
 	{
 		std::cerr << "Unable to initialize CPU instruction logger." << std::endl;
@@ -1362,17 +1366,20 @@ void nes::CPU::LDX(AddressingMode mode)
 	if (mode == AddressingMode::Immediate)
 	{
 		value = RamRef.ReadByte(PC + 1);
+		PC += 2;
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
 		std::uint16_t address = RamRef.ReadByte(PC + 1);
 		value = RamRef.ReadByte(address);
+		PC += 2;
 	}
 	else if (mode == AddressingMode::ZeroPageY)
 	{
 		std::uint16_t address = RamRef.ReadByte(PC + 1);
 		address += Y;
 		value = RamRef.ReadByte(address);
+		PC += 2;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
@@ -1380,6 +1387,7 @@ void nes::CPU::LDX(AddressingMode mode)
 		std::uint8_t msb = RamRef.ReadByte(PC + 2);
 		std::uint16_t address = ((msb << 8) | lsb);
 		value = RamRef.ReadByte(address);
+		PC += 3;
 	}
 	else if (mode == AddressingMode::AbsoluteY)
 	{
@@ -1388,6 +1396,7 @@ void nes::CPU::LDX(AddressingMode mode)
 		std::uint16_t address = ((msb << 8) | lsb);
 		address += Y;
 		value = RamRef.ReadByte(address);
+		PC += 3;
 	}
 	else
 	{
@@ -1408,9 +1417,6 @@ void nes::CPU::LDX(AddressingMode mode)
 
 	// Store in the X register
 	X = value;
-
-	// Next instruction
-	++PC;
 }
 
 void nes::CPU::LDY(AddressingMode mode)
@@ -1422,17 +1428,20 @@ void nes::CPU::LDY(AddressingMode mode)
 	if (mode == AddressingMode::Immediate)
 	{
 		value = RamRef.ReadByte(PC + 1);
+		PC += 2;
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
 		std::uint16_t address = RamRef.ReadByte(PC + 1);
 		value = RamRef.ReadByte(address);
+		PC += 2;
 	}
 	else if (mode == AddressingMode::ZeroPageX)
 	{
 		std::uint16_t address = RamRef.ReadByte(PC + 1);
 		address += X;
 		value = RamRef.ReadByte(address);
+		PC += 2;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
@@ -1440,6 +1449,7 @@ void nes::CPU::LDY(AddressingMode mode)
 		std::uint8_t msb = RamRef.ReadByte(PC + 2);
 		std::uint16_t address = ((msb << 8) | lsb);
 		value = RamRef.ReadByte(address);
+		PC += 3;
 	}
 	else if (mode == AddressingMode::AbsoluteX)
 	{
@@ -1448,6 +1458,7 @@ void nes::CPU::LDY(AddressingMode mode)
 		std::uint16_t address = ((msb << 8) | lsb);
 		address += X;
 		value = RamRef.ReadByte(address);
+		PC += 3;
 	}
 	else
 	{
@@ -1466,11 +1477,8 @@ void nes::CPU::LDY(AddressingMode mode)
 		P |= (1 << 7);
 	}
 
-	// Store in the X register
-	X = value;
-
-	// Next instruction
-	++PC;
+	// Store in the Y register
+	Y = value;
 }
 
 void nes::CPU::LSR(AddressingMode mode)
