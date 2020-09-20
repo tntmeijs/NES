@@ -1045,6 +1045,11 @@ std::uint8_t nes::CPU::PopStack()
 	return RamRef.ReadByte(address);
 }
 
+bool nes::CPU::DidCrossPageBoundary(std::uint16_t before, std::uint16_t after) const
+{
+	return (std::floor(before / 256) == std::floor(after / 256));
+}
+
 void nes::CPU::ADC(AddressingMode mode)
 {
 	std::cout << "OP ADC" << '\n';
@@ -1461,14 +1466,13 @@ void nes::CPU::LDX(AddressingMode mode)
 		address += Y;
 		value = RamRef.ReadByte(address);
 
-		std::uint16_t pageIndexBeforeIncrement = std::floor(PC / 256);
+		std::uint16_t initialPC = PC;
 		PC += 3;
-		std::uint16_t pageIndexAfterIncrement = std::floor(PC / 256);
 
 		CurrentCycle += 4;
 
 		// Crossed a page boundary
-		if (pageIndexBeforeIncrement != pageIndexAfterIncrement)
+		if (DidCrossPageBoundary(initialPC, PC))
 		{
 			++CurrentCycle;
 		}
@@ -1542,14 +1546,13 @@ void nes::CPU::LDY(AddressingMode mode)
 		address += X;
 		value = RamRef.ReadByte(address);
 		
-		std::uint16_t pageIndexBeforeIncrement = std::floor(PC / 256);
+		std::uint16_t initialPC = PC;
 		PC += 3;
-		std::uint16_t pageIndexAfterIncrement = std::floor(PC / 256);
 
 		CurrentCycle += 4;
 
 		// Crossed a page boundary
-		if (pageIndexBeforeIncrement != pageIndexAfterIncrement)
+		if (DidCrossPageBoundary(initialPC, PC))
 		{
 			++CurrentCycle;
 		}
