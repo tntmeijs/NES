@@ -1320,6 +1320,23 @@ void nes::CPU::INY(AddressingMode mode)
 void nes::CPU::JMP(AddressingMode mode)
 {
 	std::cout << "OP JMP" << '\n';
+
+	if (mode == AddressingMode::Absolute)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+		std::uint8_t msb = RamRef.ReadByte(PC + 2);
+		PC = ((msb << 8) | lsb);
+	}
+	else if (mode == AddressingMode::Indirect)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+		std::uint8_t msb = RamRef.ReadByte(PC + 2);
+		std::uint16_t address = ((msb << 8) | lsb);
+
+		lsb = RamRef.ReadByte(address);
+		msb = RamRef.ReadByte(address + 1);
+		PC = ((msb << 8) | lsb);
+	}
 }
 
 void nes::CPU::JSR(AddressingMode mode)
