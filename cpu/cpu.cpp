@@ -1529,6 +1529,8 @@ void nes::CPU::LSR(AddressingMode mode)
 void nes::CPU::NOP(AddressingMode mode)
 {
 	std::cout << "OP NOP" << '\n';
+
+	++PC;
 }
 
 void nes::CPU::ORA(AddressingMode mode)
