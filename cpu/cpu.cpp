@@ -1360,6 +1360,8 @@ void nes::CPU::JMP(AddressingMode mode)
 		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
 		std::uint8_t msb = RamRef.ReadByte(PC + 2);
 		PC = ((msb << 8) | lsb);
+
+		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::Indirect)
 	{
@@ -1370,6 +1372,8 @@ void nes::CPU::JMP(AddressingMode mode)
 		lsb = RamRef.ReadByte(address);
 		msb = RamRef.ReadByte(address + 1);
 		PC = ((msb << 8) | lsb);
+
+		CurrentCycle += 5;
 	}
 	else
 	{
