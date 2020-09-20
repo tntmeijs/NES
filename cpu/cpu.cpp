@@ -29,12 +29,12 @@ void nes::CPU::SetProgramCounterToResetVector()
 {
 	// The low byte of the reset vector address is stored at 0xFFFD
 	// The high byte of the reset vector address is stored at 0xFFFC
-	std::uint8_t low = RamRef.ReadByte(0xFFFD);
-	std::uint8_t high = RamRef.ReadByte(0xFFFC);
+	std::uint8_t msb = RamRef.ReadByte(0xFFFD);
+	std::uint8_t lsb = RamRef.ReadByte(0xFFFC);
 
 	// Combine the low and high components into a 16 bit address
 	// Note that the NES is a little-endian system
-	PC = ((low << 8) | high);
+	PC = ((msb << 8) | lsb);
 }
 
 void nes::CPU::SetProgramCounterToAddress(std::uint16_t address)
