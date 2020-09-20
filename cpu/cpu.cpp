@@ -1644,6 +1644,10 @@ void nes::CPU::SEC(AddressingMode mode)
 	std::cout << "OP SEC" << '\n';
 
 	P |= (1 << 0);
+
+	++PC;
+
+	CurrentCycle += 2;
 }
 
 void nes::CPU::SED(AddressingMode mode)
