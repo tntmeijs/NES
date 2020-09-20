@@ -33,7 +33,7 @@ namespace nes
          * Create a new CPU object
          * @param   ramRef  Reference to the RAM
          */
-        CPU(const RAM& ramRef);
+        CPU(RAM& ramRef);
 
         /**
          * Deallocate resources
@@ -192,7 +192,7 @@ namespace nes
         std::uint16_t PC;
 
         // RAM
-        const RAM& RamRef;
+        RAM& RamRef;
 
         // CPU logger
         CpuLogger Logger;

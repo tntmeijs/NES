@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-nes::CPU::CPU(const RAM& ramRef) :
+nes::CPU::CPU(RAM& ramRef) :
 	A(0),
 	X(0),
 	Y(0),
