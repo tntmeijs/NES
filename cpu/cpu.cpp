@@ -1668,6 +1668,8 @@ void nes::CPU::STX(AddressingMode mode)
 		std::uint16_t address = RamRef.ReadByte(PC + 1);
 		RamRef.WriteByte(address, X);
 		PC += 2;
+
+		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageY)
 	{
@@ -1675,6 +1677,8 @@ void nes::CPU::STX(AddressingMode mode)
 		address += Y;
 		RamRef.WriteByte(address, X);
 		PC += 2;
+
+		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
@@ -1683,6 +1687,8 @@ void nes::CPU::STX(AddressingMode mode)
 		std::uint16_t address = ((msb << 8) | lsb);
 		RamRef.WriteByte(address, X);
 		PC += 3;
+
+		CurrentCycle += 4;
 	}
 	else
 	{
