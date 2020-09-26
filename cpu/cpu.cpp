@@ -1180,6 +1180,8 @@ void nes::CPU::BVS(AddressingMode mode)
 void nes::CPU::CLC(AddressingMode mode)
 {
 	P &= ~(1 << 0);
+	++PC;
+	CurrentCycle += 2;
 }
 
 void nes::CPU::CLD(AddressingMode mode)
