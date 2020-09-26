@@ -1411,6 +1411,130 @@ void nes::CPU::JSR(AddressingMode mode)
 
 void nes::CPU::LDA(AddressingMode mode)
 {
+	std::uint8_t value = 0;
+	std::uint16_t initialPC = PC;
+
+	if (mode == AddressingMode::Immediate)
+	{
+		value = RamRef.ReadByte(PC + 1);
+		PC += 2;
+		CurrentCycle += 2;
+	}
+	else if (mode == AddressingMode::ZeroPage)
+	{
+		std::uint16_t address = RamRef.ReadByte(PC + 1);
+		value = RamRef.ReadByte(address);
+		PC += 2;
+		CurrentCycle += 3;
+	}
+	else if (mode == AddressingMode::ZeroPageX)
+	{
+		std::uint16_t address = RamRef.ReadByte(PC + 1);
+		address += X;
+		value = RamRef.ReadByte(address);
+		PC += 2;
+
+		CurrentCycle += 4;
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+		std::uint8_t msb = RamRef.ReadByte(PC + 2);
+		std::uint16_t address = ((msb << 8) | lsb);
+		value = RamRef.ReadByte(address);
+		PC += 3;
+		CurrentCycle += 4;
+	}
+	else if (mode == AddressingMode::AbsoluteX)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+		std::uint8_t msb = RamRef.ReadByte(PC + 2);
+		std::uint16_t address = ((msb << 8) | lsb);
+		address += X;
+		value = RamRef.ReadByte(address);
+
+		PC += 3;
+		CurrentCycle += 4;
+
+		// Crossed a page boundary
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			++CurrentCycle;
+		}
+	}
+	else if (mode == AddressingMode::AbsoluteY)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+		std::uint8_t msb = RamRef.ReadByte(PC + 2);
+		std::uint16_t address = ((msb << 8) | lsb);
+		address += Y;
+		value = RamRef.ReadByte(address);
+
+		PC += 3;
+		CurrentCycle += 4;
+
+		// Crossed a page boundary
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			++CurrentCycle;
+		}
+	}
+	else if (mode == AddressingMode::IndirectX)
+	{
+		std::uint8_t zeroPageTableAddress = RamRef.ReadByte(PC + 1) + X;	// Can wrap around
+
+		// Cast to wider type
+		std::uint16_t address = zeroPageTableAddress;
+
+		std::uint8_t lsb = RamRef.ReadByte(address);
+		std::uint8_t msb = RamRef.ReadByte(address + 1);
+
+		// Construct a target address
+		std::uint16_t targetAddress = ((msb << 8) | lsb);
+
+		// Read the value from the target address
+		value = RamRef.ReadByte(targetAddress);
+
+		CurrentCycle += 6;
+		PC += 2;
+	}
+	else if (mode == AddressingMode::IndirectY)
+	{
+		// Zero page location of the lsb of the 16 bit address
+		std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
+		std::uint16_t targetAddress = RamRef.ReadByte(zeroPageAddress) + Y;
+
+		// Read the value from the target address
+		value = RamRef.ReadByte(targetAddress);
+
+		CurrentCycle += 5;
+		PC += 2;
+
+		// Crossed a page boundary
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			++CurrentCycle;
+		}
+	}
+	else
+	{
+		std::cerr << "LDA - Unknown addressing mode.\n";
+	}
+
+	// Set zero flag
+	if (value == 0)
+	{
+		P |= (1 << 1);
+	}
+
+	// Set negative flag
+	if ((value & (1 << 7)) != 0)
+	{
+		P |= (1 << 7);
+	}
+
+	// Store in the A register
+	A = value;
 }
 
 void nes::CPU::LDX(AddressingMode mode)
