@@ -1057,23 +1057,18 @@ bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uin
 
 void nes::CPU::ADC(AddressingMode mode)
 {
-	std::cout << "OP ADC" << '\n';
 }
 
 void nes::CPU::AND(AddressingMode mode)
 {
-	std::cout << "OP AND" << '\n';
 }
 
 void nes::CPU::ASL(AddressingMode mode)
 {
-	std::cout << "OP ASL" << '\n';
 }
 
 void nes::CPU::BCC(AddressingMode mode)
 {
-	std::cout << "OP BCC" << '\n';
-
 	// Carry flag is clear
 	if ((P & (1 << 0)) == 0)
 	{
@@ -1085,8 +1080,6 @@ void nes::CPU::BCC(AddressingMode mode)
 
 void nes::CPU::BCS(AddressingMode mode)
 {
-	std::cout << "OP BCS" << '\n';
-
 	if (mode != AddressingMode::Relative)
 	{
 		// Addressing mode is not used, but it is good to check for any
@@ -1122,8 +1115,6 @@ void nes::CPU::BCS(AddressingMode mode)
 
 void nes::CPU::BEQ(AddressingMode mode)
 {
-	std::cout << "OP BEQ" << '\n';
-
 	// Zero flag is set
 	if ((P & (1 << 1)) != 0)
 	{
@@ -1135,13 +1126,10 @@ void nes::CPU::BEQ(AddressingMode mode)
 
 void nes::CPU::BIT(AddressingMode mode)
 {
-	std::cout << "OP BIT" << '\n';
 }
 
 void nes::CPU::BMI(AddressingMode mode)
 {
-	std::cout << "OP BMI" << '\n';
-
 	// Negative flag is set
 	if ((P & (1 << 7)) != 0)
 	{
@@ -1153,8 +1141,6 @@ void nes::CPU::BMI(AddressingMode mode)
 
 void nes::CPU::BNE(AddressingMode mode)
 {
-	std::cout << "OP BNE" << '\n';
-
 	// Zero flag is clear
 	if ((P & (1 << 1)) == 0)
 	{
@@ -1166,8 +1152,6 @@ void nes::CPU::BNE(AddressingMode mode)
 
 void nes::CPU::BPL(AddressingMode mode)
 {
-	std::cout << "OP BPL" << '\n';
-
 	// Negative flag is clear
 	if ((P & (1 << 7)) == 0)
 	{
@@ -1179,13 +1163,10 @@ void nes::CPU::BPL(AddressingMode mode)
 
 void nes::CPU::BRK(AddressingMode mode)
 {
-	std::cout << "OP BRK" << '\n';
 }
 
 void nes::CPU::BVC(AddressingMode mode)
 {
-	std::cout << "OP BVC" << '\n';
-
 	// Overflow flag is clear
 	if ((P & (1 << 6)) == 0)
 	{
@@ -1197,8 +1178,6 @@ void nes::CPU::BVC(AddressingMode mode)
 
 void nes::CPU::BVS(AddressingMode mode)
 {
-	std::cout << "OP BVS" << '\n';
-
 	// Overflow flag is set
 	if ((P & (1 << 6)) != 0)
 	{
@@ -1210,56 +1189,42 @@ void nes::CPU::BVS(AddressingMode mode)
 
 void nes::CPU::CLC(AddressingMode mode)
 {
-	std::cout << "OP CLC" << '\n';
-
 	P &= ~(1 << 0);
 }
 
 void nes::CPU::CLD(AddressingMode mode)
 {
-	std::cout << "OP CLC" << '\n';
-
 	P &= ~(1 << 3);
 }
 
 void nes::CPU::CLI(AddressingMode mode)
 {
-	std::cout << "OP CLI" << '\n';
-
 	P &= ~(1 << 2);
 }
 
 void nes::CPU::CLV(AddressingMode mode)
 {
-	std::cout << "OP CLV" << '\n';
-
 	P &= ~(1 << 6);
 }
 
 void nes::CPU::CMP(AddressingMode mode)
 {
-	std::cout << "OP CMP" << '\n';
 }
 
 void nes::CPU::CPX(AddressingMode mode)
 {
-	std::cout << "OP CPX" << '\n';
 }
 
 void nes::CPU::CPY(AddressingMode mode)
 {
-	std::cout << "OP CPY" << '\n';
 }
 
 void nes::CPU::DEC(AddressingMode mode)
 {
-	std::cout << "OP DEC" << '\n';
 }
 
 void nes::CPU::DEX(AddressingMode mode)
 {
-	std::cout << "OP DEX" << '\n';
-
 	// Decrement X
 	X -= 1;
 
@@ -1288,8 +1253,6 @@ void nes::CPU::DEX(AddressingMode mode)
 
 void nes::CPU::DEY(AddressingMode mode)
 {
-	std::cout << "OP DEY" << '\n';
-
 	// Decrement Y
 	Y -= 1;
 
@@ -1318,18 +1281,14 @@ void nes::CPU::DEY(AddressingMode mode)
 
 void nes::CPU::EOR(AddressingMode mode)
 {
-	std::cout << "OP EOR" << '\n';
 }
 
 void nes::CPU::INC(AddressingMode mode)
 {
-	std::cout << "OP INC" << '\n';
 }
 
 void nes::CPU::INX(AddressingMode mode)
 {
-	std::cout << "OP INX" << '\n';
-
 	// Increment X
 	X += 1;
 
@@ -1358,8 +1317,6 @@ void nes::CPU::INX(AddressingMode mode)
 
 void nes::CPU::INY(AddressingMode mode)
 {
-	std::cout << "OP INY" << '\n';
-
 	// Increment Y
 	Y += 1;
 
@@ -1388,8 +1345,6 @@ void nes::CPU::INY(AddressingMode mode)
 
 void nes::CPU::JMP(AddressingMode mode)
 {
-	std::cout << "OP JMP" << '\n';
-
 	if (mode == AddressingMode::Absolute)
 	{
 		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
@@ -1418,8 +1373,6 @@ void nes::CPU::JMP(AddressingMode mode)
 
 void nes::CPU::JSR(AddressingMode mode)
 {
-	std::cout << "OP JSR" << '\n';
-
 	if (mode == AddressingMode::Absolute)
 	{
 		// Store the current address minus one on the stack
@@ -1444,13 +1397,10 @@ void nes::CPU::JSR(AddressingMode mode)
 
 void nes::CPU::LDA(AddressingMode mode)
 {
-	std::cout << "OP LDA" << '\n';
 }
 
 void nes::CPU::LDX(AddressingMode mode)
 {
-	std::cout << "OP LDX" << '\n';
-
 	std::uint8_t value = 0;
 
 	if (mode == AddressingMode::Immediate)
@@ -1529,8 +1479,6 @@ void nes::CPU::LDX(AddressingMode mode)
 
 void nes::CPU::LDY(AddressingMode mode)
 {
-	std::cout << "OP LDY" << '\n';
-
 	std::uint8_t value = 0;
 
 	if (mode == AddressingMode::Immediate)
@@ -1609,13 +1557,10 @@ void nes::CPU::LDY(AddressingMode mode)
 
 void nes::CPU::LSR(AddressingMode mode)
 {
-	std::cout << "OP LSR" << '\n';
 }
 
 void nes::CPU::NOP(AddressingMode mode)
 {
-	std::cout << "OP NOP" << '\n';
-
 	++PC;
 
 	CurrentCycle += 2;
@@ -1623,58 +1568,46 @@ void nes::CPU::NOP(AddressingMode mode)
 
 void nes::CPU::ORA(AddressingMode mode)
 {
-	std::cout << "OP ORA" << '\n';
 }
 
 void nes::CPU::PHA(AddressingMode mode)
 {
-	std::cout << "OP PHA" << '\n';
 }
 
 void nes::CPU::PHP(AddressingMode mode)
 {
-	std::cout << "OP PHP" << '\n';
 }
 
 void nes::CPU::PLA(AddressingMode mode)
 {
-	std::cout << "OP PLA" << '\n';
 }
 
 void nes::CPU::PLP(AddressingMode mode)
 {
-	std::cout << "OP PLP" << '\n';
 }
 
 void nes::CPU::ROL(AddressingMode mode)
 {
-	std::cout << "OP ROL" << '\n';
 }
 
 void nes::CPU::ROR(AddressingMode mode)
 {
-	std::cout << "OP ROR" << '\n';
 }
 
 void nes::CPU::RTI(AddressingMode mode)
 {
-	std::cout << "OP RTI" << '\n';
 }
 
 void nes::CPU::RTS(AddressingMode mode)
 {
-	std::cout << "OP RTS" << '\n';
 }
 
 void nes::CPU::SBC(AddressingMode mode)
 {
-	std::cout << "OP SBC" << '\n';
 }
 
 void nes::CPU::SEC(AddressingMode mode)
 {
-	std::cout << "OP SEC" << '\n';
-
 	P |= (1 << 0);
 
 	++PC;
@@ -1684,25 +1617,20 @@ void nes::CPU::SEC(AddressingMode mode)
 
 void nes::CPU::SED(AddressingMode mode)
 {
-	std::cout << "OP SED" << '\n';
 	P |= (1 << 3);
 }
 
 void nes::CPU::SEI(AddressingMode mode)
 {
-	std::cout << "OP SEI" << '\n';
 	P |= (1 << 2);
 }
 
 void nes::CPU::STA(AddressingMode mode)
 {
-	std::cout << "OP STA" << '\n';
 }
 
 void nes::CPU::STX(AddressingMode mode)
 {
-	std::cout << "OP STX" << '\n';
-
 	if (mode == AddressingMode::ZeroPage)
 	{
 		std::uint16_t address = RamRef.ReadByte(PC + 1);
@@ -1738,8 +1666,6 @@ void nes::CPU::STX(AddressingMode mode)
 
 void nes::CPU::STY(AddressingMode mode)
 {
-	std::cout << "OP STY" << '\n';
-
 	if (mode == AddressingMode::ZeroPage)
 	{
 		std::uint16_t address = RamRef.ReadByte(PC + 1);
@@ -1775,8 +1701,6 @@ void nes::CPU::STY(AddressingMode mode)
 
 void nes::CPU::TAX(AddressingMode mode)
 {
-	std::cout << "OP TAX" << '\n';
-
 	// Transfer the accumulator to the X register
 	X = A;
 
@@ -1805,8 +1729,6 @@ void nes::CPU::TAX(AddressingMode mode)
 
 void nes::CPU::TAY(AddressingMode mode)
 {
-	std::cout << "OP TAY" << '\n';
-
 	// Transfer the accumulator to the Y register
 	Y = A;
 
@@ -1835,8 +1757,6 @@ void nes::CPU::TAY(AddressingMode mode)
 
 void nes::CPU::TSX(AddressingMode mode)
 {
-	std::cout << "OP TSX" << '\n';
-
 	// Transfer the stack pointer to the X register
 	X = SP;
 
@@ -1865,8 +1785,6 @@ void nes::CPU::TSX(AddressingMode mode)
 
 void nes::CPU::TXA(AddressingMode mode)
 {
-	std::cout << "OP TXA" << '\n';
-
 	// Transfer the X register to the accumulator
 	A = X;
 
@@ -1895,15 +1813,11 @@ void nes::CPU::TXA(AddressingMode mode)
 
 void nes::CPU::TXS(AddressingMode mode)
 {
-	std::cout << "OP TXS" << '\n';
-
 	SP = X;
 }
 
 void nes::CPU::TYA(AddressingMode mode)
 {
-	std::cout << "OP TYA" << '\n';
-
 	// Transfer the Y register to the accumulator
 	A = Y;
 
