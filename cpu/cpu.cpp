@@ -1636,16 +1636,26 @@ void nes::CPU::LDA(AddressingMode mode)
 		std::cerr << "LDA - Unknown addressing mode.\n";
 	}
 
-	// Set zero flag
 	if (value == 0)
 	{
+		// Set zero flag
 		P |= (1 << 1);
 	}
+	else
+	{
+		// Unset zero flag
+		P &= ~(1 << 1);
+	}
 
-	// Set negative flag
 	if ((value & (1 << 7)) != 0)
 	{
+		// Set negative flag
 		P |= (1 << 7);
+	}
+	else
+	{
+		// Unset negative flag
+		P &= ~(1 << 7);
 	}
 
 	// Store in the A register
