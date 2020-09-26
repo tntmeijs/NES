@@ -2,7 +2,6 @@
 #define NES_CPU_LOGGER_HPP
 
 #include <cstdint>
-#include <fstream>
 #include <string_view>
 
 namespace nes
@@ -11,7 +10,7 @@ namespace nes
 	class RAM;
 
 	/**
-	 * Logs the CPU state to a file
+	 * Logs the CPU state to the console
 	 */
 	class CpuLogger
 	{
@@ -24,26 +23,14 @@ namespace nes
 		CpuLogger(const CPU& cpuRef, const RAM& ramRef);
 
 		/**
-		 * Open a new log file for writing
-		 */
-		bool Initialize();
-
-		/**
-		 * Flush the logs to the file and close the handle
-		 */
-		void FlushAndClose();
-
-		/**
 		 * Call this function before actually executing the instruction
-		 * This function will log the state of the CPU to a file
+		 * This function will log the state of the CPU to the console
 		 * @param	name	Name of the instruction to execute
 		 * @param	num		Number of bytes this instruction uses
 		 */
 		void LogOperation(std::string_view name, std::uint8_t num);
 
 	private:
-		std::ofstream OutputFile;
-
 		const CPU& CpuRef;
 		const RAM& RamRef;
 	};

@@ -36,11 +36,6 @@ namespace nes
         CPU(RAM& ramRef);
 
         /**
-         * Deallocate resources
-         */
-        void Destroy();
-
-        /**
          * Reset the vector back to the default memory address
          * This address is given by the reset vector at 0xFFFD and 0xFFFC
          */
