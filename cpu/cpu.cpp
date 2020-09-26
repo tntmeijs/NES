@@ -1,7 +1,6 @@
 #include "cpu.hpp"
 #include "ram/ram.hpp"
 
-#include <cmath>	// std::floor
 #include <iostream>
 #include <fstream>
 
@@ -1045,9 +1044,15 @@ std::uint8_t nes::CPU::PopStack()
 	return RamRef.ReadByte(address);
 }
 
-bool nes::CPU::DidCrossPageBoundary(std::uint16_t before, std::uint16_t after) const
+bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after) const
 {
-	return (std::floor(before / 256) == std::floor(after / 256));
+	// Detect if the lower byte wrapped around
+	std::uint16_t lowerBefore = (before & 0xFF);
+	std::uint16_t lowerAfter = (after & 0xFF);
+
+	// If the newer value is less than the value before incrementing the address,
+	// a page boundary was crossed
+	return (lowerAfter < lowerBefore);
 }
 
 void nes::CPU::ADC(AddressingMode mode)
@@ -1082,13 +1087,37 @@ void nes::CPU::BCS(AddressingMode mode)
 {
 	std::cout << "OP BCS" << '\n';
 
+	if (mode != AddressingMode::Relative)
+	{
+		// Addressing mode is not used, but it is good to check for any
+		// inconsistencies regardless
+		std::cerr << "BCS - Unknown addressing mode.\n";
+	}
+
+	CurrentCycle += 2;
+
 	// Carry flag is set
 	if ((P & (1 << 0)) != 0)
 	{
-		// Perform branching
+		std::uint16_t initialPC = PC;
+
 		std::int8_t displacement = RamRef.ReadByte(PC + 1);
+
+		// Perform branching
 		PC += displacement;
+
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			CurrentCycle += 2;
+		}
+		else
+		{
+			CurrentCycle += 1;
+		}
 	}
+
+	// Always move past the branch bytes, regardless of the branch outcome
+	PC += 2;
 }
 
 void nes::CPU::BEQ(AddressingMode mode)
@@ -1472,7 +1501,7 @@ void nes::CPU::LDX(AddressingMode mode)
 		CurrentCycle += 4;
 
 		// Crossed a page boundary
-		if (DidCrossPageBoundary(initialPC, PC))
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
 		{
 			++CurrentCycle;
 		}
@@ -1552,7 +1581,7 @@ void nes::CPU::LDY(AddressingMode mode)
 		CurrentCycle += 4;
 
 		// Crossed a page boundary
-		if (DidCrossPageBoundary(initialPC, PC))
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
 		{
 			++CurrentCycle;
 		}

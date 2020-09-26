@@ -130,7 +130,7 @@ namespace nes
          * @param   after   Address to check against
          * @return  True when a page boundary was crossed, false when not
          */
-        bool DidCrossPageBoundary(std::uint16_t before, std::uint16_t after) const;
+        bool DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after) const;
 
     private:
         void ADC(AddressingMode mode);
