@@ -1161,6 +1161,61 @@ void nes::CPU::BEQ(AddressingMode mode)
 
 void nes::CPU::BIT(AddressingMode mode)
 {
+	std::uint8_t value = 0;
+
+	if (mode == AddressingMode::ZeroPage)
+	{
+		std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
+		std::uint16_t targetAddress = RamRef.ReadByte(zeroPageAddress);
+		value = RamRef.ReadByte(targetAddress);
+
+		CurrentCycle += 3;
+		PC += 2;
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		std::uint8_t lsb = RamRef.ReadByte(PC);
+		std::uint8_t msb = RamRef.ReadByte(PC + 1);
+		std::uint16_t targetAddress = ((msb << 8) | lsb);
+		value = RamRef.ReadByte(targetAddress);
+
+		CurrentCycle += 4;
+		PC += 3;
+	}
+	else
+	{
+		std::cerr << "BIT - Unknown addressing mode.\n";
+	}
+
+	// Set the zero flag if the BIT test is non-zero
+	if ((A & value) != 0)
+	{
+		P |= (1 << 1);
+	}
+	else
+	{
+		P &= ~(1 << 1);
+	}
+
+	// Set the overflow flag to the value of the 6th bit
+	if ((value & (1 << 6)) != 0)
+	{
+		P |= (1 << 6);
+	}
+	else
+	{
+		P &= ~(1 << 6);
+	}
+
+	// Set the negative flag to the value of the 7th bit
+	if ((value & (1 << 7)) != 0)
+	{
+		P |= (1 << 7);
+	}
+	else
+	{
+		P &= ~(1 << 7);
+	}
 }
 
 void nes::CPU::BMI(AddressingMode mode)
