@@ -1127,13 +1127,36 @@ void nes::CPU::BCS(AddressingMode mode)
 
 void nes::CPU::BEQ(AddressingMode mode)
 {
+	if (mode != AddressingMode::Relative)
+	{
+		// Addressing mode is not used, but it is good to check for any
+		// inconsistencies regardless
+		std::cerr << "BEQ - Unknown addressing mode.\n";
+	}
+
+	CurrentCycle += 2;
+
 	// Zero flag is set
 	if ((P & (1 << 1)) != 0)
 	{
-		// Perform branching
+		std::uint16_t initialPC = PC;
 		std::int8_t displacement = RamRef.ReadByte(PC + 1);
+
+		// Perform branching
 		PC += displacement;
+
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			CurrentCycle += 2;
+		}
+		else
+		{
+			CurrentCycle += 1;
+		}
 	}
+
+	// Always move past the branch bytes, regardless of the branch outcome
+	PC += 2;
 }
 
 void nes::CPU::BIT(AddressingMode mode)
