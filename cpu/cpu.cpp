@@ -1083,7 +1083,6 @@ void nes::CPU::BCS(AddressingMode mode)
 	if ((P & (1 << 0)) != 0)
 	{
 		std::uint16_t initialPC = PC;
-
 		std::int8_t displacement = RamRef.ReadByte(PC + 1);
 
 		// Perform branching
