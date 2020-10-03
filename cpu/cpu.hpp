@@ -85,6 +85,11 @@ namespace nes
          */
         std::uint64_t GetCurrentCycle() const;
 
+        /**
+         * Reset the CPU to its default state
+         */
+        void SetDefaultState();
+
     private:
         /**
          * All possible addressing modes

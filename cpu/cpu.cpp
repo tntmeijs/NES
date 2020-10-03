@@ -15,12 +15,7 @@ nes::CPU::CPU(RAM& ramRef) :
 	Logger(*this, ramRef),
 	CurrentCycle(0)
 {
-	// https://wiki.nesdev.com/w/index.php/CPU_power_up_state
-	P = 0x24;
-	SP = 0xFD;
-
-	// http://forum.6502.org/viewtopic.php?f=4&t=5704#:~:text=On%20the%206502%2C%20the%20reset,all%20interrupts)%20takes%207%20cycles.
-	CurrentCycle = 7;
+	SetDefaultState();
 }
 
 void nes::CPU::SetProgramCounterToResetVector()
@@ -89,6 +84,16 @@ std::uint8_t nes::CPU::GetRegister(RegisterType type) const
 std::uint64_t nes::CPU::GetCurrentCycle() const
 {
 	return CurrentCycle;
+}
+
+void nes::CPU::SetDefaultState()
+{
+	// https://wiki.nesdev.com/w/index.php/CPU_power_up_state
+	P = 0x24;
+	SP = 0xFD;
+
+	// http://forum.6502.org/viewtopic.php?f=4&t=5704#:~:text=On%20the%206502%2C%20the%20reset,all%20interrupts)%20takes%207%20cycles.
+	CurrentCycle = 7;
 }
 
 void nes::CPU::ProcessOpCode(std::uint8_t opCode)

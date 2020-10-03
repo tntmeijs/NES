@@ -30,6 +30,12 @@ void nes::RAM::Delete()
 	}
 }
 
+void nes::RAM::Clear()
+{
+	Delete();
+	Initialize(Size);
+}
+
 const std::uint8_t nes::RAM::ReadByte(std::uint16_t address) const
 {
 	return Memory[address];

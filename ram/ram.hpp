@@ -36,6 +36,11 @@ namespace nes
 		void Delete();
 
 		/**
+		 * Deallocates and initializes the existing memory again to reset its state
+		 */
+		void Clear();
+
+		/**
 		 * Read a byte from memory
 		 * @param	address		Address pointing to the byte to read
 		 * @return	Value of the byte at the specified memory address
