@@ -1276,8 +1276,8 @@ void nes::CPU::BIT(AddressingMode mode)
 		std::cerr << "BIT - Unknown addressing mode.\n";
 	}
 
-	// Set the zero flag if the BIT test is non-zero
-	if ((A & value) != 0)
+	// Set the zero flag if the BIT result is zero
+	if ((A & value) == 0)
 	{
 		P |= (1 << 1);
 	}
