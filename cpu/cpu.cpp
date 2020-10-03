@@ -1641,24 +1641,14 @@ void nes::CPU::INY(AddressingMode mode)
 
 void nes::CPU::JMP(AddressingMode mode)
 {
+	PC = GetTargetAddress(mode);
+
 	if (mode == AddressingMode::Absolute)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		PC = ((msb << 8) | lsb);
-
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::Indirect)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-
-		lsb = RamRef.ReadByte(address);
-		msb = RamRef.ReadByte(address + 1);
-		PC = ((msb << 8) | lsb);
-
 		CurrentCycle += 5;
 	}
 	else
@@ -1679,10 +1669,7 @@ void nes::CPU::JSR(AddressingMode mode)
 		PushStack(msb);
 
 		// Jump to the target location
-		lsb = RamRef.ReadByte(PC + 1);
-		msb = RamRef.ReadByte(PC + 2);
-		PC = ((msb << 8) | lsb);
-
+		PC = GetTargetAddress(mode);
 		CurrentCycle += 6;
 	}
 	else
@@ -1704,37 +1691,26 @@ void nes::CPU::LDA(AddressingMode mode)
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageX)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		address += X;
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
 
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 3;
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::AbsoluteX)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		address += X;
-		value = RamRef.ReadByte(address);
-
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 3;
 		CurrentCycle += 4;
 
@@ -1746,12 +1722,7 @@ void nes::CPU::LDA(AddressingMode mode)
 	}
 	else if (mode == AddressingMode::AbsoluteY)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		address += Y;
-		value = RamRef.ReadByte(address);
-
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 3;
 		CurrentCycle += 4;
 
@@ -1763,32 +1734,13 @@ void nes::CPU::LDA(AddressingMode mode)
 	}
 	else if (mode == AddressingMode::IndirectX)
 	{
-		std::uint8_t zeroPageTableAddress = RamRef.ReadByte(PC + 1) + X;	// Can wrap around
-
-		// Cast to wider type
-		std::uint16_t address = zeroPageTableAddress;
-
-		std::uint8_t lsb = RamRef.ReadByte(address);
-		std::uint8_t msb = RamRef.ReadByte(address + 1);
-
-		// Construct a target address
-		std::uint16_t targetAddress = ((msb << 8) | lsb);
-
-		// Read the value from the target address
-		value = RamRef.ReadByte(targetAddress);
-
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		CurrentCycle += 6;
 		PC += 2;
 	}
 	else if (mode == AddressingMode::IndirectY)
 	{
-		// Zero page location of the lsb of the 16 bit address
-		std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
-		std::uint16_t targetAddress = RamRef.ReadByte(zeroPageAddress) + Y;
-
-		// Read the value from the target address
-		value = RamRef.ReadByte(targetAddress);
-
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		CurrentCycle += 5;
 		PC += 2;
 
@@ -1842,42 +1794,28 @@ void nes::CPU::LDX(AddressingMode mode)
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
-
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageY)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		address += Y;
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
-
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 3;
-
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::AbsoluteY)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		address += Y;
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 
 		std::uint16_t initialPC = PC;
 		PC += 3;
-
 		CurrentCycle += 4;
 
 		// Crossed a page boundary
@@ -1930,42 +1868,28 @@ void nes::CPU::LDY(AddressingMode mode)
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
-
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageX)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		address += X;
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
-
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		value = RamRef.ReadByte(address);
+		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 3;
-
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::AbsoluteX)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		address += X;
-		value = RamRef.ReadByte(address);
-		
+		value = RamRef.ReadByte(GetTargetAddress(mode));
+
 		std::uint16_t initialPC = PC;
 		PC += 3;
-
 		CurrentCycle += 4;
 
 		// Crossed a page boundary
@@ -2077,8 +2001,7 @@ void nes::CPU::SEI(AddressingMode mode)
 
 void nes::CPU::STA(AddressingMode mode)
 {
-	std::uint16_t address = GetTargetAddress(mode);
-	RamRef.WriteByte(address, A);
+	RamRef.WriteByte(GetTargetAddress(mode), A);
 
 	if (mode == AddressingMode::ZeroPage)
 	{
@@ -2123,31 +2046,21 @@ void nes::CPU::STA(AddressingMode mode)
 
 void nes::CPU::STX(AddressingMode mode)
 {
+	RamRef.WriteByte(GetTargetAddress(mode), X);
+
 	if (mode == AddressingMode::ZeroPage)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		RamRef.WriteByte(address, X);
 		PC += 2;
-
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageY)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		address += Y;
-		RamRef.WriteByte(address, X);
 		PC += 2;
-
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		RamRef.WriteByte(address, X);
 		PC += 3;
-
 		CurrentCycle += 4;
 	}
 	else
@@ -2158,31 +2071,21 @@ void nes::CPU::STX(AddressingMode mode)
 
 void nes::CPU::STY(AddressingMode mode)
 {
+	RamRef.WriteByte(GetTargetAddress(mode), Y);
+
 	if (mode == AddressingMode::ZeroPage)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		RamRef.WriteByte(address, Y);
 		PC += 2;
-
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageX)
 	{
-		std::uint16_t address = RamRef.ReadByte(PC + 1);
-		address += Y;
-		RamRef.WriteByte(address, Y);
 		PC += 2;
-
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-		std::uint8_t msb = RamRef.ReadByte(PC + 2);
-		std::uint16_t address = ((msb << 8) | lsb);
-		RamRef.WriteByte(address, Y);
 		PC += 3;
-
 		CurrentCycle += 4;
 	}
 	else
