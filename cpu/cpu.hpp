@@ -67,6 +67,12 @@ namespace nes
         std::uint16_t GetProgramCounter() const;
 
         /**
+         * Get the current value of the stack pointer
+         * @return  Current value of the stack pointer
+         */
+        std::uint8_t GetStackPointer() const;
+
+        /**
          * Retrieve the value of a register
          * @param   type    Register to retrieve its value for
          * @return  Register's value

@@ -56,6 +56,11 @@ std::uint16_t nes::CPU::GetProgramCounter() const
 	return PC;
 }
 
+std::uint8_t nes::CPU::GetStackPointer() const
+{
+	return SP;
+}
+
 std::uint8_t nes::CPU::GetRegister(RegisterType type) const
 {
 	switch (type)
@@ -1965,6 +1970,14 @@ void nes::CPU::RTI(AddressingMode mode)
 
 void nes::CPU::RTS(AddressingMode mode)
 {
+	// The PC was written to the stack little-endian (lsb first)
+	// To retrieve it, we have to pop the stack in reverse
+	// so, big-endian (msb first)
+	std::uint8_t msb = PopStack();
+	std::uint8_t lsb = PopStack();
+	std::uint16_t address = ((msb << 8) | lsb);
+	PC = address;
+	++PC;
 }
 
 void nes::CPU::SBC(AddressingMode mode)

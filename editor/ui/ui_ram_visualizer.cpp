@@ -38,12 +38,17 @@ void nes::UIRamVisualizer::Draw() const
 				if (CpuRef.GetProgramCounter() == address - 1)
 				{
 					// If the program counter points to this byte, highlight it
-					rowText << "(" << std::setw(2) << valueAtAddress << ")";
+					rowText << '(' << std::setw(2) << valueAtAddress << ')';
+				}
+				else if (CpuRef.GetStackPointer() == address - 1)
+				{
+					// If the stack pointer points to this byte, highlight it
+					rowText << '[' << std::setw(2) << valueAtAddress << ']';
 				}
 				else
 				{
 					// Else, display it with the usual spacing
-					rowText << " " << std::setw(2) << valueAtAddress << " ";
+					rowText << ' ' << std::setw(2) << valueAtAddress << ' ';
 				}
 			}
 
