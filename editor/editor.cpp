@@ -81,6 +81,16 @@ void nes::Editor::DrawUI() const
 					RamRef.Clear();
 				}
 
+				ImGui::Separator();
+
+				ImGui::Text("Reset ALL:");
+				ImGui::SameLine();
+				if (ImGui::Button("RESET"))
+				{
+					CpuRef.SetDefaultState();
+					RamRef.Clear();
+				}
+
 				ImGui::EndMenu();
 			}
 
