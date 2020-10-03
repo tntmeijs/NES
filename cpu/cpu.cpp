@@ -1035,13 +1035,17 @@ void nes::CPU::PushStack(std::uint8_t value)
 
 std::uint8_t nes::CPU::PopStack()
 {
-	// Stack grows downwards
-	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
-	
 	// Move stack pointer
 	++SP;
 
-	return RamRef.ReadByte(address);
+	// Stack grows downwards
+	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
+	std::uint8_t value = RamRef.ReadByte(address);
+
+	// Clear value from stack
+	RamRef.WriteByte(address, 0);
+
+	return value;
 }
 
 bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after) const
