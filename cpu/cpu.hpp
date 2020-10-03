@@ -127,6 +127,14 @@ namespace nes
          */
         bool DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after) const;
 
+        /**
+         * Retreieve the target address of an instruction based on the addressing
+         * mode specified
+         * @param   mode    Addressing mode to use
+         * @return  Target address of the instruction
+         */
+        std::uint16_t GetTargetAddress(AddressingMode mode) const;
+
     private:
         void ADC(AddressingMode mode);
         void AND(AddressingMode mode);

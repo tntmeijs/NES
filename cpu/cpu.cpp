@@ -1045,6 +1045,95 @@ bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uin
 	return (lowerAfter < lowerBefore);
 }
 
+std::uint16_t nes::CPU::GetTargetAddress(AddressingMode mode) const
+{
+	switch (mode)
+	{
+		case nes::CPU::AddressingMode::Absolute:
+			{
+				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+				std::uint8_t msb = RamRef.ReadByte(PC + 2);
+				std::uint16_t address = ((msb << 8) | lsb);
+				return address;
+			}
+			break;
+		case nes::CPU::AddressingMode::AbsoluteX:
+			{
+				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+				std::uint8_t msb = RamRef.ReadByte(PC + 2);
+				std::uint16_t address = ((msb << 8) | lsb);
+				return (address + X);
+			}
+			break;
+		case nes::CPU::AddressingMode::AbsoluteY:
+			{
+				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+				std::uint8_t msb = RamRef.ReadByte(PC + 2);
+				std::uint16_t address = ((msb << 8) | lsb);
+				return (address + Y);
+			}
+			break;
+		case nes::CPU::AddressingMode::Indirect:
+			{
+				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
+				std::uint8_t msb = RamRef.ReadByte(PC + 2);
+				std::uint16_t address = ((msb << 8) | lsb);
+
+				std::uint8_t targetLsb = RamRef.ReadByte(address);
+				std::uint8_t targetMsb = RamRef.ReadByte(address + 1);
+				std::uint16_t targetAddress = ((targetMsb << 8) | targetLsb);
+				return targetAddress;
+			}
+			break;
+		case nes::CPU::AddressingMode::IndirectX:
+			{
+				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
+				zeroPageAddress += X;	// May wrap around
+
+				std::uint8_t lsb = RamRef.ReadByte(zeroPageAddress);
+				std::uint8_t msb = RamRef.ReadByte(zeroPageAddress + 1);
+				std::uint16_t address = ((msb << 8) | lsb);
+				return address;
+			}
+			break;
+		case nes::CPU::AddressingMode::IndirectY:
+			{
+				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
+				std::uint16_t address = RamRef.ReadByte(zeroPageAddress);
+				return (address + Y);
+			}
+			break;
+		case nes::CPU::AddressingMode::ZeroPage:
+			{
+				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
+				return zeroPageAddress;
+			}
+			break;
+		case nes::CPU::AddressingMode::ZeroPageX:
+			{
+				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
+				zeroPageAddress += X;	// May wrap around
+
+				return zeroPageAddress;
+			}
+			break;
+		case nes::CPU::AddressingMode::ZeroPageY:
+			{
+				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
+				zeroPageAddress += Y;	// May wrap around
+
+				return zeroPageAddress;
+			}
+			break;
+		default:
+			std::cerr << "Invalid addressing mode." << std::endl;
+			break;
+	}
+
+	// Only ever returned when the addressing mode is invalid
+	return 0;
+}
+
 void nes::CPU::ADC(AddressingMode mode)
 {
 }
@@ -1988,6 +2077,48 @@ void nes::CPU::SEI(AddressingMode mode)
 
 void nes::CPU::STA(AddressingMode mode)
 {
+	std::uint16_t address = GetTargetAddress(mode);
+	RamRef.WriteByte(address, A);
+
+	if (mode == AddressingMode::ZeroPage)
+	{
+		PC += 2;
+		CurrentCycle += 3;
+	}
+	else if (mode == AddressingMode::ZeroPageX)
+	{
+		PC += 2;
+		CurrentCycle += 4;
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		PC += 3;
+		CurrentCycle += 4;
+	}
+	else if (mode == AddressingMode::AbsoluteX)
+	{
+		PC += 3;
+		CurrentCycle += 5;
+	}
+	else if (mode == AddressingMode::AbsoluteY)
+	{
+		PC += 3;
+		CurrentCycle += 5;
+	}
+	else if (mode == AddressingMode::IndirectX)
+	{
+		PC += 2;
+		CurrentCycle += 6;
+	}
+	else if (mode == AddressingMode::IndirectY)
+	{
+		PC += 2;
+		CurrentCycle += 6;
+	}
+	else
+	{
+		std::cerr << "STA - Unknown addressing mode.\n";
+	}
 }
 
 void nes::CPU::STX(AddressingMode mode)
