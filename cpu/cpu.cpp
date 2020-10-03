@@ -1250,24 +1250,15 @@ void nes::CPU::BEQ(AddressingMode mode)
 
 void nes::CPU::BIT(AddressingMode mode)
 {
-	std::uint8_t value = 0;
+	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
 
 	if (mode == AddressingMode::ZeroPage)
 	{
-		std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
-		std::uint16_t targetAddress = RamRef.ReadByte(zeroPageAddress);
-		value = RamRef.ReadByte(targetAddress);
-
 		CurrentCycle += 3;
 		PC += 2;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		std::uint8_t lsb = RamRef.ReadByte(PC);
-		std::uint8_t msb = RamRef.ReadByte(PC + 1);
-		std::uint16_t targetAddress = ((msb << 8) | lsb);
-		value = RamRef.ReadByte(targetAddress);
-
 		CurrentCycle += 4;
 		PC += 3;
 	}
