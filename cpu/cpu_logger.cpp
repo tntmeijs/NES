@@ -2,7 +2,7 @@
 #include "cpu.hpp"
 #include "ram/ram.hpp"
 
-#include <ios> // std::hex / std::dec
+#include <ios> // std::uppercase / std::hex / std::dec
 #include <iostream>
 
 nes::CpuLogger::CpuLogger(const CPU& cpuRef, const RAM& ramRef) :
@@ -15,7 +15,7 @@ void nes::CpuLogger::LogOperation(std::string_view name, std::uint8_t num)
 	std::uint16_t programCounter = CpuRef.GetProgramCounter();
 
 	// Hexadecimal mode
-	std::cout << std::hex;
+	std::cout << std::uppercase << std::hex;
 
 	// Every 8-bit value is a 16-bit value to make the output stream treat all
 	// 8-bit values as numbers instead of characters
