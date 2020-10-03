@@ -61,7 +61,8 @@ namespace nes
         void MoveProgramCounter(std::int32_t offset);
 
         /**
-         * Get the current value of the program counter
+         * Get the current value of the program counter accounting for the offset
+         * in RAM
          * @return  Current value of the program counter
          */
         std::uint16_t GetProgramCounter() const;
@@ -70,7 +71,7 @@ namespace nes
          * Get the current value of the stack pointer
          * @return  Current value of the stack pointer
          */
-        std::uint8_t GetStackPointer() const;
+        std::uint16_t GetStackPointer() const;
 
         /**
          * Retrieve the value of a register
