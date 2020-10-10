@@ -2200,7 +2200,11 @@ void nes::CPU::PLP(AddressingMode mode)
 }
 
 void nes::CPU::PHA(AddressingMode mode)
-{}
+{
+	PushStack(A);
+	++PC;
+	CurrentCycle += 3;
+}
 
 void nes::CPU::ROL(AddressingMode mode)
 {
