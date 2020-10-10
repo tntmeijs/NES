@@ -2016,6 +2016,9 @@ void nes::CPU::SEC(AddressingMode mode)
 void nes::CPU::SED(AddressingMode mode)
 {
 	P |= (1 << 3);
+
+	++PC;
+	CurrentCycle += 2;
 }
 
 void nes::CPU::SEI(AddressingMode mode)
