@@ -1175,12 +1175,12 @@ bool nes::CPU::IsStatusFlagClear(StatusFlags flag) const
 
 bool nes::CPU::IsNthBitSet(std::uint8_t byte, std::uint8_t n) const
 {
-	return ((P & (1 << n)) != 0);
+	return ((byte & (1 << n)) != 0);
 }
 
 bool nes::CPU::IsNthBitClear(std::uint8_t byte, std::uint8_t n) const
 {
-	return ((P & (1 << n)) == 0);
+	return ((byte & (1 << n)) == 0);
 }
 
 void nes::CPU::ADC(AddressingMode mode)
