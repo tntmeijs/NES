@@ -2197,6 +2197,9 @@ void nes::CPU::PLA(AddressingMode mode)
 
 void nes::CPU::PLP(AddressingMode mode)
 {
+	P = PopStack();
+	++PC;
+	CurrentCycle += 4;
 }
 
 void nes::CPU::PHA(AddressingMode mode)
