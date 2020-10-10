@@ -187,6 +187,24 @@ namespace nes
          */
         bool IsStatusFlagClear(StatusFlags flag) const;
 
+		bool IsNthBitSet(std::uint8_t byte, std::uint8_t n) const;
+
+        /**
+         * Check if bit N has been set
+         * @param   byte    Byte to check
+         * @param   n       Bit to check
+         * @return  True when the flag is set, false when clear
+         */
+		bool IsNthBitSet(std::uint8_t byte, std::uint8_t n) const;
+
+        /**
+         * Check if bit N has been cleared
+         * @param   byte    Byte to check
+         * @param   n       Bit to check
+         * @return  True when the flag is clear, false when set
+         */
+        bool IsNthBitClear(std::uint8_t byte, std::uint8_t n) const;
+
     private:
         void ADC(AddressingMode mode);
         void AND(AddressingMode mode);
