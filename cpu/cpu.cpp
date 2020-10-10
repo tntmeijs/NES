@@ -2075,6 +2075,9 @@ void nes::CPU::INX(AddressingMode mode)
 		// Value is positive, unset negative flag
 		ClearStatusFlag(StatusFlags::Negative);
 	}
+
+	++PC;
+	CurrentCycle += 2;
 }
 
 void nes::CPU::INY(AddressingMode mode)
