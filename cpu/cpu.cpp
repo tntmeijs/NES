@@ -1962,6 +1962,9 @@ void nes::CPU::PHA(AddressingMode mode)
 
 void nes::CPU::PHP(AddressingMode mode)
 {
+	PushStack(P);
+	++PC;
+	CurrentCycle += 3;
 }
 
 void nes::CPU::PLA(AddressingMode mode)
