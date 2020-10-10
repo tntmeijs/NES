@@ -2,7 +2,8 @@
 #include "cpu.hpp"
 #include "ram/ram.hpp"
 
-#include <ios> // std::uppercase / std::hex / std::dec
+#include <ios>		// std::uppercase / std::hex / std::dec
+#include <iomanip>	// std::setfill / std::setw
 #include <iostream>
 #include <sstream>
 
@@ -39,32 +40,36 @@ void nes::CpuLogger::LogOperation(std::string_view name, std::uint8_t num)
 	std::uint16_t SP = CpuRef.GetRegister(CPU::RegisterType::SP);
 
 	// Write current address of the program counter
-	stream << programCounter << '\t';
+	stream << programCounter << "  ";
 
 	// Display instruction bytes
 	for (std::uint8_t i = 0; i < num; ++i)
 	{
-		stream << static_cast<std::uint16_t>(RamRef.ReadByte(programCounter + i)) << '\t';
+		stream << std::setfill('0') << std::setw(2) << static_cast<std::uint16_t>(RamRef.ReadByte(programCounter + i)) << ' ';
 	}
 
 	// An instruction may use up to three bytes
-	// To make the CSV file align properly, pad the unused bytes
+	// Add padding to make lines align nicely
 	for (std::uint8_t i = 0; i < 3 - num; ++i)
 	{
-		stream << '\t';
+		stream << "   ";
 	}
+	stream << ' ';
 
 	// Write the instruction's Assembly name
 	stream << name << '\t';
 
+	// Padding
+	stream << std::setfill(' ') << std::setw(30);
+
 	// Write register states
-	stream << "A: " << A << '\t';
-	stream << "X: " << X << '\t';
-	stream << "Y: " << Y << '\t';
-	stream << "P: " << P << '\t';
-	stream << "SP: " << SP << '\t';
-	stream << "PPU: " << "NOT IMPLEMENTED" << '\t';
-	stream << "CYC: " << std::dec << CpuRef.GetCurrentCycle();
+	stream << "A:" << std::setfill('0') << std::setw(2) << A << ' ';
+	stream << "X:" << std::setfill('0') << std::setw(2) << X << ' ';
+	stream << "Y:" << std::setfill('0') << std::setw(2) << Y << ' ';
+	stream << "P:" << std::setfill('0') << std::setw(2) << P << ' ';
+	stream << "SP:" << SP << ' ';
+	stream << "PPU:  " << "     " << ' ';
+	stream << "CYC:" << std::dec << CpuRef.GetCurrentCycle();
 
 	// Output to the console window
 	std::cout << stream.str() << std::endl;

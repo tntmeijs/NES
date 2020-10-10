@@ -55,6 +55,12 @@ namespace nes
 		/**
 		 * Call this function before actually executing the instruction
 		 * This function will log the state of the CPU to the console
+		 * 
+		 * The formatting in this function seems strange at first glance, but
+		 * we chose this format to make it easy to match the output of the log
+		 * against the NESTEST rom result:
+		 * https://www.qmtpro.com/~nes/misc/nestest.log
+		 * 
 		 * @param	name	Name of the instruction to execute
 		 * @param	num		Number of bytes this instruction uses
 		 */
