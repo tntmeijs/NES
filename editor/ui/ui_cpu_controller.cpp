@@ -45,4 +45,18 @@ void nes::UICpuController::Draw() const
 		CpuRef.ExecuteInstruction();
 	}
 	ImGui::PopButtonRepeat();
+
+	// Run the emulator up until a certain cycle
+	static int targetCycle;
+	ImGui::InputInt("##target_cycle", &targetCycle, 0);
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Execute until cycle"))
+	{
+		while (CpuRef.GetCurrentCycle() < targetCycle)
+		{
+			CpuRef.ExecuteInstruction();
+		}
+	}
 }
