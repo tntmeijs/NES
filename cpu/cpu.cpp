@@ -447,7 +447,7 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 			// Pull Accumulator
 			// -------------------------------------------------------------------
 		case 0x68:
-			Logger.LogOperation("PLA", 3);
+			Logger.LogOperation("PLA", 1);
 			PLA(AddressingMode::Implicit);
 			break;
 
