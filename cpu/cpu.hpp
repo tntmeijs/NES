@@ -187,8 +187,6 @@ namespace nes
          */
         bool IsStatusFlagClear(StatusFlags flag) const;
 
-		bool IsNthBitSet(std::uint8_t byte, std::uint8_t n) const;
-
         /**
          * Check if bit N has been set
          * @param   byte    Byte to check
