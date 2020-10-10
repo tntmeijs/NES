@@ -1971,6 +1971,22 @@ void nes::CPU::PHP(AddressingMode mode)
 
 void nes::CPU::PLA(AddressingMode mode)
 {
+	A = PopStack();
+
+	// Set zero flag if the accumulator equals zero
+	if (A == 0)
+	{
+		P |= (1 << 1);
+	}
+
+	// Set negative flag if bit 7 is set
+	if ((A & (1 << 7)) != 0)
+	{
+		P |= (1 << 7);
+	}
+
+	++PC;
+	CurrentCycle += 4;
 }
 
 void nes::CPU::PLP(AddressingMode mode)
