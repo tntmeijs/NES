@@ -2021,6 +2021,9 @@ void nes::CPU::SED(AddressingMode mode)
 void nes::CPU::SEI(AddressingMode mode)
 {
 	P |= (1 << 2);
+
+	++PC;
+	CurrentCycle += 2;
 }
 
 void nes::CPU::STA(AddressingMode mode)
