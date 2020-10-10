@@ -2158,6 +2158,80 @@ void nes::CPU::NOP(AddressingMode mode)
 
 void nes::CPU::ORA(AddressingMode mode)
 {
+	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
+
+	// Perform bit-wise OR on the accumulator
+	A |= value;
+
+	if (A == 0)
+	{
+		SetStatusFlag(StatusFlags::Zero);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Zero);
+	}
+
+	if (IsNthBitSet(A, 7))
+	{
+		SetStatusFlag(StatusFlags::Negative);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Negative);
+	}
+
+	if (mode == AddressingMode::Immediate)
+	{
+		PC += 2;
+		CurrentCycle += 2;
+	}
+	else if (mode == AddressingMode::ZeroPage)
+	{
+		PC += 2;
+		CurrentCycle += 3;
+	}
+	else if (mode == AddressingMode::ZeroPageX)
+	{
+		PC += 2;
+		CurrentCycle += 4;
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		PC += 3;
+		CurrentCycle += 4;
+	}
+	else if (mode == AddressingMode::AbsoluteX || mode == AddressingMode::AbsoluteY)
+	{
+		std::uint16_t initialPC = PC;
+		PC += 3;
+		CurrentCycle += 4;
+
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			++CurrentCycle;
+		}
+	}
+	else if (mode == AddressingMode::IndirectX)
+	{
+		PC += 2;
+		CurrentCycle += 6;
+	}
+	else if (mode == AddressingMode::IndirectY)
+	{
+		std::uint16_t initialPC = PC;
+		PC += 2;
+		CurrentCycle += 5;
+
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			++CurrentCycle;
+		}
+	}
+	else
+	{
+		std::cerr << "ORA - Unknown addressing mode.\n";
+	}
 }
 
 void nes::CPU::PHP(AddressingMode mode)
