@@ -1677,8 +1677,10 @@ void nes::CPU::JSR(AddressingMode mode)
 		// Store the target address minus one on the stack
 		std::uint8_t lsb = (returnAddress & 0x00FF);
 		std::uint8_t msb = ((returnAddress & 0xFF00) >> 8);
-		PushStack(lsb);
+
+		// According to the documentation, the high byte needs to be pushed first
 		PushStack(msb);
+		PushStack(lsb);
 
 		// Jump to the target location
 		PC = GetTargetAddress(mode);
@@ -1989,11 +1991,8 @@ void nes::CPU::RTI(AddressingMode mode)
 
 void nes::CPU::RTS(AddressingMode mode)
 {
-	// The PC was written to the stack little-endian (lsb first)
-	// To retrieve it, we have to pop the stack in reverse
-	// so, big-endian (msb first)
-	std::uint8_t msb = PopStack();
 	std::uint8_t lsb = PopStack();
+	std::uint8_t msb = PopStack();
 	std::uint16_t address = ((msb << 8) | lsb);
 
 	// Because JSR stores the target address - 1 on the stack, we have to add 1 to
