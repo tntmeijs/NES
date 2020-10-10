@@ -1276,8 +1276,7 @@ void nes::CPU::ADC(AddressingMode mode)
 void nes::CPU::AND(AddressingMode mode)
 {
 	// Retrieve value to AND against the accumulator
-	std::uint16_t address = GetTargetAddress(mode);
-	std::uint8_t compareAgainst = RamRef.ReadByte(address);
+	std::uint8_t compareAgainst = RamRef.ReadByte(GetTargetAddress(mode));
 
 	// Perform logical AND
 	A &= compareAgainst;
@@ -1287,11 +1286,19 @@ void nes::CPU::AND(AddressingMode mode)
 	{
 		SetStatusFlag(StatusFlags::Zero);
 	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Zero);
+	}
 
 	// Set negative flag if the 7th bit is set
-	if (IsNthBitSet(A, 7) != 0)
+	if (IsNthBitSet(A, 7))
 	{
 		SetStatusFlag(StatusFlags::Negative);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Negative);
 	}
 
 	if (mode == AddressingMode::Immediate)
