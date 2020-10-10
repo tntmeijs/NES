@@ -1159,6 +1159,87 @@ void nes::CPU::ADC(AddressingMode mode)
 
 void nes::CPU::AND(AddressingMode mode)
 {
+	// Retrieve value to AND against the accumulator
+	std::uint16_t address = GetTargetAddress(mode);
+	std::uint8_t compareAgainst = RamRef.ReadByte(address);
+
+	// Perform logical AND
+	A &= compareAgainst;
+
+	// Set zero flag
+	if (A == 0)
+	{
+		P |= (1 << 1);
+	}
+
+	// Set negative flag if the 7th bit is set
+	if ((A & (1 << 7)) != 0)
+	{
+		P |= (1 << 7);
+	}
+
+	if (mode == AddressingMode::Immediate)
+	{
+		PC += 2;
+		CurrentCycle += 2;
+	}
+	else if (mode == AddressingMode::ZeroPage)
+	{
+		PC += 2;
+		CurrentCycle += 3;
+	}
+	else if (mode == AddressingMode::ZeroPageX)
+	{
+		PC += 2;
+		CurrentCycle += 4;
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		PC += 3;
+		CurrentCycle += 4;
+	}
+	else if (mode == AddressingMode::AbsoluteX)
+	{
+		std::uint16_t initialPC = PC;
+		PC += 3;
+		CurrentCycle += 4;
+
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			++CurrentCycle;
+		}
+	}
+	else if (mode == AddressingMode::AbsoluteY)
+	{
+		std::uint16_t initialPC = PC;
+		PC += 3;
+		CurrentCycle += 4;
+
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			++CurrentCycle;
+		}
+	}
+	else if (mode == AddressingMode::IndirectX)
+	{
+		PC += 2;
+		CurrentCycle += 6;
+	}
+	else if (mode == AddressingMode::IndirectY)
+	{
+		std::uint16_t initialPC = PC;
+		PC += 2;
+		CurrentCycle += 5;
+
+		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
+		{
+			++CurrentCycle;
+		}
+	}
+	else
+	{
+		std::cerr << "AND - Unknown addressing mode.\n";
+	}
 }
 
 void nes::CPU::ASL(AddressingMode mode)
