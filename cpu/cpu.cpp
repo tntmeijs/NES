@@ -2047,6 +2047,54 @@ void nes::CPU::EOR(AddressingMode mode)
 
 void nes::CPU::INC(AddressingMode mode)
 {
+	std::uint16_t address = GetTargetAddress(mode);
+
+	// Increment and store the value at the specified address
+	std::uint8_t value = (RamRef.ReadByte(address) + 1);
+	RamRef.WriteByte(address, value);
+
+	if (value == 0)
+	{
+		SetStatusFlag(StatusFlags::Zero);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Zero);
+	}
+
+	if (IsNthBitSet(value, 7))
+	{
+		SetStatusFlag(StatusFlags::Negative);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Negative);
+	}
+
+	if (mode == AddressingMode::ZeroPage)
+	{
+		PC += 2;
+		CurrentCycle += 5;
+	}
+	else if (mode == AddressingMode::ZeroPageX)
+	{
+		PC += 2;
+		CurrentCycle += 6;
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		PC += 3;
+		CurrentCycle += 6;
+	}
+	else if (mode == AddressingMode::AbsoluteX)
+	{
+		PC += 3;
+		CurrentCycle += 7;
+	}
+	else
+	{
+		std::cerr << "INC - Unknown addressing mode.\n";
+	}
 }
 
 void nes::CPU::INX(AddressingMode mode)
