@@ -1063,6 +1063,11 @@ std::uint16_t nes::CPU::GetTargetAddress(AddressingMode mode) const
 {
 	switch (mode)
 	{
+		case nes::CPU::AddressingMode::Immediate:
+			{
+				return PC + 1;
+			}
+			break;
 		case nes::CPU::AddressingMode::Absolute:
 			{
 				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
