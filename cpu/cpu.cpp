@@ -1153,6 +1153,26 @@ std::uint16_t nes::CPU::GetTargetAddress(AddressingMode mode) const
 	return 0;
 }
 
+void nes::CPU::SetStatusFlag(StatusFlags flag)
+{
+	P |= static_cast<std::uint8_t>(flag);
+}
+
+void nes::CPU::ClearStatusFlag(StatusFlags flag)
+{
+	P &= ~static_cast<std::uint8_t>(flag);
+}
+
+bool nes::CPU::IsStatusFlagSet(StatusFlags flag) const
+{
+	return ((P & static_cast<std::uint8_t>(flag)) != 0);
+}
+
+bool nes::CPU::IsStatusFlagClear(StatusFlags flag) const
+{
+	return ((P & static_cast<std::uint8_t>(flag)) == 0);
+}
+
 void nes::CPU::ADC(AddressingMode mode)
 {
 }

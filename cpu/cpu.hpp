@@ -112,6 +112,20 @@ namespace nes
             ZeroPageY,
         };
 
+        /**
+         * All processor status flags
+         */
+        enum class StatusFlags
+        {
+            Carry               = (1 << 0),
+            Zero                = (1 << 1),
+            InterruptDisable    = (1 << 2),
+            DecimalMode         = (1 << 3),
+            Break               = (1 << 4),
+            Overflow            = (1 << 6),
+            Negative            = (1 << 7)
+        };
+
     private:
         /**
          * Execute the proper op-code
@@ -146,6 +160,32 @@ namespace nes
          * @return  Target address of the instruction
          */
         std::uint16_t GetTargetAddress(AddressingMode mode) const;
+
+        /**
+         * Set a processor status flag
+         * @param   flag    Flag to set
+         */
+        void SetStatusFlag(StatusFlags flag);
+
+        /**
+         * Clear a processor status flag
+         * @param   flag    Flag to clear
+         */
+        void ClearStatusFlag(StatusFlags flag);
+
+        /**
+         * Check if a status flag has been set
+         * @param   flag    Flag to check
+         * @return  True when the flag is set, false when clear
+         */
+        bool IsStatusFlagSet(StatusFlags flag) const;
+
+        /**
+         * Check if a status flag has been cleared
+		 * @param   flag    Flag to check
+		 * @return  True when the flag is clear, false when set
+         */
+        bool IsStatusFlagClear(StatusFlags flag) const;
 
     private:
         void ADC(AddressingMode mode);
