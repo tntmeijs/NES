@@ -2160,10 +2160,6 @@ void nes::CPU::ORA(AddressingMode mode)
 {
 }
 
-void nes::CPU::PHA(AddressingMode mode)
-{
-}
-
 void nes::CPU::PHP(AddressingMode mode)
 {
 	PushStack(P);
@@ -2202,6 +2198,9 @@ void nes::CPU::PLA(AddressingMode mode)
 void nes::CPU::PLP(AddressingMode mode)
 {
 }
+
+void nes::CPU::PHA(AddressingMode mode)
+{}
 
 void nes::CPU::ROL(AddressingMode mode)
 {
