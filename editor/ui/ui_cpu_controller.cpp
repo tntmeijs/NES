@@ -54,7 +54,7 @@ void nes::UICpuController::Draw() const
 
 	if (ImGui::Button("Execute until cycle"))
 	{
-		while (CpuRef.GetCurrentCycle() < targetCycle)
+		while (CpuRef.GetCurrentCycle() <= targetCycle)
 		{
 			CpuRef.ExecuteInstruction();
 		}
