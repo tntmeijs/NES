@@ -1200,6 +1200,8 @@ void nes::CPU::ADC(AddressingMode mode)
 		ClearStatusFlag(StatusFlags::Carry);
 	}
 
+	A = result;
+
 	if (IsNthBitSet(A, 7))
 	{
 		SetStatusFlag(StatusFlags::Negative);
