@@ -1992,8 +1992,12 @@ void nes::CPU::RTS(AddressingMode mode)
 	std::uint8_t msb = PopStack();
 	std::uint8_t lsb = PopStack();
 	std::uint16_t address = ((msb << 8) | lsb);
-	PC = address;
-	++PC;
+
+	// Because JSR stores the target address - 1 on the stack, we have to add 1 to
+	// the target address to get the location of the next instruction
+	PC = address + 1;
+
+	CurrentCycle += 6;
 }
 
 void nes::CPU::SBC(AddressingMode mode)
