@@ -2099,11 +2099,19 @@ void nes::CPU::PLA(AddressingMode mode)
 	{
 		SetStatusFlag(StatusFlags::Zero);
 	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Zero);
+	}
 
 	// Set negative flag if bit 7 is set
 	if (IsNthBitSet(A, 7))
 	{
 		SetStatusFlag(StatusFlags::Negative);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Negative);
 	}
 
 	++PC;
