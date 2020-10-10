@@ -1801,6 +1801,55 @@ void nes::CPU::CMP(AddressingMode mode)
 
 void nes::CPU::CPX(AddressingMode mode)
 {
+	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
+	std::uint8_t result = X - value;
+
+	if (X >= value)
+	{
+		SetStatusFlag(StatusFlags::Carry);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Carry);
+	}
+
+	if (X == value)
+	{
+		SetStatusFlag(StatusFlags::Zero);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Zero);
+	}
+
+	if (IsNthBitSet(result, 7))
+	{
+		SetStatusFlag(StatusFlags::Negative);
+	}
+	else
+	{
+		ClearStatusFlag(StatusFlags::Negative);
+	}
+
+	if (mode == AddressingMode::Immediate)
+	{
+		PC += 2;
+		CurrentCycle += 2;
+	}
+	else if (mode == AddressingMode::ZeroPage)
+	{
+		PC += 2;
+		CurrentCycle += 3;
+	}
+	else if (mode == AddressingMode::Absolute)
+	{
+		PC += 3;
+		CurrentCycle += 4;
+	}
+	else
+	{
+		std::cerr << "CPX - Unknown addressing mode.\n";
+	}
 }
 
 void nes::CPU::CPY(AddressingMode mode)
