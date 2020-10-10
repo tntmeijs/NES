@@ -63,37 +63,6 @@ void nes::Editor::DrawUI() const
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Reset"))
-			{
-				ImGui::Text("Reset CPU:");
-				ImGui::SameLine();
-				if (ImGui::Button("RESET"))
-				{
-					CpuRef.SetDefaultState();
-				}
-
-				ImGui::Separator();
-
-				ImGui::Text("Reset RAM:");
-				ImGui::SameLine();
-				if (ImGui::Button("RESET"))
-				{
-					RamRef.Clear();
-				}
-
-				ImGui::Separator();
-
-				ImGui::Text("Reset ALL:");
-				ImGui::SameLine();
-				if (ImGui::Button("RESET"))
-				{
-					CpuRef.SetDefaultState();
-					RamRef.Clear();
-				}
-
-				ImGui::EndMenu();
-			}
-
 			ImGui::EndMainMenuBar();
 		}
 	}
