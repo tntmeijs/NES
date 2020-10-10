@@ -1666,10 +1666,17 @@ void nes::CPU::JSR(AddressingMode mode)
 {
 	if (mode == AddressingMode::Absolute)
 	{
-		// Store the current address minus one on the stack
-		std::uint16_t address = PC - 1;
-		std::uint8_t lsb = (address & 0x00FF);
-		std::uint8_t msb = ((address & 0xFF00) >> 8);
+		std::uint16_t targetAddress = GetTargetAddress(mode);
+
+		// The JSR instruction is 3 bytes wide, this would mean that the next
+		// instruction is at PC + 3. However, the documentation states that JSR
+		// pushes (next instruction - 1) to the stack, hence we only add two bytes
+		// instead of three. This is to account for that -1.
+		std::uint16_t returnAddress = PC + 2;
+
+		// Store the target address minus one on the stack
+		std::uint8_t lsb = (returnAddress & 0x00FF);
+		std::uint8_t msb = ((returnAddress & 0xFF00) >> 8);
 		PushStack(lsb);
 		PushStack(msb);
 
