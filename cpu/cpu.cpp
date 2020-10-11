@@ -1183,6 +1183,30 @@ bool nes::CPU::IsNthBitClear(std::uint8_t byte, std::uint8_t n) const
 	return ((byte & (1 << n)) == 0);
 }
 
+void nes::CPU::UpdateZeroStatusFlag(std::uint8_t byte)
+{
+	if (byte == 0)
+	{
+		P |= (1 << 1);
+	}
+	else
+	{
+		P &= ~(1 << 1);
+	}
+}
+
+void nes::CPU::UpdateNegativeStatusFlag(std::uint8_t byte)
+{
+	if (IsNthBitSet(byte, 7))
+	{
+		P |= (1 << 7);
+	}
+	else
+	{
+		P &= ~(1 << 7);
+	}
+}
+
 void nes::CPU::ADC(AddressingMode mode)
 {
 	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
@@ -1202,23 +1226,8 @@ void nes::CPU::ADC(AddressingMode mode)
 
 	A = result;
 
-	if (IsNthBitSet(A, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
-
-	if (A == 0)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
+	UpdateNegativeStatusFlag(A);
+	UpdateZeroStatusFlag(A);
 
 	if (mode == AddressingMode::Immediate)
 	{
@@ -1281,25 +1290,8 @@ void nes::CPU::AND(AddressingMode mode)
 	// Perform logical AND
 	A &= compareAgainst;
 
-	// Set zero flag
-	if (A == 0)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	// Set negative flag if the 7th bit is set
-	if (IsNthBitSet(A, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateNegativeStatusFlag(A);
+	UpdateZeroStatusFlag(A);
 
 	if (mode == AddressingMode::Immediate)
 	{
@@ -1490,15 +1482,8 @@ void nes::CPU::BIT(AddressingMode mode)
 		std::cerr << "BIT - Unknown addressing mode.\n";
 	}
 
-	// Set the zero flag if the BIT result is zero
-	if ((A & value) == 0)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
+	UpdateZeroStatusFlag(A & value);
+	UpdateNegativeStatusFlag(value);
 
 	// Set the overflow flag to the value of the 6th bit
 	if (IsNthBitSet(value, 6))
@@ -1508,16 +1493,6 @@ void nes::CPU::BIT(AddressingMode mode)
 	else
 	{
 		ClearStatusFlag(StatusFlags::Overflow);
-	}
-
-	// Set the negative flag to the value of the 7th bit
-	if (IsNthBitSet(value, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
 	}
 }
 
@@ -1737,23 +1712,8 @@ void nes::CPU::CMP(AddressingMode mode)
 		ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	if (A == value)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(result, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(A - value);
+	UpdateNegativeStatusFlag(result);
 
 	if (mode == AddressingMode::Immediate)
 	{
@@ -1822,23 +1782,8 @@ void nes::CPU::CPX(AddressingMode mode)
 		ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	if (X == value)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(result, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(A - value);
+	UpdateNegativeStatusFlag(result);
 
 	if (mode == AddressingMode::Immediate)
 	{
@@ -1875,23 +1820,8 @@ void nes::CPU::CPY(AddressingMode mode)
 		ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	if (Y == value)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(result, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(Y - value);
+	UpdateNegativeStatusFlag(result);
 
 	if (mode == AddressingMode::Immediate)
 	{
@@ -1923,27 +1853,8 @@ void nes::CPU::DEX(AddressingMode mode)
 	// Decrement X
 	X -= 1;
 
-	if (X == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(X, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(X);
+	UpdateNegativeStatusFlag(X);
 }
 
 void nes::CPU::DEY(AddressingMode mode)
@@ -1951,27 +1862,8 @@ void nes::CPU::DEY(AddressingMode mode)
 	// Decrement Y
 	Y -= 1;
 
-	if (Y == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(Y, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(Y);
+	UpdateNegativeStatusFlag(Y);
 }
 
 void nes::CPU::EOR(AddressingMode mode)
@@ -1981,23 +1873,8 @@ void nes::CPU::EOR(AddressingMode mode)
 	// Perform bit-wise exclusive OR on the accumulator
 	A ^= value;
 
-	if (A == 0)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(A, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(A);
+	UpdateNegativeStatusFlag(A);
 
 	if (mode == AddressingMode::Immediate)
 	{
@@ -2060,23 +1937,8 @@ void nes::CPU::INC(AddressingMode mode)
 	std::uint8_t value = (RamRef.ReadByte(address) + 1);
 	RamRef.WriteByte(address, value);
 
-	if (value == 0)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(value, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(value);
+	UpdateNegativeStatusFlag(value);
 
 	if (mode == AddressingMode::ZeroPage)
 	{
@@ -2109,27 +1971,8 @@ void nes::CPU::INX(AddressingMode mode)
 	// Increment X
 	X += 1;
 
-	if (X == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(X, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(X);
+	UpdateNegativeStatusFlag(X);
 
 	++PC;
 	CurrentCycle += 2;
@@ -2140,27 +1983,8 @@ void nes::CPU::INY(AddressingMode mode)
 	// Increment Y
 	Y += 1;
 
-	if (Y == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(Y, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(Y);
+	UpdateNegativeStatusFlag(Y);
 
 	++PC;
 	CurrentCycle += 2;
@@ -2216,37 +2040,33 @@ void nes::CPU::JSR(AddressingMode mode)
 
 void nes::CPU::LDA(AddressingMode mode)
 {
-	std::uint8_t value = 0;
-	std::uint16_t initialPC = PC;
+	A = RamRef.ReadByte(PC + 1);
+	UpdateZeroStatusFlag(A);
+	UpdateNegativeStatusFlag(A);
 
 	if (mode == AddressingMode::Immediate)
 	{
-		value = RamRef.ReadByte(PC + 1);
 		PC += 2;
 		CurrentCycle += 2;
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageX)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
-
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 3;
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::AbsoluteX)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
+		std::uint16_t initialPC = PC;
 		PC += 3;
 		CurrentCycle += 4;
 
@@ -2258,7 +2078,7 @@ void nes::CPU::LDA(AddressingMode mode)
 	}
 	else if (mode == AddressingMode::AbsoluteY)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
+		std::uint16_t initialPC = PC;
 		PC += 3;
 		CurrentCycle += 4;
 
@@ -2270,13 +2090,12 @@ void nes::CPU::LDA(AddressingMode mode)
 	}
 	else if (mode == AddressingMode::IndirectX)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		CurrentCycle += 6;
 		PC += 2;
 	}
 	else if (mode == AddressingMode::IndirectY)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
+		std::uint16_t initialPC = PC;
 		CurrentCycle += 5;
 		PC += 2;
 
@@ -2290,66 +2109,36 @@ void nes::CPU::LDA(AddressingMode mode)
 	{
 		std::cerr << "LDA - Unknown addressing mode.\n";
 	}
-
-	if (value == 0)
-	{
-		// Set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(value, 7))
-	{
-		// Set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
-
-	// Store in the A register
-	A = value;
 }
 
 void nes::CPU::LDX(AddressingMode mode)
 {
-	std::uint8_t value = 0;
+	X = RamRef.ReadByte(GetTargetAddress(mode));
+	UpdateZeroStatusFlag(X);
+	UpdateNegativeStatusFlag(X);
 
 	if (mode == AddressingMode::Immediate)
 	{
-		value = RamRef.ReadByte(PC + 1);
 		PC += 2;
-
 		CurrentCycle += 2;
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageY)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 3;
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::AbsoluteY)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
-
 		std::uint16_t initialPC = PC;
 		PC += 3;
 		CurrentCycle += 4;
@@ -2364,66 +2153,36 @@ void nes::CPU::LDX(AddressingMode mode)
 	{
 		std::cerr << "LDX - Unknown addressing mode.\n";
 	}
-
-	if (value == 0)
-	{
-		// Set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(value, 7) != 0)
-	{
-		// Set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
-
-	// Store in the X register
-	X = value;
 }
 
 void nes::CPU::LDY(AddressingMode mode)
 {
-	std::uint8_t value = 0;
+	Y = RamRef.ReadByte(GetTargetAddress(mode));
+	UpdateZeroStatusFlag(Y);
+	UpdateNegativeStatusFlag(Y);
 
 	if (mode == AddressingMode::Immediate)
 	{
-		value = RamRef.ReadByte(PC + 1);
 		PC += 2;
-
 		CurrentCycle += 2;
 	}
 	else if (mode == AddressingMode::ZeroPage)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
 		CurrentCycle += 3;
 	}
 	else if (mode == AddressingMode::ZeroPageX)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 2;
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::Absolute)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
 		PC += 3;
 		CurrentCycle += 4;
 	}
 	else if (mode == AddressingMode::AbsoluteX)
 	{
-		value = RamRef.ReadByte(GetTargetAddress(mode));
-
 		std::uint16_t initialPC = PC;
 		PC += 3;
 		CurrentCycle += 4;
@@ -2438,31 +2197,6 @@ void nes::CPU::LDY(AddressingMode mode)
 	{
 		std::cerr << "LDY - Unknown addressing mode.\n";
 	}
-
-	if (value == 0)
-	{
-		// Set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(value, 7) != 0)
-	{
-		// Set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
-
-	// Store in the Y register
-	Y = value;
 }
 
 void nes::CPU::LSR(AddressingMode mode)
@@ -2482,23 +2216,8 @@ void nes::CPU::ORA(AddressingMode mode)
 	// Perform bit-wise OR on the accumulator
 	A |= value;
 
-	if (A == 0)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(A, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(A);
+	UpdateNegativeStatusFlag(A);
 
 	if (mode == AddressingMode::Immediate)
 	{
@@ -2564,26 +2283,8 @@ void nes::CPU::PHP(AddressingMode mode)
 void nes::CPU::PLA(AddressingMode mode)
 {
 	A = PopStack();
-
-	// Set zero flag if the accumulator equals zero
-	if (A == 0)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	// Set negative flag if bit 7 is set
-	if (IsNthBitSet(A, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(A);
+	UpdateNegativeStatusFlag(A);
 
 	++PC;
 	CurrentCycle += 4;
@@ -2648,23 +2349,8 @@ void nes::CPU::SBC(AddressingMode mode)
 
 	A = result;
 
-	if (IsNthBitSet(A, 7))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Negative);
-	}
-
-	if (A == 0)
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Zero);
-	}
+	UpdateZeroStatusFlag(A);
+	UpdateNegativeStatusFlag(A);
 
 	if (mode == AddressingMode::Immediate)
 	{
@@ -2840,27 +2526,8 @@ void nes::CPU::TAX(AddressingMode mode)
 	// Transfer the accumulator to the X register
 	X = A;
 
-	if (X == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(X, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(X);
+	UpdateNegativeStatusFlag(X);
 
 	++PC;
 	CurrentCycle += 2;
@@ -2871,27 +2538,8 @@ void nes::CPU::TAY(AddressingMode mode)
 	// Transfer the accumulator to the Y register
 	Y = A;
 
-	if (Y == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(Y, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(Y);
+	UpdateNegativeStatusFlag(Y);
 
 	++PC;
 	CurrentCycle += 2;
@@ -2902,27 +2550,8 @@ void nes::CPU::TSX(AddressingMode mode)
 	// Transfer the stack pointer to the X register
 	X = SP;
 
-	if (X == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(X, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(X);
+	UpdateNegativeStatusFlag(X);
 
 	++PC;
 	CurrentCycle += 2;
@@ -2933,27 +2562,8 @@ void nes::CPU::TXA(AddressingMode mode)
 	// Transfer the X register to the accumulator
 	A = X;
 
-	if (A == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(A, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(A);
+	UpdateNegativeStatusFlag(A);
 
 	++PC;
 	CurrentCycle += 2;
@@ -2971,25 +2581,6 @@ void nes::CPU::TYA(AddressingMode mode)
 	// Transfer the Y register to the accumulator
 	A = Y;
 
-	if (A == 0)
-	{
-		// Value is zero, set zero flag
-		SetStatusFlag(StatusFlags::Zero);
-	}
-	else
-	{
-		// Not zero, unset zero flag
-		ClearStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(A, 7))
-	{
-		// Value is negative, set negative flag
-		SetStatusFlag(StatusFlags::Negative);
-	}
-	else
-	{
-		// Value is positive, unset negative flag
-		ClearStatusFlag(StatusFlags::Negative);
-	}
+	UpdateZeroStatusFlag(A);
+	UpdateNegativeStatusFlag(A);
 }

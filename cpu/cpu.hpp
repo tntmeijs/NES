@@ -213,6 +213,18 @@ namespace nes
          */
         bool IsNthBitClear(std::uint8_t byte, std::uint8_t n) const;
 
+        /**
+         * Set or clear the zero flag based on the value of the byte passed
+         * @param   byte    Byte to check
+         */
+        void UpdateZeroStatusFlag(std::uint8_t byte);
+
+        /**
+         * Set or clear the negative flag based on the value of the byte passed
+         * @param   byte    Byte to check
+         */
+        void UpdateNegativeStatusFlag(std::uint8_t byte);
+
     private:
         void ADC(AddressingMode mode);
         void AND(AddressingMode mode);
