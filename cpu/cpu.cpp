@@ -2592,7 +2592,9 @@ void nes::CPU::PLA(AddressingMode mode)
 
 void nes::CPU::PLP(AddressingMode mode)
 {
-	P = PopStack();
+	// Set bit 5
+	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
+	P = (PopStack() | (1 << 5));
 	++PC;
 	CurrentCycle += 4;
 }
