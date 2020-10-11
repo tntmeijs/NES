@@ -2555,7 +2555,9 @@ void nes::CPU::ORA(AddressingMode mode)
 
 void nes::CPU::PHP(AddressingMode mode)
 {
-	PushStack(P);
+	// Set bit 4
+	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
+	PushStack(P | (1 << 4));
 	++PC;
 	CurrentCycle += 3;
 }
