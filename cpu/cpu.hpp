@@ -3,6 +3,7 @@
 
 #include "cpu_logger.hpp"
 #include "flags/cpu_status_flags.hpp"
+#include "instructions/cpu_instruction_addressing_mode.hpp"
 
 #include <cstdint>
 #include <string_view>
@@ -98,27 +99,6 @@ namespace nes
          * Reset the CPU to its default state
          */
         void SetDefaultState();
-
-    private:
-        /**
-         * All possible addressing modes
-         */
-        enum class AddressingMode
-        {
-            Absolute,
-            AbsoluteX,
-            AbsoluteY,
-            Accumulator,
-            Immediate,
-            Implicit,
-            Indirect,
-            IndirectX,
-            IndirectY,
-            Relative,
-            ZeroPage,
-            ZeroPageX,
-            ZeroPageY,
-        };
 
     private:
         /**
