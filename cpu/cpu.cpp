@@ -2292,9 +2292,26 @@ void nes::CPU::PLA(AddressingMode mode)
 
 void nes::CPU::PLP(AddressingMode mode)
 {
-	// Set bit 5
 	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
-	P = (PopStack() | (1 << 5));
+	std::uint8_t fromStack = PopStack();
+
+	// Helper lambda to make it easy to only set certain bits of the P register
+	auto updateStatusFlagIfBitSet = [&](bool isBitSet, std::uint8_t position)
+	{
+		if (isBitSet)
+		{
+			P |= (1 << position);
+		}
+	};
+
+	// Update all bits except for bit 4 and 5
+	updateStatusFlagIfBitSet(IsNthBitSet(fromStack, 0), 0);
+	updateStatusFlagIfBitSet(IsNthBitSet(fromStack, 1), 1);
+	updateStatusFlagIfBitSet(IsNthBitSet(fromStack, 2), 2);
+	updateStatusFlagIfBitSet(IsNthBitSet(fromStack, 3), 3);
+	updateStatusFlagIfBitSet(IsNthBitSet(fromStack, 6), 6);
+	updateStatusFlagIfBitSet(IsNthBitSet(fromStack, 7), 7);
+
 	++PC;
 	CurrentCycle += 4;
 }
