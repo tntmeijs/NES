@@ -1,5 +1,6 @@
 #include "cpu.hpp"
 #include "ram/ram.hpp"
+#include "flags/cpu_b_flags.hpp"
 
 #include <iostream>
 #include <fstream>
