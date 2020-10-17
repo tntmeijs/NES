@@ -15,6 +15,7 @@ set(SOURCE_LIST
     cpu/cpu_logger.cpp
     cpu/instructions/cpu_instruction_base.hpp
     cpu/instructions/cpu_instruction_base.cpp
+    cpu/flags/cpu_status_flags.hpp
     ram/ram.hpp
     ram/ram.cpp
     editor/editor.hpp

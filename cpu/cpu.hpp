@@ -2,6 +2,7 @@
 #define NES_CPU_HPP
 
 #include "cpu_logger.hpp"
+#include "flags/cpu_status_flags.hpp"
 
 #include <cstdint>
 #include <string_view>
@@ -110,19 +111,6 @@ namespace nes
             ZeroPage,
             ZeroPageX,
             ZeroPageY,
-        };
-
-        /**
-         * All processor status flags
-         */
-        enum class StatusFlags
-        {
-            Carry               = (1 << 0),
-            Zero                = (1 << 1),
-            InterruptDisable    = (1 << 2),
-            DecimalMode         = (1 << 3),
-            Overflow            = (1 << 6),
-            Negative            = (1 << 7)
         };
 
         /**
