@@ -54,6 +54,8 @@ std::stringstream nes::CpuLogger::ConstructStreamFromData(const CPU& cpuRef, std
 	stream << "SP:" << SP << ' ';
 	stream << "PPU:  " << "     " << ' ';
 	stream << "CYC:" << std::dec << cpuRef.GetCurrentCycle();
+
+	return stream;
 }
 
 nes::CpuLogger::CpuLogger(const CPU& cpuRef, const RAM& ramRef) :

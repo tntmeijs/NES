@@ -1,6 +1,10 @@
 #ifndef NES_CPU_INSTRUCTION_BASE_HPP
 #define NES_CPU_INSTRUCTION_BASE_HPP
 
+#include <cstdint>
+#include <string>
+#include <string_view>
+
 namespace nes
 {
 	class CPU;
@@ -14,8 +18,10 @@ namespace nes
 		/**
 		 * Create a new CPU instruction
 		 * @param	cpuRef	Reference to the CPU object
+		 * @param	name	Name of this instruction for debugging purposes
+		 * @param	size	Number of bytes used by this instruction
 		 */
-		CpuInstructionBase(CPU& cpuRef);
+		CpuInstructionBase(CPU& cpuRef, std::string_view name, std::uint8_t size);
 
 		CpuInstructionBase(const CpuInstructionBase& other)				= default;
 		CpuInstructionBase(CpuInstructionBase&& other)					= default;
@@ -24,12 +30,20 @@ namespace nes
 		virtual ~CpuInstructionBase()									= default;
 
 		/**
+		 * Print debug information to the console output stream
+		 * Can be overwritten if more specific debug output is needed
+		 */
+		virtual void PrintDebugInformation();
+
+		/**
 		 * Override this function with the instruction's logic
 		 */
 		virtual void Execute() = 0;
 
 	protected:
 		CPU& CpuRef;
+		std::string Name;
+		std::uint8_t InstructionSize;
 	};
 }
 
