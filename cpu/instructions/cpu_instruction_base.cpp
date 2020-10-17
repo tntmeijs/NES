@@ -41,61 +41,11 @@ nes::CpuInstructionBase::CpuInstructionBase(CPU& cpuRef, AddressingMode addressi
 
 void nes::CpuInstructionBase::PrintDebugInformation() const
 {
-	// Convert addressing mode to a short identifier for debugging purposes
-	std::string modeId;
-
-	switch (InstructionAddressingMode)
-	{
-        case nes::AddressingMode::Absolute:
-            modeId = "ABS   ";
-            break;
-        case nes::AddressingMode::AbsoluteX:
-			modeId = "ABS X ";
-			break;
-        case nes::AddressingMode::AbsoluteY:
-			modeId = "ABS Y ";
-            break;
-        case nes::AddressingMode::Accumulator:
-			modeId = "ACC   ";
-			break;
-        case nes::AddressingMode::Immediate:
-			modeId = "IMM   ";
-			break;
-        case nes::AddressingMode::Implicit:
-			modeId = "IMPL  ";
-			break;
-        case nes::AddressingMode::Indirect:
-			modeId = "INDR  ";
-			break;
-        case nes::AddressingMode::IndirectX:
-			modeId = "INDR X";
-			break;
-        case nes::AddressingMode::IndirectY:
-			modeId = "INDR Y";
-			break;
-        case nes::AddressingMode::Relative:
-			modeId = "REL   ";
-			break;
-        case nes::AddressingMode::ZeroPage:
-			modeId = "ZERO  ";
-			break;
-        case nes::AddressingMode::ZeroPageX:
-			modeId = "ZERO X";
-			break;
-        case nes::AddressingMode::ZeroPageY:
-			modeId = "ZERO Y";
-			break;
-        default:
-			modeId = "???";
-			break;
-	}
-
 	// Output to the console window
-    std::cout << '[' << modeId << ']' << '\t';
     std::cout << CpuLogger::ConstructStreamFromData(CpuRef, Name, InstructionSize).str() << std::endl;
 }
 
-void nes::CpuInstructionBase::Execute() const
+void nes::CpuInstructionBase::Execute()
 {
 	ExecuteImpl();
 	CpuRef.MoveProgramCounter(InstructionSize);

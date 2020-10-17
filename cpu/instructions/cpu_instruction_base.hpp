@@ -39,13 +39,13 @@ namespace nes
 		/**
 		 * Execute the instruction
 		 */
-		void Execute() const;
+		void Execute();
 
 	protected:
 		/**
 		 * Override this function with the instruction's logic
 		 */
-		virtual void ExecuteImpl() const = 0;
+		virtual void ExecuteImpl() = 0;
 
 	protected:
 		CPU& CpuRef;
