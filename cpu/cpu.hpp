@@ -121,7 +121,6 @@ namespace nes
             Zero                = (1 << 1),
             InterruptDisable    = (1 << 2),
             DecimalMode         = (1 << 3),
-            Break               = (1 << 4),
             Overflow            = (1 << 6),
             Negative            = (1 << 7)
         };
