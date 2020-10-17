@@ -22,9 +22,8 @@ namespace nes
 		 * @param	cpuRef				Reference to the CPU object
 		 * @param	addressingMode		Addressing mode used for this instruction
 		 * @param	name				Name of this instruction for debugging purposes
-		 * @param	size				Number of bytes used by this instruction
 		 */
-		CpuInstructionBase(CPU& cpuRef, AddressingMode addressingMode, std::string_view name, std::uint8_t size);
+		CpuInstructionBase(CPU& cpuRef, AddressingMode addressingMode, std::string_view name);
 
 		CpuInstructionBase(const CpuInstructionBase& other)				= default;
 		CpuInstructionBase(CpuInstructionBase&& other)					= default;
@@ -35,12 +34,18 @@ namespace nes
 		/**
 		 * Print debug information to the console output stream
 		 */
-		void PrintDebugInformation();
+		void PrintDebugInformation() const;
 
+		/**
+		 * Execute the instruction
+		 */
+		void Execute() const;
+
+	protected:
 		/**
 		 * Override this function with the instruction's logic
 		 */
-		virtual void Execute() = 0;
+		virtual void ExecuteImpl() const = 0;
 
 	protected:
 		CPU& CpuRef;
