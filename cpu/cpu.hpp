@@ -19,6 +19,15 @@ namespace nes
     {
     public:
         /**
+         * Check if a 256-byte page boundary was crossed between two addresses
+         * @param   before  Initial address
+         * @param   after   Address to check against
+         * @return  True when a page boundary was crossed, false when not
+         */
+        static bool DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after);
+
+    public:
+        /**
          * All available registers
          */
         enum class RegisterType
@@ -124,14 +133,6 @@ namespace nes
          * @return  Value popped from the stack
          */
         std::uint8_t PopStack();
-
-        /**
-         * Check if a 256-byte page boundary was crossed between two addresses
-         * @param   before  Initial address
-         * @param   after   Address to check against
-         * @return  True when a page boundary was crossed, false when not
-         */
-        bool DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after) const;
 
         /**
          * Retrieve the target address of an instruction based on the addressing
