@@ -1,6 +1,8 @@
 #ifndef NES_CPU_INSTRUCTION_BASE_HPP
 #define NES_CPU_INSTRUCTION_BASE_HPP
 
+#include "cpu_instruction_addressing_mode.hpp"
+
 #include <cstdint>
 #include <string>
 #include <string_view>
@@ -17,11 +19,12 @@ namespace nes
 	public:
 		/**
 		 * Create a new CPU instruction
-		 * @param	cpuRef	Reference to the CPU object
-		 * @param	name	Name of this instruction for debugging purposes
-		 * @param	size	Number of bytes used by this instruction
+		 * @param	cpuRef				Reference to the CPU object
+		 * @param	addressingMode		Addressing mode used for this instruction
+		 * @param	name				Name of this instruction for debugging purposes
+		 * @param	size				Number of bytes used by this instruction
 		 */
-		CpuInstructionBase(CPU& cpuRef, std::string_view name, std::uint8_t size);
+		CpuInstructionBase(CPU& cpuRef, AddressingMode addressingMode, std::string_view name, std::uint8_t size);
 
 		CpuInstructionBase(const CpuInstructionBase& other)				= default;
 		CpuInstructionBase(CpuInstructionBase&& other)					= default;
@@ -31,9 +34,8 @@ namespace nes
 
 		/**
 		 * Print debug information to the console output stream
-		 * Can be overwritten if more specific debug output is needed
 		 */
-		virtual void PrintDebugInformation();
+		void PrintDebugInformation();
 
 		/**
 		 * Override this function with the instruction's logic
@@ -42,6 +44,7 @@ namespace nes
 
 	protected:
 		CPU& CpuRef;
+		AddressingMode InstructionAddressingMode;
 		std::string Name;
 		std::uint8_t InstructionSize;
 	};
