@@ -47,6 +47,11 @@ void nes::CPU::MoveProgramCounter(std::int32_t offset)
 	PC += offset;
 }
 
+std::uint8_t nes::CPU::ReadRamValueAtAddress(std::uint16_t address) const
+{
+	return RamRef.ReadByte(address);
+}
+
 std::uint16_t nes::CPU::GetProgramCounter() const
 {
 	return PC;

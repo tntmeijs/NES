@@ -62,6 +62,13 @@ namespace nes
         void MoveProgramCounter(std::int32_t offset);
 
         /**
+         * Returns the value of the byte in RAM at the specified address
+         * @param   address     Address to read from
+         * @return  Value of the byte in RAM
+         */
+        std::uint8_t ReadRamValueAtAddress(std::uint16_t address) const;
+
+        /**
          * Get the current value of the program counter accounting for the offset
          * in RAM
          * @return  Current value of the program counter
