@@ -1,5 +1,5 @@
-#ifndef CPU_STATUS_FLAGS_HPP
-#define CPU_STATUS_FLAGS_HPP
+#ifndef NES_CPU_STATUS_FLAGS_HPP
+#define NES_CPU_STATUS_FLAGS_HPP
 
 namespace nes
 {
@@ -17,4 +17,4 @@ namespace nes
     };
 }
 
-#endif //! CPU_STATUS_FLAGS_HPP
+#endif //! NES_CPU_STATUS_FLAGS_HPP
