@@ -213,6 +213,15 @@ namespace nes
         bool IsNthBitClear(std::uint8_t byte, std::uint8_t n) const;
 
         /**
+         * Set a bit when the input bit is set, clear a bit when the input bit is
+         * clear. This is useful when matching bits at specific indices.
+         * @param   target  Byte whose bits will be updated
+         * @param   source  Byte whose bits will be compared against
+         * @param   n       Bit index to compare
+         */
+        void MatchBitStateOfNthBit(std::uint8_t& target, std::uint8_t source, std::uint8_t n) const;
+
+        /**
          * Set or clear the zero flag based on the value of the byte passed
          * @param   byte    Byte to check
          */

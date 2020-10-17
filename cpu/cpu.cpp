@@ -1183,6 +1183,20 @@ bool nes::CPU::IsNthBitClear(std::uint8_t byte, std::uint8_t n) const
 	return ((byte & (1 << n)) == 0);
 }
 
+void nes::CPU::MatchBitStateOfNthBit(std::uint8_t& target, std::uint8_t source, std::uint8_t n) const
+{
+	if (IsNthBitSet(source, n))
+	{
+		// Set target bit since the source bit is set
+		target |= (1 << n);
+	}
+	else
+	{
+		// Clear target bit since the source bit is clear
+		target &= ~(1 << n);
+	}
+}
+
 void nes::CPU::UpdateZeroStatusFlag(std::uint8_t byte)
 {
 	if (byte == 0)
@@ -2274,7 +2288,6 @@ void nes::CPU::ORA(AddressingMode mode)
 
 void nes::CPU::PHP(AddressingMode mode)
 {
-	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
 	PushStack(P | static_cast<std::uint8_t>(BFlag::Instruction));
 	++PC;
 	CurrentCycle += 3;
@@ -2292,39 +2305,14 @@ void nes::CPU::PLA(AddressingMode mode)
 
 void nes::CPU::PLP(AddressingMode mode)
 {
-	// Pop the flags from the stack and only set the flags we care about
-	// https://wiki.nesdev.com/w/index.php/Status_flags#The_B_flag
 	std::uint8_t fromStack = PopStack();
 
-	if (IsNthBitSet(fromStack, static_cast<std::uint8_t>(StatusFlags::Carry)))
-	{
-		SetStatusFlag(StatusFlags::Carry);
-	}
-
-	if (IsNthBitSet(fromStack, static_cast<std::uint8_t>(StatusFlags::Zero)))
-	{
-		SetStatusFlag(StatusFlags::Zero);
-	}
-
-	if (IsNthBitSet(fromStack, static_cast<std::uint8_t>(StatusFlags::InterruptDisable)))
-	{
-		SetStatusFlag(StatusFlags::InterruptDisable);
-	}
-
-	if (IsNthBitSet(fromStack, static_cast<std::uint8_t>(StatusFlags::DecimalMode)))
-	{
-		SetStatusFlag(StatusFlags::DecimalMode);
-	}
-
-	if (IsNthBitSet(fromStack, static_cast<std::uint8_t>(StatusFlags::Overflow)))
-	{
-		SetStatusFlag(StatusFlags::Overflow);
-	}
-
-	if (IsNthBitSet(fromStack, static_cast<std::uint8_t>(StatusFlags::Negative)))
-	{
-		SetStatusFlag(StatusFlags::Negative);
-	}
+	MatchBitStateOfNthBit(P, fromStack, 0);
+	MatchBitStateOfNthBit(P, fromStack, 1);
+	MatchBitStateOfNthBit(P, fromStack, 2);
+	MatchBitStateOfNthBit(P, fromStack, 3);
+	MatchBitStateOfNthBit(P, fromStack, 6);
+	MatchBitStateOfNthBit(P, fromStack, 7);
 
 	++PC;
 	CurrentCycle += 4;
