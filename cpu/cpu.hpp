@@ -63,6 +63,12 @@ namespace nes
         void MoveProgramCounter(std::int32_t offset);
 
         /**
+         * Update the current cycle index
+         * @param   offset  Number of cycles to add to the current cycle
+         */
+        void UpdateCurrentCycle(std::uint8_t offset);
+
+        /**
          * Returns the value of the byte in RAM at the specified address
          * @param   address     Address to read from
          * @return  Value of the byte in RAM
