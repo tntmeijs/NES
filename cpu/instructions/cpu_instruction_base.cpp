@@ -7,7 +7,8 @@
 nes::CpuInstructionBase::CpuInstructionBase(CPU& cpuRef, AddressingMode addressingMode, std::string_view name) :
 	CpuRef(cpuRef),
 	InstructionAddressingMode(addressingMode),
-	Name(name)
+	Name(name),
+	CycleCount(0)
 {
 	switch (InstructionAddressingMode)
 	{
@@ -98,4 +99,5 @@ void nes::CpuInstructionBase::Execute() const
 {
 	ExecuteImpl();
 	CpuRef.MoveProgramCounter(InstructionSize);
+	CpuRef.UpdateCurrentCycle(CycleCount);
 }

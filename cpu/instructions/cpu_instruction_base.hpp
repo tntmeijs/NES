@@ -52,6 +52,9 @@ namespace nes
 		AddressingMode InstructionAddressingMode;
 		std::string Name;
 		std::uint8_t InstructionSize;
+
+		/** Number of cycles the instruction took */
+		std::uint8_t CycleCount;
 	};
 }
 
