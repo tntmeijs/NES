@@ -9,12 +9,12 @@ void nes::CpuInstructionOpPLP::ExecuteImpl()
 {
 	std::uint8_t fromStack = CpuRef.PopStack();
 
-	CpuRef.MatchBitStateOfNthBit(CpuRef.P, fromStack, 0);
-	CpuRef.MatchBitStateOfNthBit(CpuRef.P, fromStack, 1);
-	CpuRef.MatchBitStateOfNthBit(CpuRef.P, fromStack, 2);
-	CpuRef.MatchBitStateOfNthBit(CpuRef.P, fromStack, 3);
-	CpuRef.MatchBitStateOfNthBit(CpuRef.P, fromStack, 6);
-	CpuRef.MatchBitStateOfNthBit(CpuRef.P, fromStack, 7);
+	CpuRef.MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 0);
+	CpuRef.MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 1);
+	CpuRef.MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 2);
+	CpuRef.MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 3);
+	CpuRef.MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 6);
+	CpuRef.MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 7);
 
 	CycleCount = 4;
 }

@@ -11,8 +11,8 @@ void nes::CpuInstructionOpRTI::ExecuteImpl()
 {
 	CycleCount = 6;
 
-	CpuRef.P = CpuRef.PopStack();
+	CpuRef.P.value = CpuRef.PopStack();
 	std::uint8_t msb = CpuRef.PopStack();
 	std::uint8_t lsb = CpuRef.PopStack();
-	CpuRef.PC = ((msb >> 8) | lsb);
+	CpuRef.PC = ((msb << 8) | lsb);
 }

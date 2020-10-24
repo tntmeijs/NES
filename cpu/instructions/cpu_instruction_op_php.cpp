@@ -8,6 +8,6 @@ nes::CpuInstructionOpPHP::CpuInstructionOpPHP(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpPHP::ExecuteImpl()
 {
-	CpuRef.PushStack(CpuRef.P | static_cast<std::uint8_t>(BFlag::Instruction));
+	CpuRef.PushStack(CpuRef.P.value | static_cast<std::uint8_t>(BFlag::Instruction));
 	CycleCount = 3;
 }

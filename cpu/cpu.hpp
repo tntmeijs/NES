@@ -3,6 +3,7 @@
 
 #include "flags/cpu_status_flags.hpp"
 #include "instructions/cpu_instruction_addressing_mode.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <cstdint>
 #include <string_view>
@@ -318,7 +319,7 @@ namespace nes
         // 5 - unused bit
         // 6 - overflow flag
         // 7 - negative flag
-        std::uint8_t P;
+        Byte P;
 
         // Stack pointer
         std::uint8_t SP;

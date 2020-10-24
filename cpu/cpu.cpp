@@ -66,7 +66,6 @@ nes::CPU::CPU(RAM& ramRef) :
 	A(0),
 	X(0),
 	Y(0),
-	P(0),
 	SP(0),
 	PC(0),
 	RamRef(ramRef),
@@ -148,7 +147,7 @@ std::uint8_t nes::CPU::GetRegister(RegisterType type) const
 			return Y;
 			break;
 		case nes::CPU::RegisterType::P:
-			return P;
+			return P.value;
 			break;
 		case nes::CPU::RegisterType::SP:
 			return SP;
@@ -178,7 +177,7 @@ bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uin
 void nes::CPU::SetDefaultState()
 {
 	// https://wiki.nesdev.com/w/index.php/CPU_power_up_state
-	P = 0x24;
+	P.value = 0x24;
 	SP = 0xFD;
 
 	// http://forum.6502.org/viewtopic.php?f=4&t=5704#:~:text=On%20the%206502%2C%20the%20reset,all%20interrupts)%20takes%207%20cycles.
@@ -603,22 +602,22 @@ std::uint8_t nes::CPU::PopStack()
 
 void nes::CPU::SetStatusFlag(StatusFlags flag)
 {
-	P |= static_cast<std::uint8_t>(flag);
+	P.value |= static_cast<std::uint8_t>(flag);
 }
 
 void nes::CPU::ClearStatusFlag(StatusFlags flag)
 {
-	P &= ~static_cast<std::uint8_t>(flag);
+	P.value &= ~static_cast<std::uint8_t>(flag);
 }
 
 bool nes::CPU::IsStatusFlagSet(StatusFlags flag) const
 {
-	return ((P & static_cast<std::uint8_t>(flag)) != 0);
+	return ((P.value & static_cast<std::uint8_t>(flag)) != 0);
 }
 
 bool nes::CPU::IsStatusFlagClear(StatusFlags flag) const
 {
-	return ((P & static_cast<std::uint8_t>(flag)) == 0);
+	return ((P.value & static_cast<std::uint8_t>(flag)) == 0);
 }
 
 bool nes::CPU::IsNthBitSet(std::uint8_t byte, std::uint8_t n) const
@@ -659,24 +658,10 @@ void nes::CPU::MatchBitStateOfNthBit(std::uint8_t& target, std::uint8_t source, 
 
 void nes::CPU::UpdateZeroStatusFlag(std::uint8_t byte)
 {
-	if (byte == 0)
-	{
-		P |= (1 << 1);
-	}
-	else
-	{
-		P &= ~(1 << 1);
-	}
+	P.bit1 = (byte == 0) ? 1 : 0;
 }
 
 void nes::CPU::UpdateNegativeStatusFlag(std::uint8_t byte)
 {
-	if (IsNthBitSet(byte, 7))
-	{
-		P |= (1 << 7);
-	}
-	else
-	{
-		P &= ~(1 << 7);
-	}
+	P.bit7 = IsNthBitSet(byte, 7) ? 1 : 0;
 }

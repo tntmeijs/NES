@@ -18,8 +18,8 @@ void nes::CpuInstructionOpBRK::ExecuteImpl()
 	// Save state on the stack
 	CpuRef.PushStack(msb);
 	CpuRef.PushStack(lsb);
-	CpuRef.PushStack(CpuRef.P);
-	CpuRef.P |= (1 << 4);
+	CpuRef.PushStack(CpuRef.P.value);
+	CpuRef.P.bit4 = 1;
 
 	// Set program counter to the IRQ interrupt vector at 0xFFFE and 0xFFFF
 	lsb = CpuRef.ReadRamValueAtAddress(0xFFFE);
