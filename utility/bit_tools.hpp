@@ -24,6 +24,28 @@ namespace nes
 
 		std::uint8_t value;
 	};
+
+	/**
+	 * Check if bit N has been set
+	 * @param   byte    Byte to check
+	 * @param   n       Bit to check
+	 * @return  True when the flag is set, false when clear
+	 */
+	inline constexpr bool IsNthBitSet(std::uint8_t byte, std::uint8_t n)
+	{
+		return ((byte & (1 << n)) != 0);
+	}
+
+	/**
+	 * Check if bit N has been set
+	 * @param   byte    Byte to check
+	 * @param   n       Bit to check
+	 * @return  True when the flag is set, false when clear
+	 */
+	inline constexpr bool IsNthBitSet(const Byte& byte, std::uint8_t n)
+	{
+		return ((byte.value & (1 << n)) != 0);
+	}
 }
 
 #endif //! NES_BIT_TOOLS_HPP

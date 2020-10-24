@@ -196,22 +196,6 @@ namespace nes
         bool IsStatusFlagClear(StatusFlags flag) const;
 
         /**
-         * Check if bit N has been set
-         * @param   byte    Byte to check
-         * @param   n       Bit to check
-         * @return  True when the flag is set, false when clear
-         */
-		bool IsNthBitSet(std::uint8_t byte, std::uint8_t n) const;
-
-        /**
-         * Check if bit N has been cleared
-         * @param   byte    Byte to check
-         * @param   n       Bit to check
-         * @return  True when the flag is clear, false when set
-         */
-        bool IsNthBitClear(std::uint8_t byte, std::uint8_t n) const;
-
-        /**
          * Set the Nth bit to 0 or 1
          * @param   target  Target byte to modify
          * @param   n       Bit to modify

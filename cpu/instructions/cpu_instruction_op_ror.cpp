@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_ror.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <iostream>
 
@@ -27,7 +28,7 @@ void nes::CpuInstructionOpROR::ExecuteImpl()
 	value = (value >> 1);
 
 	// Old bit 0 becomes the new carry bit
-	if (CpuRef.IsNthBitSet(old, 0))
+	if (IsNthBitSet(old, 0))
 	{
 		CpuRef.SetNthBit(value, 0, true);
 	}

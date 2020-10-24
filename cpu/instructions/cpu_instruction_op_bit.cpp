@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_bit.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <iostream>
 
@@ -28,7 +29,7 @@ void nes::CpuInstructionOpBIT::ExecuteImpl()
 	CpuRef.UpdateNegativeStatusFlag(value);
 
 	// Set the overflow flag to the value of the 6th bit
-	if (CpuRef.IsNthBitSet(value, 6))
+	if (IsNthBitSet(value, 6))
 	{
 		CpuRef.SetStatusFlag(StatusFlags::Overflow);
 	}
