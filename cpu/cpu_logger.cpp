@@ -57,29 +57,3 @@ std::stringstream nes::CpuLogger::ConstructStreamFromData(const CPU& cpuRef, std
 
 	return stream;
 }
-
-nes::CpuLogger::CpuLogger(const CPU& cpuRef, const RAM& ramRef) :
-	CpuRef(cpuRef),
-	RamRef(ramRef)
-{
-	LogFile = std::ofstream("cpu_log.log", std::ios::out | std::ios::trunc);
-}
-
-nes::CpuLogger::~CpuLogger()
-{
-	if (LogFile.is_open())
-	{
-		LogFile.close();
-	}
-}
-
-void nes::CpuLogger::LogOperation(std::string_view name, std::uint8_t num)
-{
-	std::stringstream stream = ConstructStreamFromData(CpuRef, name, num);
-
-	// Output to the console window
-	std::cout << stream.str() << std::endl;
-
-	// Output to the log file
-	LogFile << stream.str() << std::endl;
-}

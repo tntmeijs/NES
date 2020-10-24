@@ -1,7 +1,6 @@
 #ifndef NES_CPU_HPP
 #define NES_CPU_HPP
 
-#include "cpu_logger.hpp"
 #include "flags/cpu_status_flags.hpp"
 #include "instructions/cpu_instruction_addressing_mode.hpp"
 
@@ -321,9 +320,6 @@ namespace nes
 
         // RAM
         RAM& RamRef;
-
-        // CPU logger
-        CpuLogger Logger;
 
         // Keep track of the current CPU cycle to allow for synchronization
         std::uint64_t CurrentCycle;
