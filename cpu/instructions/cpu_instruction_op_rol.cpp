@@ -36,6 +36,9 @@ void nes::CpuInstructionOpROL::ExecuteImpl()
 		CpuRef.SetNthBit(value, 0, false);
 	}
 
+	CpuRef.UpdateZeroStatusFlag(value);
+	CpuRef.UpdateNegativeStatusFlag(value);
+
 	if (InstructionAddressingMode == AddressingMode::Accumulator)
 	{
 		CpuRef.A = value;
