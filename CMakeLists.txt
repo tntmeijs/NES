@@ -140,7 +140,8 @@ set(SOURCE_LIST
     editor/ui/ui_ram_visualizer.cpp
     editor/ui/ui_rom_browser.hpp
     editor/ui/ui_rom_browser.cpp
-    utility/literals.hpp)
+    utility/literals.hpp
+    utility/bit_tools.hpp)
 
 # Easiest way to add ImGui to a project is to simply compile the files with the project itself
 set(IMGUI_FILES
