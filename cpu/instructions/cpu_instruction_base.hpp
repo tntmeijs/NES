@@ -53,8 +53,13 @@ namespace nes
 		std::string Name;
 		std::uint8_t InstructionSize;
 
-		/** Number of cycles the instruction took */
+		// Number of cycles the instruction took
 		std::uint8_t CycleCount;
+
+		// Set to false to skip updating the program counter automatically based
+		// on the instruction's size
+		// This is useful for JMP instructions
+		bool AutoUpdateProgramCounter;
 	};
 }
 

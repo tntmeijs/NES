@@ -8,7 +8,8 @@ nes::CpuInstructionBase::CpuInstructionBase(CPU& cpuRef, AddressingMode addressi
 	CpuRef(cpuRef),
 	InstructionAddressingMode(addressingMode),
 	Name(name),
-	CycleCount(0)
+	CycleCount(0),
+	AutoUpdateProgramCounter(true)
 {
 	switch (InstructionAddressingMode)
 	{
@@ -48,6 +49,10 @@ void nes::CpuInstructionBase::PrintDebugInformation() const
 void nes::CpuInstructionBase::Execute()
 {
 	ExecuteImpl();
-	CpuRef.MoveProgramCounter(InstructionSize);
 	CpuRef.UpdateCurrentCycle(CycleCount);
+
+	if (AutoUpdateProgramCounter)
+	{
+		CpuRef.MoveProgramCounter(InstructionSize);
+	}
 }

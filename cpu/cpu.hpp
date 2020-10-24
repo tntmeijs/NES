@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <string_view>
+#include <unordered_map>
 
 namespace nes
 {
@@ -45,6 +46,16 @@ namespace nes
          * @param   ramRef  Reference to the RAM
          */
         CPU(RAM& ramRef);
+
+        CPU(const CPU& other)               = default;
+        CPU(CPU&& other)                    = default;
+        CPU& operator=(const CPU& other)    = default;
+        CPU& operator=(CPU&& other)         = default;
+
+        /**
+         * Deallocate any used resources
+         */
+        ~CPU();
 
         /**
          * Reset the vector back to the default memory address
@@ -85,6 +96,13 @@ namespace nes
         std::uint8_t ReadRamValueAtAddress(std::uint16_t address) const;
 
         /**
+         * Write a byte to RAM at the specified address
+         * @param   address     Address to write to
+         * @param   value       Value to write to RAM
+         */
+        void WriteRamValueAtAddress(std::uint16_t address, std::uint8_t value) const;
+
+        /**
          * Get the current value of the program counter accounting for the offset
          * in RAM
          * @return  Current value of the program counter
@@ -115,7 +133,25 @@ namespace nes
          */
         void SetDefaultState();
 
+        /**
+         * Retrieve the target address of an instruction based on the addressing
+         * mode specified
+         * @param   mode    Addressing mode to use
+         * @return  Target address of the instruction
+         */
+        std::uint16_t GetTargetAddress(AddressingMode mode) const;
+
     private:
+        /**
+         * Create a look-up table for all instructions
+         */
+        void AllocateInstructionTable();
+
+        /**
+         * Deallocate the look-up table for instructions
+         */
+        void DeallocateInstructionTable();
+
         /**
          * Execute the proper op-code
          * @param   opCode  Op-code to execute
@@ -133,14 +169,6 @@ namespace nes
          * @return  Value popped from the stack
          */
         std::uint8_t PopStack();
-
-        /**
-         * Retrieve the target address of an instruction based on the addressing
-         * mode specified
-         * @param   mode    Addressing mode to use
-         * @return  Target address of the instruction
-         */
-        std::uint16_t GetTargetAddress(AddressingMode mode) const;
 
         /**
          * Set a processor status flag
@@ -206,64 +234,68 @@ namespace nes
         void UpdateNegativeStatusFlag(std::uint8_t byte);
 
     private:
-        void ADC(AddressingMode mode);
-        void AND(AddressingMode mode);
-        void ASL(AddressingMode mode);
-        void BCC(AddressingMode mode);
-        void BCS(AddressingMode mode);
-        void BEQ(AddressingMode mode);
-        void BIT(AddressingMode mode);
-        void BMI(AddressingMode mode);
-        void BNE(AddressingMode mode);
-        void BPL(AddressingMode mode);
-        void BRK(AddressingMode mode);
-        void BVC(AddressingMode mode);
-        void BVS(AddressingMode mode);
-        void CLC(AddressingMode mode);
-        void CLD(AddressingMode mode);
-        void CLI(AddressingMode mode);
-        void CLV(AddressingMode mode);
-        void CMP(AddressingMode mode);
-        void CPX(AddressingMode mode);
-        void CPY(AddressingMode mode);
-        void DEC(AddressingMode mode);
-        void DEX(AddressingMode mode);
-        void DEY(AddressingMode mode);
-        void EOR(AddressingMode mode);
-        void INC(AddressingMode mode);
-        void INX(AddressingMode mode);
-        void INY(AddressingMode mode);
-        void JMP(AddressingMode mode);
-        void JSR(AddressingMode mode);
-        void LDA(AddressingMode mode);
-        void LDX(AddressingMode mode);
-        void LDY(AddressingMode mode);
-        void LSR(AddressingMode mode);
-        void NOP(AddressingMode mode);
-        void ORA(AddressingMode mode);
-        void PHA(AddressingMode mode);
-        void PHP(AddressingMode mode);
-        void PLA(AddressingMode mode);
-        void PLP(AddressingMode mode);
-        void ROL(AddressingMode mode);
-        void ROR(AddressingMode mode);
-        void RTI(AddressingMode mode);
-        void RTS(AddressingMode mode);
-        void SBC(AddressingMode mode);
-        void SEC(AddressingMode mode);
-        void SED(AddressingMode mode);
-        void SEI(AddressingMode mode);
-        void STA(AddressingMode mode);
-		void STX(AddressingMode mode);
-		void STY(AddressingMode mode);
-        void TAX(AddressingMode mode);
-        void TAY(AddressingMode mode);
-        void TSX(AddressingMode mode);
-        void TXA(AddressingMode mode);
-        void TXS(AddressingMode mode);
-        void TYA(AddressingMode mode);
+        // Give all instructions access to the private and protected members of CPU
+        // Friend classes are quite useful here as the instructions would be a massive
+        // pain to write if we were to use getter and setter functions only
+		friend class CpuInstructionBase;
+		friend class CpuInstruction;
+		friend class CpuInstructionOpADC;
+		friend class CpuInstructionOpAND;
+		friend class CpuInstructionOpASL;
+		friend class CpuInstructionOpBCC;
+		friend class CpuInstructionOpBCS;
+		friend class CpuInstructionOpBEQ;
+		friend class CpuInstructionOpBIT;
+		friend class CpuInstructionOpBMI;
+		friend class CpuInstructionOpBNE;
+		friend class CpuInstructionOpBPL;
+		friend class CpuInstructionOpBRK;
+		friend class CpuInstructionOpBVC;
+		friend class CpuInstructionOpBVS;
+		friend class CpuInstructionOpCLC;
+		friend class CpuInstructionOpCLD;
+		friend class CpuInstructionOpCLI;
+		friend class CpuInstructionOpCLV;
+		friend class CpuInstructionOpCMP;
+		friend class CpuInstructionOpCPX;
+		friend class CpuInstructionOpCPY;
+		friend class CpuInstructionOpDEC;
+		friend class CpuInstructionOpDEX;
+		friend class CpuInstructionOpDEY;
+		friend class CpuInstructionOpEOR;
+		friend class CpuInstructionOpINC;
+		friend class CpuInstructionOpINX;
+		friend class CpuInstructionOpINY;
+		friend class CpuInstructionOpJMP;
+		friend class CpuInstructionOpJSR;
+		friend class CpuInstructionOpLDA;
+		friend class CpuInstructionOpLDX;
+		friend class CpuInstructionOpLDY;
+		friend class CpuInstructionOpLSR;
+		friend class CpuInstructionOpNOP;
+		friend class CpuInstructionOpORA;
+		friend class CpuInstructionOpPHA;
+		friend class CpuInstructionOpPHP;
+		friend class CpuInstructionOpPLA;
+		friend class CpuInstructionOpPLP;
+		friend class CpuInstructionOpROL;
+		friend class CpuInstructionOpROR;
+		friend class CpuInstructionOpRTI;
+		friend class CpuInstructionOpRTS;
+		friend class CpuInstructionOpSBC;
+		friend class CpuInstructionOpSEC;
+		friend class CpuInstructionOpSED;
+		friend class CpuInstructionOpSEI;
+		friend class CpuInstructionOpSTA;
+		friend class CpuInstructionOpSTX;
+		friend class CpuInstructionOpSTY;
+		friend class CpuInstructionOpTAX;
+		friend class CpuInstructionOpTAY;
+		friend class CpuInstructionOpTSX;
+		friend class CpuInstructionOpTXA;
+		friend class CpuInstructionOpTXS;
+		friend class CpuInstructionOpTYA;
 
-    private:
         // Accumulator
         std::uint8_t A;
 
@@ -296,6 +328,9 @@ namespace nes
 
         // Keep track of the current CPU cycle to allow for synchronization
         std::uint64_t CurrentCycle;
+
+        // Look-up table for instructions
+        std::unordered_map<std::uint16_t, CpuInstructionBase*> InstructionTable;
     };
 }
 

@@ -2,8 +2,65 @@
 #include "ram/ram.hpp"
 #include "flags/cpu_b_flags.hpp"
 
+#include "instructions/cpu_instruction_base.hpp"
+#include "instructions/cpu_instruction_op_adc.hpp"
+#include "instructions/cpu_instruction_op_and.hpp"
+#include "instructions/cpu_instruction_op_asl.hpp"
+#include "instructions/cpu_instruction_op_bcc.hpp"
+#include "instructions/cpu_instruction_op_bcs.hpp"
+#include "instructions/cpu_instruction_op_beq.hpp"
+#include "instructions/cpu_instruction_op_bit.hpp"
+#include "instructions/cpu_instruction_op_bmi.hpp"
+#include "instructions/cpu_instruction_op_bne.hpp"
+#include "instructions/cpu_instruction_op_bpl.hpp"
+#include "instructions/cpu_instruction_op_brk.hpp"
+#include "instructions/cpu_instruction_op_bvc.hpp"
+#include "instructions/cpu_instruction_op_bvs.hpp"
+#include "instructions/cpu_instruction_op_clc.hpp"
+#include "instructions/cpu_instruction_op_cld.hpp"
+#include "instructions/cpu_instruction_op_cli.hpp"
+#include "instructions/cpu_instruction_op_clv.hpp"
+#include "instructions/cpu_instruction_op_cmp.hpp"
+#include "instructions/cpu_instruction_op_cpx.hpp"
+#include "instructions/cpu_instruction_op_cpy.hpp"
+#include "instructions/cpu_instruction_op_dec.hpp"
+#include "instructions/cpu_instruction_op_dex.hpp"
+#include "instructions/cpu_instruction_op_dey.hpp"
+#include "instructions/cpu_instruction_op_eor.hpp"
+#include "instructions/cpu_instruction_op_inc.hpp"
+#include "instructions/cpu_instruction_op_inx.hpp"
+#include "instructions/cpu_instruction_op_iny.hpp"
+#include "instructions/cpu_instruction_op_jmp.hpp"
+#include "instructions/cpu_instruction_op_jsr.hpp"
+#include "instructions/cpu_instruction_op_lda.hpp"
+#include "instructions/cpu_instruction_op_ldx.hpp"
+#include "instructions/cpu_instruction_op_ldy.hpp"
+#include "instructions/cpu_instruction_op_lsr.hpp"
+#include "instructions/cpu_instruction_op_nop.hpp"
+#include "instructions/cpu_instruction_op_ora.hpp"
+#include "instructions/cpu_instruction_op_pha.hpp"
+#include "instructions/cpu_instruction_op_php.hpp"
+#include "instructions/cpu_instruction_op_pla.hpp"
+#include "instructions/cpu_instruction_op_plp.hpp"
+#include "instructions/cpu_instruction_op_rol.hpp"
+#include "instructions/cpu_instruction_op_ror.hpp"
+#include "instructions/cpu_instruction_op_rti.hpp"
+#include "instructions/cpu_instruction_op_rts.hpp"
+#include "instructions/cpu_instruction_op_sbc.hpp"
+#include "instructions/cpu_instruction_op_sec.hpp"
+#include "instructions/cpu_instruction_op_sed.hpp"
+#include "instructions/cpu_instruction_op_sei.hpp"
+#include "instructions/cpu_instruction_op_sta.hpp"
+#include "instructions/cpu_instruction_op_stx.hpp"
+#include "instructions/cpu_instruction_op_sty.hpp"
+#include "instructions/cpu_instruction_op_tax.hpp"
+#include "instructions/cpu_instruction_op_tay.hpp"
+#include "instructions/cpu_instruction_op_tsx.hpp"
+#include "instructions/cpu_instruction_op_txa.hpp"
+#include "instructions/cpu_instruction_op_txs.hpp"
+#include "instructions/cpu_instruction_op_tya.hpp"
+
 #include <iostream>
-#include <fstream>
 
 bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after)
 {
@@ -28,6 +85,12 @@ nes::CPU::CPU(RAM& ramRef) :
 	CurrentCycle(0)
 {
 	SetDefaultState();
+	AllocateInstructionTable();
+}
+
+nes::CPU::~CPU()
+{
+	DeallocateInstructionTable();
 }
 
 void nes::CPU::SetProgramCounterToResetVector()
@@ -66,6 +129,11 @@ void nes::CPU::UpdateCurrentCycle(std::uint8_t offset)
 std::uint8_t nes::CPU::ReadRamValueAtAddress(std::uint16_t address) const
 {
 	return RamRef.ReadByte(address);
+}
+
+void nes::CPU::WriteRamValueAtAddress(std::uint16_t address, std::uint8_t value) const
+{
+	RamRef.WriteByte(address, value);
 }
 
 std::uint16_t nes::CPU::GetProgramCounter() const
@@ -116,958 +184,6 @@ void nes::CPU::SetDefaultState()
 
 	// http://forum.6502.org/viewtopic.php?f=4&t=5704#:~:text=On%20the%206502%2C%20the%20reset,all%20interrupts)%20takes%207%20cycles.
 	CurrentCycle = 7;
-}
-
-void nes::CPU::ProcessOpCode(std::uint8_t opCode)
-{
-	switch (opCode)
-	{
-		// -------------------------------------------------------------------
-		// Force Interrupt
-		// -------------------------------------------------------------------
-		case 0x00:
-			Logger.LogOperation("BRK", 1);
-			BRK(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Logical Inclusive OR
-			// -------------------------------------------------------------------
-		case 0x01:
-			Logger.LogOperation("ORA", 2);
-			ORA(AddressingMode::IndirectX);
-			break;
-
-		case 0x05:
-			Logger.LogOperation("ORA", 2);
-			ORA(AddressingMode::ZeroPage);
-			break;
-
-		case 0x09:
-			Logger.LogOperation("ORA", 2);
-			ORA(AddressingMode::Immediate);
-			break;
-
-		case 0x0D:
-			Logger.LogOperation("ORA", 3);
-			ORA(AddressingMode::Absolute);
-			break;
-
-		case 0x11:
-			Logger.LogOperation("ORA", 2);
-			ORA(AddressingMode::IndirectY);
-			break;
-
-		case 0x15:
-			Logger.LogOperation("ORA", 2);
-			ORA(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x19:
-			Logger.LogOperation("ORA", 3);
-			ORA(AddressingMode::AbsoluteY);
-			break;
-
-		case 0x1D:
-			Logger.LogOperation("ORA", 3);
-			ORA(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Arithmetic Shift Left
-			// -------------------------------------------------------------------
-		case 0x06:
-			Logger.LogOperation("ASL", 2);
-			ASL(AddressingMode::ZeroPage);
-			break;
-
-		case 0x0A:
-			Logger.LogOperation("ASL", 1);
-			ASL(AddressingMode::Accumulator);
-			break;
-
-		case 0x0E:
-			Logger.LogOperation("ASL", 3);
-			ASL(AddressingMode::Absolute);
-			break;
-
-		case 0x16:
-			Logger.LogOperation("ASL", 2);
-			ASL(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x1E:
-			Logger.LogOperation("ASL", 3);
-			ASL(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Push Processor Status
-			// -------------------------------------------------------------------
-		case 0x08:
-			Logger.LogOperation("PHP", 1);
-			PHP(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Branch if Positive
-			// -------------------------------------------------------------------
-		case 0x10:
-			Logger.LogOperation("BPL", 2);
-			BPL(AddressingMode::Relative);
-			break;
-
-			// -------------------------------------------------------------------
-			// Clear Carry Flag
-			// -------------------------------------------------------------------
-		case 0x18:
-			Logger.LogOperation("CLC", 1);
-			CLC(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Jump to Subroutine
-			// -------------------------------------------------------------------
-		case 0x20:
-			Logger.LogOperation("JSR", 3);
-			JSR(AddressingMode::Absolute);
-			break;
-
-			// -------------------------------------------------------------------
-			// BIT
-			// -------------------------------------------------------------------
-		case 0x24:
-			Logger.LogOperation("BIT", 2);
-			BIT(AddressingMode::ZeroPage);
-			break;
-
-		case 0x2C:
-			Logger.LogOperation("BIT", 3);
-			BIT(AddressingMode::Absolute);
-			break;
-
-			// -------------------------------------------------------------------
-			// Logical AND
-			// -------------------------------------------------------------------
-		case 0x21:
-			Logger.LogOperation("AND", 2);
-			AND(AddressingMode::IndirectX);
-			break;
-
-		case 0x25:
-			Logger.LogOperation("AND", 2);
-			AND(AddressingMode::ZeroPage);
-			break;
-
-		case 0x29:
-			Logger.LogOperation("AND", 2);
-			AND(AddressingMode::Immediate);
-			break;
-
-		case 0x2D:
-			Logger.LogOperation("AND", 3);
-			AND(AddressingMode::Absolute);
-			break;
-
-		case 0x31:
-			Logger.LogOperation("AND", 2);
-			AND(AddressingMode::IndirectY);
-			break;
-
-		case 0x35:
-			Logger.LogOperation("AND", 2);
-			AND(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x39:
-			Logger.LogOperation("AND", 3);
-			AND(AddressingMode::AbsoluteY);
-			break;
-
-		case 0x3D:
-			Logger.LogOperation("AND", 3);
-			AND(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Pull Processor Status
-			// -------------------------------------------------------------------
-		case 0x28:
-			Logger.LogOperation("PLP", 1);
-			PLP(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Rotate Left
-			// -------------------------------------------------------------------
-		case 0x26:
-			Logger.LogOperation("ROL", 2);
-			ROL(AddressingMode::ZeroPage);
-			break;
-
-		case 0x2A:
-			Logger.LogOperation("ROL", 1);
-			ROL(AddressingMode::Accumulator);
-			break;
-
-		case 0x2E:
-			Logger.LogOperation("ROL", 3);
-			ROL(AddressingMode::Absolute);
-			break;
-
-		case 0x36:
-			Logger.LogOperation("ROL", 2);
-			ROL(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x3E:
-			Logger.LogOperation("ROL", 3);
-			ROL(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Branch if Minus
-			// -------------------------------------------------------------------
-		case 0x30:
-			Logger.LogOperation("BMI", 2);
-			BMI(AddressingMode::Relative);
-			break;
-
-			// -------------------------------------------------------------------
-			// Set Carry Flag
-			// -------------------------------------------------------------------
-		case 0x38:
-			Logger.LogOperation("SEC", 1);
-			SEC(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Return from Interrupt
-			// -------------------------------------------------------------------
-		case 0x40:
-			Logger.LogOperation("RTI", 1);
-			RTI(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Exclusive OR
-			// -------------------------------------------------------------------
-		case 0x41:
-			Logger.LogOperation("EOR", 2);
-			EOR(AddressingMode::IndirectX);
-			break;
-
-		case 0x45:
-			Logger.LogOperation("EOR", 2);
-			EOR(AddressingMode::ZeroPage);
-			break;
-
-		case 0x49:
-			Logger.LogOperation("EOR", 2);
-			EOR(AddressingMode::Immediate);
-			break;
-
-		case 0x4D:
-			Logger.LogOperation("EOR", 3);
-			EOR(AddressingMode::Absolute);
-			break;
-
-		case 0x51:
-			Logger.LogOperation("EOR", 2);
-			EOR(AddressingMode::IndirectY);
-			break;
-
-		case 0x55:
-			Logger.LogOperation("EOR", 2);
-			EOR(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x59:
-			Logger.LogOperation("EOR", 3);
-			EOR(AddressingMode::AbsoluteY);
-			break;
-
-		case 0x5D:
-			Logger.LogOperation("EOR", 3);
-			EOR(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Logical Shift Right
-			// -------------------------------------------------------------------
-		case 0x46:
-			Logger.LogOperation("LSR", 2);
-			LSR(AddressingMode::ZeroPage);
-			break;
-
-		case 0x4A:
-			Logger.LogOperation("LSR", 1);
-			LSR(AddressingMode::Accumulator);
-			break;
-
-		case 0x4E:
-			Logger.LogOperation("LSR", 3);
-			LSR(AddressingMode::Absolute);
-			break;
-
-		case 0x56:
-			Logger.LogOperation("LSR", 2);
-			LSR(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x5E:
-			Logger.LogOperation("LSR", 3);
-			LSR(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Push Accumulator
-			// -------------------------------------------------------------------
-		case 0x48:
-			Logger.LogOperation("PHA", 1);
-			PHA(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Jump
-			// -------------------------------------------------------------------
-		case 0x4C:
-			Logger.LogOperation("JMP", 3);
-			JMP(AddressingMode::Absolute);
-			break;
-
-		case 0x6C:
-			Logger.LogOperation("JMP", 3);
-			JMP(AddressingMode::Indirect);
-			break;
-
-			// -------------------------------------------------------------------
-			// Branch if Overflow Clear
-			// -------------------------------------------------------------------
-		case 0x50:
-			Logger.LogOperation("BVC", 2);
-			BVC(AddressingMode::Relative);
-			break;
-
-			// -------------------------------------------------------------------
-			// Clear Interrupt Disable
-			// -------------------------------------------------------------------
-		case 0x58:
-			Logger.LogOperation("CLI", 1);
-			CLI(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Return from Subroutine
-			// -------------------------------------------------------------------
-		case 0x60:
-			Logger.LogOperation("RTS", 1);
-			RTS(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Pull Accumulator
-			// -------------------------------------------------------------------
-		case 0x68:
-			Logger.LogOperation("PLA", 1);
-			PLA(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Rotate Right
-			// -------------------------------------------------------------------
-		case 0x66:
-			Logger.LogOperation("ROR", 2);
-			ROR(AddressingMode::ZeroPage);
-			break;
-
-		case 0x6A:
-			Logger.LogOperation("ROR", 1);
-			ROR(AddressingMode::Accumulator);
-			break;
-
-		case 0x6E:
-			Logger.LogOperation("ROR", 3);
-			ROR(AddressingMode::Absolute);
-			break;
-
-		case 0x76:
-			Logger.LogOperation("ROR", 2);
-			ROR(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x7E:
-			Logger.LogOperation("ROR", 3);
-			ROR(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Add with Carry
-			// -------------------------------------------------------------------
-		case 0x61:
-			Logger.LogOperation("ADC", 2);
-			ADC(AddressingMode::IndirectX);
-			break;
-
-		case 0x65:
-			Logger.LogOperation("ADC", 2);
-			ADC(AddressingMode::ZeroPage);
-			break;
-
-		case 0x69:
-			Logger.LogOperation("ADC", 2);
-			ADC(AddressingMode::Immediate);
-			break;
-
-		case 0x6D:
-			Logger.LogOperation("ADC", 3);
-			ADC(AddressingMode::Absolute);
-			break;
-
-		case 0x71:
-			Logger.LogOperation("ADC", 2);
-			ADC(AddressingMode::IndirectY);
-			break;
-
-		case 0x75:
-			Logger.LogOperation("ADC", 2);
-			ADC(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x79:
-			Logger.LogOperation("ADC", 3);
-			ADC(AddressingMode::AbsoluteY);
-			break;
-
-		case 0x7D:
-			Logger.LogOperation("ADC", 3);
-			ADC(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Branch if Overflow Set
-			// -------------------------------------------------------------------
-		case 0x70:
-			Logger.LogOperation("BVS", 2);
-			BVS(AddressingMode::Relative);
-			break;
-
-			// -------------------------------------------------------------------
-			// Set Interrupt Disable
-			// -------------------------------------------------------------------
-		case 0x78:
-			Logger.LogOperation("SEI", 1);
-			SEI(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Store Accumulator
-			// -------------------------------------------------------------------
-		case 0x81:
-			Logger.LogOperation("STA", 2);
-			STA(AddressingMode::IndirectX);
-			break;
-
-		case 0x85:
-			Logger.LogOperation("STA", 2);
-			STA(AddressingMode::ZeroPage);
-			break;
-
-		case 0x8D:
-			Logger.LogOperation("STA", 3);
-			STA(AddressingMode::Absolute);
-			break;
-
-		case 0x91:
-			Logger.LogOperation("STA", 2);
-			STA(AddressingMode::IndirectY);
-			break;
-
-		case 0x95:
-			Logger.LogOperation("STA", 2);
-			STA(AddressingMode::ZeroPageX);
-			break;
-
-		case 0x99:
-			Logger.LogOperation("STA", 3);
-			STA(AddressingMode::AbsoluteY);
-			break;
-
-		case 0x9D:
-			Logger.LogOperation("STA", 3);
-			STA(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Store Y Register
-			// -------------------------------------------------------------------
-		case 0x84:
-			Logger.LogOperation("STY", 2);
-			STY(AddressingMode::ZeroPage);
-			break;
-
-		case 0x8C:
-			Logger.LogOperation("STY", 3);
-			STY(AddressingMode::Absolute);
-			break;
-
-		case 0x94:
-			Logger.LogOperation("STY", 2);
-			STY(AddressingMode::ZeroPageX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Store X Register
-			// -------------------------------------------------------------------
-		case 0x86:
-			Logger.LogOperation("STX", 2);
-			STX(AddressingMode::ZeroPage);
-			break;
-
-		case 0x8E:
-			Logger.LogOperation("STX", 3);
-			STX(AddressingMode::Absolute);
-			break;
-
-		case 0x96:
-			Logger.LogOperation("STX", 2);
-			STX(AddressingMode::ZeroPageY);
-			break;
-
-			// -------------------------------------------------------------------
-			// Decrement Y Register
-			// -------------------------------------------------------------------
-		case 0x88:
-			Logger.LogOperation("DEY", 1);
-			DEY(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Transfer X to Accumulator
-			// -------------------------------------------------------------------
-		case 0x8A:
-			Logger.LogOperation("TXA", 1);
-			TXA(AddressingMode::Implicit);
-
-			// -------------------------------------------------------------------
-			// Branch if Carry Clear
-			// -------------------------------------------------------------------
-		case 0x90:
-			Logger.LogOperation("BCC", 2);
-			BCC(AddressingMode::Relative);
-			break;
-
-			// -------------------------------------------------------------------
-			// Transfer Y to Accumulator
-			// -------------------------------------------------------------------
-		case 0x98:
-			Logger.LogOperation("TYA", 1);
-			TYA(AddressingMode::Implicit);
-
-			// -------------------------------------------------------------------
-			// Transfer X to Stack Pointer
-			// -------------------------------------------------------------------
-		case 0x9A:
-			Logger.LogOperation("TXS", 1);
-			TXS(AddressingMode::Implicit);
-
-			// -------------------------------------------------------------------
-			// Load Y Register
-			// -------------------------------------------------------------------
-		case 0xA0:
-			Logger.LogOperation("LDY", 2);
-			LDY(AddressingMode::Immediate);
-			break;
-
-		case 0xA4:
-			Logger.LogOperation("LDY", 2);
-			LDY(AddressingMode::ZeroPage);
-			break;
-
-		case 0xAC:
-			Logger.LogOperation("LDY", 3);
-			LDY(AddressingMode::Absolute);
-			break;
-
-		case 0xB4:
-			Logger.LogOperation("LDY", 2);
-			LDY(AddressingMode::ZeroPageX);
-			break;
-
-		case 0xBC:
-			Logger.LogOperation("LDY", 3);
-			LDY(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Load Accumulator
-			// -------------------------------------------------------------------
-		case 0xA1:
-			Logger.LogOperation("LDA", 2);
-			LDA(AddressingMode::IndirectX);
-			break;
-
-		case 0xA5:
-			Logger.LogOperation("LDA", 2);
-			LDA(AddressingMode::ZeroPage);
-			break;
-
-		case 0xA9:
-			Logger.LogOperation("LDA", 2);
-			LDA(AddressingMode::Immediate);
-			break;
-
-		case 0xAD:
-			Logger.LogOperation("LDA", 3);
-			LDA(AddressingMode::Absolute);
-			break;
-
-		case 0xB1:
-			Logger.LogOperation("LDA", 2);
-			LDA(AddressingMode::IndirectY);
-			break;
-
-		case 0xB5:
-			Logger.LogOperation("LDA", 2);
-			LDA(AddressingMode::ZeroPageX);
-			break;
-
-		case 0xB9:
-			Logger.LogOperation("LDA", 3);
-			LDA(AddressingMode::AbsoluteY);
-			break;
-
-		case 0xBD:
-			Logger.LogOperation("LDA", 3);
-			LDA(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Load X Register
-			// -------------------------------------------------------------------
-		case 0xA2:
-			Logger.LogOperation("LDX", 2);
-			LDX(AddressingMode::Immediate);
-			break;
-
-		case 0xA6:
-			Logger.LogOperation("LDX", 2);
-			LDX(AddressingMode::ZeroPage);
-			break;
-
-		case 0xAE:
-			Logger.LogOperation("LDX", 3);
-			LDX(AddressingMode::Absolute);
-			break;
-
-		case 0xB6:
-			Logger.LogOperation("LDX", 2);
-			LDX(AddressingMode::ZeroPageY);
-			break;
-
-		case 0xBE:
-			Logger.LogOperation("LDX", 3);
-			LDX(AddressingMode::AbsoluteY);
-			break;
-
-			// -------------------------------------------------------------------
-			// Transfer Accumulator to Y
-			// -------------------------------------------------------------------
-		case 0xA8:
-			Logger.LogOperation("TAY", 1);
-			TAY(AddressingMode::Implicit);
-
-			// -------------------------------------------------------------------
-			// Transfer Accumulator to X
-			// -------------------------------------------------------------------
-		case 0xAA:
-			Logger.LogOperation("TAX", 1);
-			TAX(AddressingMode::Implicit);
-
-			// -------------------------------------------------------------------
-			// Branch if Carry Set
-			// -------------------------------------------------------------------
-		case 0xB0:
-			Logger.LogOperation("BCS", 2);
-			BCS(AddressingMode::Relative);
-			break;
-
-			// -------------------------------------------------------------------
-			// Clear Overflow Flag
-			// -------------------------------------------------------------------
-		case 0xB8:
-			Logger.LogOperation("CLV", 1);
-			CLV(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Transfer Stack Pointer to X
-			// -------------------------------------------------------------------
-		case 0xBA:
-			Logger.LogOperation("TSX", 1);
-			TSX(AddressingMode::Implicit);
-
-			// -------------------------------------------------------------------
-			// Compare
-			// -------------------------------------------------------------------
-		case 0xC1:
-			Logger.LogOperation("CMP", 2);
-			CMP(AddressingMode::IndirectX);
-			break;
-
-		case 0xC5:
-			Logger.LogOperation("CMP", 2);
-			CMP(AddressingMode::ZeroPage);
-			break;
-
-		case 0xC9:
-			Logger.LogOperation("CMP", 2);
-			CMP(AddressingMode::Immediate);
-			break;
-
-		case 0xCD:
-			Logger.LogOperation("CMP", 3);
-			CMP(AddressingMode::Absolute);
-			break;
-
-		case 0xD1:
-			Logger.LogOperation("CMP", 2);
-			CMP(AddressingMode::IndirectY);
-			break;
-
-		case 0xD5:
-			Logger.LogOperation("CMP", 2);
-			CMP(AddressingMode::ZeroPageX);
-			break;
-
-		case 0xD9:
-			Logger.LogOperation("CMP", 3);
-			CMP(AddressingMode::AbsoluteY);
-			break;
-
-		case 0xDD:
-			Logger.LogOperation("CMP", 3);
-			CMP(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Decrement Memory
-			// -------------------------------------------------------------------
-		case 0xC6:
-			Logger.LogOperation("DEC", 2);
-			DEC(AddressingMode::ZeroPage);
-			break;
-
-		case 0xD6:
-			Logger.LogOperation("DEC", 2);
-			DEC(AddressingMode::ZeroPageX);
-			break;
-
-		case 0xCE:
-			Logger.LogOperation("DEC", 3);
-			DEC(AddressingMode::Absolute);
-			break;
-
-		case 0xDE:
-			Logger.LogOperation("DEC", 3);
-			DEC(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Decrement X Register
-			// -------------------------------------------------------------------
-		case 0xCA:
-			Logger.LogOperation("DEX", 1);
-			DEX(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Compare Y Register
-			// -------------------------------------------------------------------
-		case 0xC0:
-			Logger.LogOperation("CPY", 2);
-			CPY(AddressingMode::Immediate);
-			break;
-
-		case 0xC4:
-			Logger.LogOperation("CPY", 2);
-			CPY(AddressingMode::ZeroPage);
-			break;
-
-		case 0xCC:
-			Logger.LogOperation("CPY", 3);
-			CPY(AddressingMode::Absolute);
-
-			// -------------------------------------------------------------------
-			// Increment Y Register
-			// -------------------------------------------------------------------
-		case 0xC8:
-			Logger.LogOperation("INY", 1);
-			INY(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Branch if not Equal
-			// -------------------------------------------------------------------
-		case 0xD0:
-			Logger.LogOperation("BNE", 2);
-			BNE(AddressingMode::Relative);
-			break;
-
-			// -------------------------------------------------------------------
-			// Clear Decimal Mode
-			// -------------------------------------------------------------------
-		case 0xD8:
-			Logger.LogOperation("CLD", 1);
-			CLD(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Compare X Register
-			// -------------------------------------------------------------------
-		case 0xE0:
-			Logger.LogOperation("CPX", 2);
-			CPX(AddressingMode::Immediate);
-			break;
-
-		case 0xE4:
-			Logger.LogOperation("CPX", 2);
-			CPX(AddressingMode::ZeroPage);
-			break;
-
-		case 0xEC:
-			Logger.LogOperation("CPX", 3);
-			CPX(AddressingMode::Absolute);
-			break;
-
-			// -------------------------------------------------------------------
-			// Subtract with Carry
-			// -------------------------------------------------------------------
-		case 0xE1:
-			Logger.LogOperation("SBC", 2);
-			SBC(AddressingMode::IndirectX);
-			break;
-
-		case 0xE5:
-			Logger.LogOperation("SBC", 2);
-			SBC(AddressingMode::ZeroPage);
-			break;
-
-		case 0xE9:
-			Logger.LogOperation("SBC", 2);
-			SBC(AddressingMode::Immediate);
-			break;
-
-		case 0xED:
-			Logger.LogOperation("SBC", 3);
-			SBC(AddressingMode::Absolute);
-			break;
-
-		case 0xF1:
-			Logger.LogOperation("SBC", 2);
-			SBC(AddressingMode::IndirectY);
-			break;
-
-		case 0xF5:
-			Logger.LogOperation("SBC", 2);
-			SBC(AddressingMode::ZeroPageX);
-			break;
-
-		case 0xFD:
-			Logger.LogOperation("SBC", 3);
-			SBC(AddressingMode::AbsoluteX);
-			break;
-
-		case 0xF9:
-			Logger.LogOperation("SBC", 3);
-			SBC(AddressingMode::AbsoluteY);
-			break;
-
-			// -------------------------------------------------------------------
-			// Increment Memory
-			// -------------------------------------------------------------------
-		case 0xE6:
-			Logger.LogOperation("INC", 2);
-			INC(AddressingMode::ZeroPage);
-			break;
-
-		case 0xF6:
-			Logger.LogOperation("INC", 2);
-			INC(AddressingMode::ZeroPageX);
-			break;
-
-		case 0xEE:
-			Logger.LogOperation("INC", 3);
-			INC(AddressingMode::Absolute);
-			break;
-
-		case 0xFE:
-			Logger.LogOperation("INC", 3);
-			INC(AddressingMode::AbsoluteX);
-			break;
-
-			// -------------------------------------------------------------------
-			// Increment X Register
-			// -------------------------------------------------------------------
-		case 0xE8:
-			Logger.LogOperation("INX", 1);
-			INX(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// No Operation
-			// -------------------------------------------------------------------
-		case 0xEA:
-			Logger.LogOperation("NOP", 1);
-			NOP(AddressingMode::Implicit);
-			break;
-
-			// -------------------------------------------------------------------
-			// Branch if Equal
-			// -------------------------------------------------------------------
-		case 0xF0:
-			Logger.LogOperation("BEQ", 2);
-			BEQ(AddressingMode::Relative);
-			break;
-
-			// -------------------------------------------------------------------
-			// Set Carry Flag
-			// -------------------------------------------------------------------
-		case 0xF8:
-			Logger.LogOperation("SED", 1);
-			SED(AddressingMode::Implicit);
-			break;
-
-		default:
-			Logger.LogOperation("UNKNOWN OP-CODE, THIS SHOULD NEVER HAPPEN", 0);
-			std::cerr << "Unknown op-code: " << std::hex << opCode << '\n';
-			break;
-	}
-}
-
-void nes::CPU::PushStack(std::uint8_t value)
-{
-	// Stack grows downwards
-	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
-	RamRef.WriteByte(address, value);
-
-	// Move stack pointer
-	--SP;
-}
-
-std::uint8_t nes::CPU::PopStack()
-{
-	// Move stack pointer
-	++SP;
-
-	// Stack grows downwards
-	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
-	std::uint8_t value = RamRef.ReadByte(address);
-
-	// Clear value from stack
-	RamRef.WriteByte(address, 0);
-
-	return value;
 }
 
 std::uint16_t nes::CPU::GetTargetAddress(AddressingMode mode) const
@@ -1164,6 +280,328 @@ std::uint16_t nes::CPU::GetTargetAddress(AddressingMode mode) const
 	return 0;
 }
 
+void nes::CPU::AllocateInstructionTable()
+{
+	// Set all pointers to nullptr to ensure that we have no garbage values
+	for (std::size_t i = 0; i < InstructionTable.size(); ++i)
+	{
+		InstructionTable[i] = nullptr;
+	}
+
+	// ADC
+	InstructionTable[0x61] = new CpuInstructionOpADC(*this, AddressingMode::IndirectX);
+	InstructionTable[0x65] = new CpuInstructionOpADC(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x69] = new CpuInstructionOpADC(*this, AddressingMode::Immediate);
+	InstructionTable[0x6D] = new CpuInstructionOpADC(*this, AddressingMode::Absolute);
+	InstructionTable[0x71] = new CpuInstructionOpADC(*this, AddressingMode::IndirectY);
+	InstructionTable[0x75] = new CpuInstructionOpADC(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x79] = new CpuInstructionOpADC(*this, AddressingMode::AbsoluteY);
+	InstructionTable[0x7D] = new CpuInstructionOpADC(*this, AddressingMode::AbsoluteX);
+
+	// AND
+	InstructionTable[0x21] = new CpuInstructionOpAND(*this, AddressingMode::IndirectX);
+	InstructionTable[0x25] = new CpuInstructionOpAND(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x29] = new CpuInstructionOpAND(*this, AddressingMode::Immediate);
+	InstructionTable[0x2D] = new CpuInstructionOpAND(*this, AddressingMode::Absolute);
+	InstructionTable[0x31] = new CpuInstructionOpAND(*this, AddressingMode::IndirectY);
+	InstructionTable[0x35] = new CpuInstructionOpAND(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x39] = new CpuInstructionOpAND(*this, AddressingMode::AbsoluteY);
+	InstructionTable[0x3D] = new CpuInstructionOpAND(*this, AddressingMode::AbsoluteX);
+
+	// ASL
+	InstructionTable[0x06] = new CpuInstructionOpASL(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x0A] = new CpuInstructionOpASL(*this, AddressingMode::Accumulator);
+	InstructionTable[0x0E] = new CpuInstructionOpASL(*this, AddressingMode::Absolute);
+	InstructionTable[0x16] = new CpuInstructionOpASL(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x1E] = new CpuInstructionOpASL(*this, AddressingMode::AbsoluteX);
+
+	// BCC
+	InstructionTable[0x90] = new CpuInstructionOpBCC(*this, AddressingMode::Relative);
+
+	// BCS
+	InstructionTable[0xB0] = new CpuInstructionOpBCS(*this, AddressingMode::Relative);
+
+	// BEQ
+	InstructionTable[0xF0] = new CpuInstructionOpBEQ(*this, AddressingMode::Relative);
+
+	// BIT
+	InstructionTable[0x24] = new CpuInstructionOpBIT(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x2C] = new CpuInstructionOpBIT(*this, AddressingMode::Absolute);
+
+	// BMI
+	InstructionTable[0x30] = new CpuInstructionOpBMI(*this, AddressingMode::Relative);
+
+	// BNE
+	InstructionTable[0xD0] = new CpuInstructionOpBNE(*this, AddressingMode::Relative);
+
+	// BPL
+	InstructionTable[0x10] = new CpuInstructionOpBPL(*this, AddressingMode::Relative);
+
+	// BRK
+	InstructionTable[0x00] = new CpuInstructionOpBRK(*this, AddressingMode::Implicit);
+
+	// BVC
+	InstructionTable[0x50] = new CpuInstructionOpBVC(*this, AddressingMode::Relative);
+
+	// BVS
+	InstructionTable[0x70] = new CpuInstructionOpBVS(*this, AddressingMode::Relative);
+
+	// CLC
+	InstructionTable[0x18] = new CpuInstructionOpCLC(*this, AddressingMode::Implicit);
+
+	// CLD
+	InstructionTable[0xD8] = new CpuInstructionOpCLD(*this, AddressingMode::Implicit);
+
+	// CLI
+	InstructionTable[0x58] = new CpuInstructionOpCLI(*this, AddressingMode::Implicit);
+
+	// CLV
+	InstructionTable[0xB8] = new CpuInstructionOpCLV(*this, AddressingMode::Implicit);
+
+	// CMP
+	InstructionTable[0xC1] = new CpuInstructionOpCMP(*this, AddressingMode::IndirectX);
+	InstructionTable[0xC5] = new CpuInstructionOpCMP(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xC9] = new CpuInstructionOpCMP(*this, AddressingMode::Immediate);
+	InstructionTable[0xCD] = new CpuInstructionOpCMP(*this, AddressingMode::Absolute);
+	InstructionTable[0xD1] = new CpuInstructionOpCMP(*this, AddressingMode::IndirectY);
+	InstructionTable[0xD5] = new CpuInstructionOpCMP(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0xD9] = new CpuInstructionOpCMP(*this, AddressingMode::AbsoluteY);
+	InstructionTable[0xDD] = new CpuInstructionOpCMP(*this, AddressingMode::AbsoluteX);
+
+	// CPX
+	InstructionTable[0xE0] = new CpuInstructionOpCPX(*this, AddressingMode::Immediate);
+	InstructionTable[0xE4] = new CpuInstructionOpCPX(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xEC] = new CpuInstructionOpCPX(*this, AddressingMode::Absolute);
+
+	// CPY
+	InstructionTable[0xC0] = new CpuInstructionOpCPY(*this, AddressingMode::Immediate);
+	InstructionTable[0xC4] = new CpuInstructionOpCPY(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xCC] = new CpuInstructionOpCPY(*this, AddressingMode::Absolute);
+
+	// DEC
+	InstructionTable[0xC6] = new CpuInstructionOpDEC(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xD6] = new CpuInstructionOpDEC(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0xCE] = new CpuInstructionOpDEC(*this, AddressingMode::Absolute);
+	InstructionTable[0xDE] = new CpuInstructionOpDEC(*this, AddressingMode::AbsoluteX);
+
+	// DEX
+	InstructionTable[0xCA] = new CpuInstructionOpDEX(*this, AddressingMode::Implicit);
+
+	// DEY
+	InstructionTable[0x88] = new CpuInstructionOpDEY(*this, AddressingMode::Implicit);
+
+	// EOR
+	InstructionTable[0x41] = new CpuInstructionOpEOR(*this, AddressingMode::IndirectX);
+	InstructionTable[0x45] = new CpuInstructionOpEOR(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x49] = new CpuInstructionOpEOR(*this, AddressingMode::Immediate);
+	InstructionTable[0x4D] = new CpuInstructionOpEOR(*this, AddressingMode::Absolute);
+	InstructionTable[0x51] = new CpuInstructionOpEOR(*this, AddressingMode::IndirectY);
+	InstructionTable[0x55] = new CpuInstructionOpEOR(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x59] = new CpuInstructionOpEOR(*this, AddressingMode::AbsoluteY);
+	InstructionTable[0x5D] = new CpuInstructionOpEOR(*this, AddressingMode::AbsoluteX);
+
+	// INC
+	InstructionTable[0xE6] = new CpuInstructionOpINC(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xF6] = new CpuInstructionOpINC(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0xEE] = new CpuInstructionOpINC(*this, AddressingMode::Absolute);
+	InstructionTable[0xFE] = new CpuInstructionOpINC(*this, AddressingMode::AbsoluteX);
+
+	// INX
+	InstructionTable[0xE8] = new CpuInstructionOpINX(*this, AddressingMode::Implicit);
+
+	// INY
+	InstructionTable[0xC8] = new CpuInstructionOpINY(*this, AddressingMode::Implicit);
+
+	// JMP
+	InstructionTable[0x4C] = new CpuInstructionOpJMP(*this, AddressingMode::Absolute);
+	InstructionTable[0x6C] = new CpuInstructionOpJMP(*this, AddressingMode::Indirect);
+
+	// JSR
+	InstructionTable[0x20] = new CpuInstructionOpJSR(*this, AddressingMode::Absolute);
+
+	// LDA
+	InstructionTable[0xA1] = new CpuInstructionOpLDA(*this, AddressingMode::IndirectX);
+	InstructionTable[0xA5] = new CpuInstructionOpLDA(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xA9] = new CpuInstructionOpLDA(*this, AddressingMode::Immediate);
+	InstructionTable[0xAD] = new CpuInstructionOpLDA(*this, AddressingMode::Absolute);
+	InstructionTable[0xB1] = new CpuInstructionOpLDA(*this, AddressingMode::IndirectY);
+	InstructionTable[0xB5] = new CpuInstructionOpLDA(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0xB9] = new CpuInstructionOpLDA(*this, AddressingMode::AbsoluteY);
+	InstructionTable[0xBD] = new CpuInstructionOpLDA(*this, AddressingMode::AbsoluteX);
+
+	// LDX
+	InstructionTable[0xA2] = new CpuInstructionOpLDX(*this, AddressingMode::Immediate);
+	InstructionTable[0xA6] = new CpuInstructionOpLDX(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xAE] = new CpuInstructionOpLDX(*this, AddressingMode::Absolute);
+	InstructionTable[0xB6] = new CpuInstructionOpLDX(*this, AddressingMode::ZeroPageY);
+	InstructionTable[0xBE] = new CpuInstructionOpLDX(*this, AddressingMode::AbsoluteY);
+
+	// LDY
+	InstructionTable[0xA0] = new CpuInstructionOpLDY(*this, AddressingMode::Immediate);
+	InstructionTable[0xA4] = new CpuInstructionOpLDY(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xAC] = new CpuInstructionOpLDY(*this, AddressingMode::Absolute);
+	InstructionTable[0xB4] = new CpuInstructionOpLDY(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0xBC] = new CpuInstructionOpLDY(*this, AddressingMode::AbsoluteX);
+
+	// LSR
+	InstructionTable[0x46] = new CpuInstructionOpLSR(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x4A] = new CpuInstructionOpLSR(*this, AddressingMode::Accumulator);
+	InstructionTable[0x4E] = new CpuInstructionOpLSR(*this, AddressingMode::Absolute);
+	InstructionTable[0x56] = new CpuInstructionOpLSR(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x5E] = new CpuInstructionOpLSR(*this, AddressingMode::AbsoluteX);
+
+	// NOP
+	InstructionTable[0xEA] = new CpuInstructionOpNOP(*this, AddressingMode::Implicit);
+
+	// ORA
+	InstructionTable[0x01] = new CpuInstructionOpORA(*this, AddressingMode::IndirectX);
+	InstructionTable[0x05] = new CpuInstructionOpORA(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x09] = new CpuInstructionOpORA(*this, AddressingMode::Immediate);
+	InstructionTable[0x0D] = new CpuInstructionOpORA(*this, AddressingMode::Absolute);
+	InstructionTable[0x11] = new CpuInstructionOpORA(*this, AddressingMode::IndirectY);
+	InstructionTable[0x15] = new CpuInstructionOpORA(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x19] = new CpuInstructionOpORA(*this, AddressingMode::AbsoluteY);
+	InstructionTable[0x1D] = new CpuInstructionOpORA(*this, AddressingMode::AbsoluteX);
+
+	// PHA
+	InstructionTable[0x48] = new CpuInstructionOpPHA(*this, AddressingMode::Implicit);
+
+	// PHP
+	InstructionTable[0x08] = new CpuInstructionOpPHP(*this, AddressingMode::Implicit);
+
+	// PLA
+	InstructionTable[0x68] = new CpuInstructionOpPLA(*this, AddressingMode::Implicit);
+
+	// PLP
+	InstructionTable[0x28] = new CpuInstructionOpPLP(*this, AddressingMode::Implicit);
+
+	// ROL
+	InstructionTable[0x26] = new CpuInstructionOpROL(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x2A] = new CpuInstructionOpROL(*this, AddressingMode::Accumulator);
+	InstructionTable[0x2E] = new CpuInstructionOpROL(*this, AddressingMode::Absolute);
+	InstructionTable[0x36] = new CpuInstructionOpROL(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x3E] = new CpuInstructionOpROL(*this, AddressingMode::AbsoluteX);
+
+	// ROR
+	InstructionTable[0x66] = new CpuInstructionOpROR(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x6A] = new CpuInstructionOpROR(*this, AddressingMode::Accumulator);
+	InstructionTable[0x6E] = new CpuInstructionOpROR(*this, AddressingMode::Absolute);
+	InstructionTable[0x76] = new CpuInstructionOpROR(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x7E] = new CpuInstructionOpROR(*this, AddressingMode::AbsoluteX);
+
+	// RTI
+	InstructionTable[0x40] = new CpuInstructionOpRTI(*this, AddressingMode::Implicit);
+
+	// RTS
+	InstructionTable[0x60] = new CpuInstructionOpRTS(*this, AddressingMode::Implicit);
+
+	// SBC
+	InstructionTable[0xE1] = new CpuInstructionOpSBC(*this, AddressingMode::IndirectX);
+	InstructionTable[0xE5] = new CpuInstructionOpSBC(*this, AddressingMode::ZeroPage);
+	InstructionTable[0xE9] = new CpuInstructionOpSBC(*this, AddressingMode::Immediate);
+	InstructionTable[0xED] = new CpuInstructionOpSBC(*this, AddressingMode::Absolute);
+	InstructionTable[0xF1] = new CpuInstructionOpSBC(*this, AddressingMode::IndirectY);
+	InstructionTable[0xF5] = new CpuInstructionOpSBC(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0xFD] = new CpuInstructionOpSBC(*this, AddressingMode::AbsoluteX);
+	InstructionTable[0xF9] = new CpuInstructionOpSBC(*this, AddressingMode::AbsoluteY);
+
+	// SEC
+	InstructionTable[0x38] = new CpuInstructionOpSEC(*this, AddressingMode::Implicit);
+
+	// SED
+	InstructionTable[0xF8] = new CpuInstructionOpSED(*this, AddressingMode::Implicit);
+
+	// SEI
+	InstructionTable[0x78] = new CpuInstructionOpSEI(*this, AddressingMode::Implicit);
+
+	// STA
+	InstructionTable[0x81] = new CpuInstructionOpSTA(*this, AddressingMode::IndirectX);
+	InstructionTable[0x85] = new CpuInstructionOpSTA(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x8D] = new CpuInstructionOpSTA(*this, AddressingMode::Absolute);
+	InstructionTable[0x91] = new CpuInstructionOpSTA(*this, AddressingMode::IndirectY);
+	InstructionTable[0x95] = new CpuInstructionOpSTA(*this, AddressingMode::ZeroPageX);
+	InstructionTable[0x99] = new CpuInstructionOpSTA(*this, AddressingMode::AbsoluteY);
+	InstructionTable[0x9D] = new CpuInstructionOpSTA(*this, AddressingMode::AbsoluteX);
+
+	// STX
+	InstructionTable[0x86] = new CpuInstructionOpSTX(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x8E] = new CpuInstructionOpSTX(*this, AddressingMode::Absolute);
+	InstructionTable[0x96] = new CpuInstructionOpSTX(*this, AddressingMode::ZeroPageY);
+
+	// STY
+	InstructionTable[0x84] = new CpuInstructionOpSTY(*this, AddressingMode::ZeroPage);
+	InstructionTable[0x8C] = new CpuInstructionOpSTY(*this, AddressingMode::Absolute);
+	InstructionTable[0x94] = new CpuInstructionOpSTY(*this, AddressingMode::ZeroPageX);
+
+	// TAX
+	InstructionTable[0xAA] = new CpuInstructionOpTAX(*this, AddressingMode::Implicit);
+
+	// TAY
+	InstructionTable[0xA8] = new CpuInstructionOpTAY(*this, AddressingMode::Implicit);
+
+	// TSX
+	InstructionTable[0xBA] = new CpuInstructionOpTSX(*this, AddressingMode::Implicit);
+
+	// TXA
+	InstructionTable[0x8A] = new CpuInstructionOpTXA(*this, AddressingMode::Implicit);
+
+	// TXS
+	InstructionTable[0x9A] = new CpuInstructionOpTXS(*this, AddressingMode::Implicit);
+
+	// TYA
+	InstructionTable[0x98] = new CpuInstructionOpTYA(*this, AddressingMode::Implicit);
+}
+
+void nes::CPU::DeallocateInstructionTable()
+{
+	for (const auto& instruction : InstructionTable)
+	{
+		if (instruction.second)
+		{
+			delete instruction.second;
+		}
+	}
+
+	InstructionTable.clear();
+}
+
+void nes::CPU::ProcessOpCode(std::uint8_t opCode)
+{
+	// Execute the instruction
+	// The instruction moves the program counter and updates the current cycle
+	CpuInstructionBase* instruction = InstructionTable[opCode];
+	if (instruction != nullptr)
+	{
+		instruction->PrintDebugInformation();
+		instruction->Execute();
+	}
+}
+
+void nes::CPU::PushStack(std::uint8_t value)
+{
+	// Stack grows downwards
+	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
+	RamRef.WriteByte(address, value);
+
+	// Move stack pointer
+	--SP;
+}
+
+std::uint8_t nes::CPU::PopStack()
+{
+	// Move stack pointer
+	++SP;
+
+	// Stack grows downwards
+	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
+	std::uint8_t value = RamRef.ReadByte(address);
+
+	// Clear value from stack
+	RamRef.WriteByte(address, 0);
+
+	return value;
+}
+
 void nes::CPU::SetStatusFlag(StatusFlags flag)
 {
 	P |= static_cast<std::uint8_t>(flag);
@@ -1230,1387 +668,4 @@ void nes::CPU::UpdateNegativeStatusFlag(std::uint8_t byte)
 	{
 		P &= ~(1 << 7);
 	}
-}
-
-void nes::CPU::ADC(AddressingMode mode)
-{
-	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
-	std::uint8_t result = A + value + (P << static_cast<std::uint8_t>(StatusFlags::Carry));
-
-	// Overflow detected
-	if (result < A)
-	{
-		SetStatusFlag(StatusFlags::Overflow);
-		SetStatusFlag(StatusFlags::Carry);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Overflow);
-		ClearStatusFlag(StatusFlags::Carry);
-	}
-
-	A = result;
-
-	UpdateNegativeStatusFlag(A);
-	UpdateZeroStatusFlag(A);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX || mode == AddressingMode::AbsoluteY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::IndirectX)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::IndirectY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 2;
-		CurrentCycle += 5;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "ADC - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::AND(AddressingMode mode)
-{
-	// Retrieve value to AND against the accumulator
-	std::uint8_t compareAgainst = RamRef.ReadByte(GetTargetAddress(mode));
-
-	// Perform logical AND
-	A &= compareAgainst;
-
-	UpdateNegativeStatusFlag(A);
-	UpdateZeroStatusFlag(A);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::AbsoluteY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::IndirectX)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::IndirectY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 2;
-		CurrentCycle += 5;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "AND - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::ASL(AddressingMode mode)
-{
-}
-
-void nes::CPU::BCC(AddressingMode mode)
-{
-	if (mode != AddressingMode::Relative)
-	{
-		// Addressing mode is not used, but it is good to check for any
-		// inconsistencies regardless
-		std::cerr << "BCC - Unknown addressing mode.\n";
-	}
-
-	CurrentCycle += 2;
-
-	// Carry flag is clear
-	if (IsStatusFlagClear(StatusFlags::Carry))
-	{
-		std::uint16_t initialPC = PC;
-		std::int8_t displacement = RamRef.ReadByte(PC + 1);
-
-		// Perform branching
-		PC += displacement;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			CurrentCycle += 2;
-		}
-		else
-		{
-			CurrentCycle += 1;
-		}
-	}
-
-	// Always move past the branch bytes, regardless of the branch outcome
-	PC += 2;
-}
-
-void nes::CPU::BCS(AddressingMode mode)
-{
-	if (mode != AddressingMode::Relative)
-	{
-		// Addressing mode is not used, but it is good to check for any
-		// inconsistencies regardless
-		std::cerr << "BCS - Unknown addressing mode.\n";
-	}
-
-	CurrentCycle += 2;
-
-	// Carry flag is set
-	if (IsStatusFlagSet(StatusFlags::Carry))
-	{
-		std::uint16_t initialPC = PC;
-		std::int8_t displacement = RamRef.ReadByte(PC + 1);
-
-		// Perform branching
-		PC += displacement;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			CurrentCycle += 2;
-		}
-		else
-		{
-			CurrentCycle += 1;
-		}
-	}
-
-	// Always move past the branch bytes, regardless of the branch outcome
-	PC += 2;
-}
-
-void nes::CPU::BEQ(AddressingMode mode)
-{
-	if (mode != AddressingMode::Relative)
-	{
-		// Addressing mode is not used, but it is good to check for any
-		// inconsistencies regardless
-		std::cerr << "BEQ - Unknown addressing mode.\n";
-	}
-
-	CurrentCycle += 2;
-
-	// Zero flag is set
-	if (IsStatusFlagSet(StatusFlags::Zero))
-	{
-		std::uint16_t initialPC = PC;
-		std::int8_t displacement = RamRef.ReadByte(PC + 1);
-
-		// Perform branching
-		PC += displacement;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			CurrentCycle += 2;
-		}
-		else
-		{
-			CurrentCycle += 1;
-		}
-	}
-
-	// Always move past the branch bytes, regardless of the branch outcome
-	PC += 2;
-}
-
-void nes::CPU::BIT(AddressingMode mode)
-{
-	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
-
-	if (mode == AddressingMode::ZeroPage)
-	{
-		CurrentCycle += 3;
-		PC += 2;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		CurrentCycle += 4;
-		PC += 3;
-	}
-	else
-	{
-		std::cerr << "BIT - Unknown addressing mode.\n";
-	}
-
-	UpdateZeroStatusFlag(A & value);
-	UpdateNegativeStatusFlag(value);
-
-	// Set the overflow flag to the value of the 6th bit
-	if (IsNthBitSet(value, 6))
-	{
-		SetStatusFlag(StatusFlags::Overflow);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Overflow);
-	}
-}
-
-void nes::CPU::BMI(AddressingMode mode)
-{
-	if (mode != AddressingMode::Relative)
-	{
-		// Addressing mode is not used, but it is good to check for any
-		// inconsistencies regardless
-		std::cerr << "BMI - Unknown addressing mode.\n";
-	}
-
-	CurrentCycle += 2;
-
-	// Negative flag is set
-	if (IsStatusFlagSet(StatusFlags::Negative))
-	{
-		std::uint16_t initialPC = PC;
-		std::int8_t displacement = RamRef.ReadByte(PC + 1);
-
-		// Perform branching
-		PC += displacement;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			CurrentCycle += 2;
-		}
-		else
-		{
-			CurrentCycle += 1;
-		}
-	}
-
-	// Always move past the branch bytes, regardless of the branch outcome
-	PC += 2;
-}
-
-void nes::CPU::BNE(AddressingMode mode)
-{
-	if (mode != AddressingMode::Relative)
-	{
-		// Addressing mode is not used, but it is good to check for any
-		// inconsistencies regardless
-		std::cerr << "BNE - Unknown addressing mode.\n";
-	}
-
-	CurrentCycle += 2;
-
-	// Zero flag is clear
-	if (IsStatusFlagClear(StatusFlags::Zero))
-	{
-		std::uint16_t initialPC = PC;
-		std::int8_t displacement = RamRef.ReadByte(PC + 1);
-
-		// Perform branching
-		PC += displacement;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			CurrentCycle += 2;
-		}
-		else
-		{
-			CurrentCycle += 1;
-		}
-	}
-
-	// Always move past the branch bytes, regardless of the branch outcome
-	PC += 2;
-}
-
-void nes::CPU::BPL(AddressingMode mode)
-{
-	if (mode != AddressingMode::Relative)
-	{
-		// Addressing mode is not used, but it is good to check for any
-		// inconsistencies regardless
-		std::cerr << "BPL - Unknown addressing mode.\n";
-	}
-
-	CurrentCycle += 2;
-
-	// Negative flag is clear
-	if (IsStatusFlagClear(StatusFlags::Negative))
-	{
-		std::uint16_t initialPC = PC;
-		std::int8_t displacement = RamRef.ReadByte(PC + 1);
-
-		// Perform branching
-		PC += displacement;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			CurrentCycle += 2;
-		}
-		else
-		{
-			CurrentCycle += 1;
-		}
-	}
-
-	// Always move past the branch bytes, regardless of the branch outcome
-	PC += 2;
-}
-
-void nes::CPU::BRK(AddressingMode mode)
-{
-}
-
-void nes::CPU::BVC(AddressingMode mode)
-{
-	if (mode != AddressingMode::Relative)
-	{
-		// Addressing mode is not used, but it is good to check for any
-		// inconsistencies regardless
-		std::cerr << "BVC - Unknown addressing mode.\n";
-	}
-
-	CurrentCycle += 2;
-
-	// Overflow flag is clear
-	if (IsStatusFlagClear(StatusFlags::Overflow))
-	{
-		std::uint16_t initialPC = PC;
-		std::int8_t displacement = RamRef.ReadByte(PC + 1);
-
-		// Perform branching
-		PC += displacement;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			CurrentCycle += 2;
-		}
-		else
-		{
-			CurrentCycle += 1;
-		}
-	}
-
-	// Always move past the branch bytes, regardless of the branch outcome
-	PC += 2;
-}
-
-void nes::CPU::BVS(AddressingMode mode)
-{
-	if (mode != AddressingMode::Relative)
-	{
-		// Addressing mode is not used, but it is good to check for any
-		// inconsistencies regardless
-		std::cerr << "BVC - Unknown addressing mode.\n";
-	}
-
-	CurrentCycle += 2;
-
-	// Overflow flag is set
-	if (IsStatusFlagSet(StatusFlags::Overflow))
-	{
-		std::uint16_t initialPC = PC;
-		std::int8_t displacement = RamRef.ReadByte(PC + 1);
-
-		// Perform branching
-		PC += displacement;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			CurrentCycle += 2;
-		}
-		else
-		{
-			CurrentCycle += 1;
-		}
-	}
-
-	// Always move past the branch bytes, regardless of the branch outcome
-	PC += 2;
-}
-
-void nes::CPU::CLC(AddressingMode mode)
-{
-	ClearStatusFlag(StatusFlags::Carry);
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::CLD(AddressingMode mode)
-{
-	ClearStatusFlag(StatusFlags::DecimalMode);
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::CLI(AddressingMode mode)
-{
-	ClearStatusFlag(StatusFlags::InterruptDisable);
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::CLV(AddressingMode mode)
-{
-	ClearStatusFlag(StatusFlags::Overflow);
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::CMP(AddressingMode mode)
-{
-	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
-	std::uint8_t result = A - value;
-
-	if (A >= value)
-	{
-		SetStatusFlag(StatusFlags::Carry);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Carry);
-	}
-
-	UpdateZeroStatusFlag(A - value);
-	UpdateNegativeStatusFlag(result);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX || mode == AddressingMode::AbsoluteY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::IndirectX)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::IndirectY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 2;
-		CurrentCycle += 5;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "CMP - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::CPX(AddressingMode mode)
-{
-	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
-	std::uint8_t result = X - value;
-
-	if (X >= value)
-	{
-		SetStatusFlag(StatusFlags::Carry);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Carry);
-	}
-
-	UpdateZeroStatusFlag(A - value);
-	UpdateNegativeStatusFlag(result);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else
-	{
-		std::cerr << "CPX - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::CPY(AddressingMode mode)
-{
-	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
-	std::uint8_t result = Y - value;
-
-	if (Y >= value)
-	{
-		SetStatusFlag(StatusFlags::Carry);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Carry);
-	}
-
-	UpdateZeroStatusFlag(Y - value);
-	UpdateNegativeStatusFlag(result);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else
-	{
-		std::cerr << "CPY - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::DEC(AddressingMode mode)
-{
-}
-
-void nes::CPU::DEX(AddressingMode mode)
-{
-	// Decrement X
-	X -= 1;
-
-	UpdateZeroStatusFlag(X);
-	UpdateNegativeStatusFlag(X);
-}
-
-void nes::CPU::DEY(AddressingMode mode)
-{
-	// Decrement Y
-	Y -= 1;
-
-	UpdateZeroStatusFlag(Y);
-	UpdateNegativeStatusFlag(Y);
-}
-
-void nes::CPU::EOR(AddressingMode mode)
-{
-	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
-
-	// Perform bit-wise exclusive OR on the accumulator
-	A ^= value;
-
-	UpdateZeroStatusFlag(A);
-	UpdateNegativeStatusFlag(A);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX || mode == AddressingMode::AbsoluteY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::IndirectX)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::IndirectY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 2;
-		CurrentCycle += 5;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "EOR - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::INC(AddressingMode mode)
-{
-	std::uint16_t address = GetTargetAddress(mode);
-
-	// Increment and store the value at the specified address
-	std::uint8_t value = (RamRef.ReadByte(address) + 1);
-	RamRef.WriteByte(address, value);
-
-	UpdateZeroStatusFlag(value);
-	UpdateNegativeStatusFlag(value);
-
-	if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 5;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::AbsoluteX)
-	{
-		PC += 3;
-		CurrentCycle += 7;
-	}
-	else
-	{
-		std::cerr << "INC - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::INX(AddressingMode mode)
-{
-	// Increment X
-	X += 1;
-
-	UpdateZeroStatusFlag(X);
-	UpdateNegativeStatusFlag(X);
-
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::INY(AddressingMode mode)
-{
-	// Increment Y
-	Y += 1;
-
-	UpdateZeroStatusFlag(Y);
-	UpdateNegativeStatusFlag(Y);
-
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::JMP(AddressingMode mode)
-{
-	PC = GetTargetAddress(mode);
-
-	if (mode == AddressingMode::Absolute)
-	{
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::Indirect)
-	{
-		CurrentCycle += 5;
-	}
-	else
-	{
-		std::cerr << "JMP - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::JSR(AddressingMode mode)
-{
-	if (mode == AddressingMode::Absolute)
-	{
-		std::uint16_t targetAddress = GetTargetAddress(mode);
-
-		// The JSR instruction is 3 bytes wide, this would mean that the next
-		// instruction is at PC + 3. However, the documentation states that JSR
-		// pushes (next instruction - 1) to the stack, hence we only add two bytes
-		// instead of three. This is to account for that -1.
-		std::uint16_t returnAddress = PC + 2;
-
-		// Store the target address minus one on the stack
-		std::uint8_t lsb = (returnAddress & 0x00FF);
-		std::uint8_t msb = ((returnAddress & 0xFF00) >> 8);
-
-		// According to the documentation, the high byte needs to be pushed first
-		PushStack(msb);
-		PushStack(lsb);
-
-		// Jump to the target location
-		PC = GetTargetAddress(mode);
-		CurrentCycle += 6;
-	}
-	else
-	{
-		std::cerr << "JSR - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::LDA(AddressingMode mode)
-{
-	A = RamRef.ReadByte(PC + 1);
-	UpdateZeroStatusFlag(A);
-	UpdateNegativeStatusFlag(A);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		// Crossed a page boundary
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::AbsoluteY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		// Crossed a page boundary
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::IndirectX)
-	{
-		CurrentCycle += 6;
-		PC += 2;
-	}
-	else if (mode == AddressingMode::IndirectY)
-	{
-		std::uint16_t initialPC = PC;
-		CurrentCycle += 5;
-		PC += 2;
-
-		// Crossed a page boundary
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "LDA - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::LDX(AddressingMode mode)
-{
-	X = RamRef.ReadByte(GetTargetAddress(mode));
-	UpdateZeroStatusFlag(X);
-	UpdateNegativeStatusFlag(X);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageY)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		// Crossed a page boundary
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "LDX - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::LDY(AddressingMode mode)
-{
-	Y = RamRef.ReadByte(GetTargetAddress(mode));
-	UpdateZeroStatusFlag(Y);
-	UpdateNegativeStatusFlag(Y);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		// Crossed a page boundary
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "LDY - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::LSR(AddressingMode mode)
-{
-}
-
-void nes::CPU::NOP(AddressingMode mode)
-{
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::ORA(AddressingMode mode)
-{
-	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
-
-	// Perform bit-wise OR on the accumulator
-	A |= value;
-
-	UpdateZeroStatusFlag(A);
-	UpdateNegativeStatusFlag(A);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX || mode == AddressingMode::AbsoluteY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::IndirectX)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::IndirectY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 2;
-		CurrentCycle += 5;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "ORA - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::PHP(AddressingMode mode)
-{
-	PushStack(P | static_cast<std::uint8_t>(BFlag::Instruction));
-	++PC;
-	CurrentCycle += 3;
-}
-
-void nes::CPU::PLA(AddressingMode mode)
-{
-	A = PopStack();
-	UpdateZeroStatusFlag(A);
-	UpdateNegativeStatusFlag(A);
-
-	++PC;
-	CurrentCycle += 4;
-}
-
-void nes::CPU::PLP(AddressingMode mode)
-{
-	std::uint8_t fromStack = PopStack();
-
-	MatchBitStateOfNthBit(P, fromStack, 0);
-	MatchBitStateOfNthBit(P, fromStack, 1);
-	MatchBitStateOfNthBit(P, fromStack, 2);
-	MatchBitStateOfNthBit(P, fromStack, 3);
-	MatchBitStateOfNthBit(P, fromStack, 6);
-	MatchBitStateOfNthBit(P, fromStack, 7);
-
-	++PC;
-	CurrentCycle += 4;
-}
-
-void nes::CPU::PHA(AddressingMode mode)
-{
-	PushStack(A);
-	++PC;
-	CurrentCycle += 3;
-}
-
-void nes::CPU::ROL(AddressingMode mode)
-{
-}
-
-void nes::CPU::ROR(AddressingMode mode)
-{
-}
-
-void nes::CPU::RTI(AddressingMode mode)
-{
-}
-
-void nes::CPU::RTS(AddressingMode mode)
-{
-	std::uint8_t lsb = PopStack();
-	std::uint8_t msb = PopStack();
-	std::uint16_t address = ((msb << 8) | lsb);
-
-	// Because JSR stores the target address - 1 on the stack, we have to add 1 to
-	// the target address to get the location of the next instruction
-	PC = address + 1;
-	CurrentCycle += 6;
-}
-
-void nes::CPU::SBC(AddressingMode mode)
-{
-	std::uint8_t value = RamRef.ReadByte(GetTargetAddress(mode));
-	std::uint8_t result = A - value - (1 - ~static_cast<std::uint8_t>(StatusFlags::Carry));
-
-	// Overflow detected
-	if (result < A)
-	{
-		SetStatusFlag(StatusFlags::Overflow);
-		SetStatusFlag(StatusFlags::Carry);
-	}
-	else
-	{
-		ClearStatusFlag(StatusFlags::Overflow);
-		ClearStatusFlag(StatusFlags::Carry);
-	}
-
-	A = result;
-
-	UpdateZeroStatusFlag(A);
-	UpdateNegativeStatusFlag(A);
-
-	if (mode == AddressingMode::Immediate)
-	{
-		PC += 2;
-		CurrentCycle += 2;
-	}
-	else if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX || mode == AddressingMode::AbsoluteY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 3;
-		CurrentCycle += 4;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else if (mode == AddressingMode::IndirectX)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::IndirectY)
-	{
-		std::uint16_t initialPC = PC;
-		PC += 2;
-		CurrentCycle += 5;
-
-		if (DidProgramCounterCrossPageBoundary(initialPC, PC))
-		{
-			++CurrentCycle;
-		}
-	}
-	else
-	{
-		std::cerr << "SBC - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::SEC(AddressingMode mode)
-{
-	SetStatusFlag(StatusFlags::Carry);
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::SED(AddressingMode mode)
-{
-	SetStatusFlag(StatusFlags::DecimalMode);
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::SEI(AddressingMode mode)
-{
-	SetStatusFlag(StatusFlags::InterruptDisable);
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::STA(AddressingMode mode)
-{
-	RamRef.WriteByte(GetTargetAddress(mode), A);
-
-	if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::AbsoluteX)
-	{
-		PC += 3;
-		CurrentCycle += 5;
-	}
-	else if (mode == AddressingMode::AbsoluteY)
-	{
-		PC += 3;
-		CurrentCycle += 5;
-	}
-	else if (mode == AddressingMode::IndirectX)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else if (mode == AddressingMode::IndirectY)
-	{
-		PC += 2;
-		CurrentCycle += 6;
-	}
-	else
-	{
-		std::cerr << "STA - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::STX(AddressingMode mode)
-{
-	RamRef.WriteByte(GetTargetAddress(mode), X);
-
-	if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageY)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else
-	{
-		std::cerr << "STX - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::STY(AddressingMode mode)
-{
-	RamRef.WriteByte(GetTargetAddress(mode), Y);
-
-	if (mode == AddressingMode::ZeroPage)
-	{
-		PC += 2;
-		CurrentCycle += 3;
-	}
-	else if (mode == AddressingMode::ZeroPageX)
-	{
-		PC += 2;
-		CurrentCycle += 4;
-	}
-	else if (mode == AddressingMode::Absolute)
-	{
-		PC += 3;
-		CurrentCycle += 4;
-	}
-	else
-	{
-		std::cerr << "STY - Unknown addressing mode.\n";
-	}
-}
-
-void nes::CPU::TAX(AddressingMode mode)
-{
-	// Transfer the accumulator to the X register
-	X = A;
-
-	UpdateZeroStatusFlag(X);
-	UpdateNegativeStatusFlag(X);
-
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::TAY(AddressingMode mode)
-{
-	// Transfer the accumulator to the Y register
-	Y = A;
-
-	UpdateZeroStatusFlag(Y);
-	UpdateNegativeStatusFlag(Y);
-
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::TSX(AddressingMode mode)
-{
-	// Transfer the stack pointer to the X register
-	X = SP;
-
-	UpdateZeroStatusFlag(X);
-	UpdateNegativeStatusFlag(X);
-
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::TXA(AddressingMode mode)
-{
-	// Transfer the X register to the accumulator
-	A = X;
-
-	UpdateZeroStatusFlag(A);
-	UpdateNegativeStatusFlag(A);
-
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::TXS(AddressingMode mode)
-{
-	SP = X;
-	++PC;
-	CurrentCycle += 2;
-}
-
-void nes::CPU::TYA(AddressingMode mode)
-{
-	// Transfer the Y register to the accumulator
-	A = Y;
-
-	UpdateZeroStatusFlag(A);
-	UpdateNegativeStatusFlag(A);
 }
