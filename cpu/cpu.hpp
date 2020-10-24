@@ -20,15 +20,6 @@ namespace nes
     {
     public:
         /**
-         * Check if a 256-byte page boundary was crossed between two addresses
-         * @param   before  Initial address
-         * @param   after   Address to check against
-         * @return  True when a page boundary was crossed, false when not
-         */
-        static bool DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after);
-
-    public:
-        /**
          * All available registers
          */
         enum class RegisterType
@@ -122,13 +113,22 @@ namespace nes
          */
         std::uint8_t GetRegister(RegisterType type) const;
 
-        /**
+		/**
          * Retrieve the current cycle index
          * @return  Current cycle
          */
         std::uint64_t GetCurrentCycle() const;
 
+	private:
         /**
+         * Check if a 256-byte page boundary was crossed between two addresses
+         * @param   before  Initial address
+         * @param   after   Address to check against
+         * @return  True when a page boundary was crossed, false when not
+         */
+        bool DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after) const;
+
+		/**
          * Reset the CPU to its default state
          */
         void SetDefaultState();
@@ -141,7 +141,6 @@ namespace nes
          */
         std::uint16_t GetTargetAddress(AddressingMode mode) const;
 
-    private:
         /**
          * Create a look-up table for all instructions
          */

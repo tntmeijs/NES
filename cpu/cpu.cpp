@@ -62,17 +62,6 @@
 
 #include <iostream>
 
-bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after)
-{
-	// Detect if the lower byte wrapped around
-	std::uint16_t lowerBefore = (before & 0xFF);
-	std::uint16_t lowerAfter = (after & 0xFF);
-
-	// If the newer value is less than the value before incrementing the address,
-	// a page boundary was crossed
-	return (lowerAfter < lowerBefore);
-}
-
 nes::CPU::CPU(RAM& ramRef) :
 	A(0),
 	X(0),
@@ -174,6 +163,17 @@ std::uint8_t nes::CPU::GetRegister(RegisterType type) const
 std::uint64_t nes::CPU::GetCurrentCycle() const
 {
 	return CurrentCycle;
+}
+
+bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uint16_t after) const
+{
+	// Detect if the lower byte wrapped around
+	std::uint16_t lowerBefore = (before & 0xFF);
+	std::uint16_t lowerAfter = (after & 0xFF);
+
+	// If the newer value is less than the value before incrementing the address,
+	// a page boundary was crossed
+	return (lowerAfter < lowerBefore);
 }
 
 void nes::CPU::SetDefaultState()
