@@ -24,5 +24,5 @@ void nes::CpuInstructionOpBRK::ExecuteImpl()
 	// Set program counter to the IRQ interrupt vector at 0xFFFE and 0xFFFF
 	lsb = CpuRef.ReadRamValueAtAddress(0xFFFE);
 	msb = CpuRef.ReadRamValueAtAddress(0xFFFF);
-	CpuRef.PC = (((msb) >> 8) | lsb);
+	CpuRef.PC = (((msb) << 8) | lsb);
 }
