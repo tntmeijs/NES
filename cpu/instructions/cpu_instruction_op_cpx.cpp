@@ -21,7 +21,7 @@ void nes::CpuInstructionOpCPX::ExecuteImpl()
 		CpuRef.ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	CpuRef.UpdateZeroStatusFlag(CpuRef.A - value);
+	CpuRef.UpdateZeroStatusFlag(CpuRef.X - value);
 	CpuRef.UpdateNegativeStatusFlag(result);
 
 	if (InstructionAddressingMode == AddressingMode::Immediate)
