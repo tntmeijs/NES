@@ -7,27 +7,38 @@ nes::CpuInstructionOpADC::CpuInstructionOpADC(CPU& cpuRef, AddressingMode addres
 	CpuInstructionBase(cpuRef, addressingMode, "ADC")
 {}
 
-void nes::CpuInstructionOpADC::ExecuteImpl()  
+void nes::CpuInstructionOpADC::ExecuteImpl()
 {
 	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
-	std::uint8_t result = CpuRef.A + value + (CpuRef.P << static_cast<std::uint8_t>(StatusFlags::Carry));
+	std::uint16_t sum = CpuRef.A + value + (CpuRef.P & static_cast<std::uint8_t>(StatusFlags::Carry));
 
-	// Overflow detected
-	if (result < CpuRef.A)
+	// Carry if we exceed the maximum value for a byte
+	if (sum > 0xFF)
 	{
-		CpuRef.SetStatusFlag(StatusFlags::Overflow);
 		CpuRef.SetStatusFlag(StatusFlags::Carry);
 	}
 	else
 	{
-		CpuRef.ClearStatusFlag(StatusFlags::Overflow);
 		CpuRef.ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	CpuRef.A = result;
+	// References:
+	// - https://github.com/daniel5151/ANESE/blob/master/src/nes/cpu/cpu.cc
+	// - http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
+	if ((~(CpuRef.A ^ value) & (CpuRef.A ^ sum) & static_cast<std::uint8_t>(StatusFlags::Negative)) != 0)
+	{
+		CpuRef.SetStatusFlag(StatusFlags::Overflow);
+	}
+	else
+	{
+		CpuRef.ClearStatusFlag(StatusFlags::Overflow);
+	}
 
-	CpuRef.UpdateNegativeStatusFlag(CpuRef.A);
-	CpuRef.UpdateZeroStatusFlag(CpuRef.A);
+	CpuRef.UpdateZeroStatusFlag(static_cast<std::uint8_t>(sum));
+	CpuRef.UpdateNegativeStatusFlag(static_cast<std::uint8_t>(sum));
+
+	// Only save the lower 8 bits as the carry / overflow flags have been set by now
+	CpuRef.A = static_cast<std::uint8_t>(sum);
 
 	if (InstructionAddressingMode == AddressingMode::Immediate)
 	{
@@ -48,7 +59,7 @@ void nes::CpuInstructionOpADC::ExecuteImpl()
 	else if (InstructionAddressingMode == AddressingMode::AbsoluteX || InstructionAddressingMode == AddressingMode::AbsoluteY)
 	{
 		std::uint16_t initialPC = CpuRef.PC;
-		std::uint16_t currentPC = initialPC += 3;
+		std::uint16_t currentPC = initialPC + 3;
 		CycleCount = 4;
 
 		if (CpuRef.DidProgramCounterCrossPageBoundary(initialPC, currentPC))
@@ -63,7 +74,7 @@ void nes::CpuInstructionOpADC::ExecuteImpl()
 	else if (InstructionAddressingMode == AddressingMode::IndirectY)
 	{
 		std::uint16_t initialPC = CpuRef.PC;
-		std::uint16_t currentPC = initialPC += 2;
+		std::uint16_t currentPC = initialPC + 2;
 		CycleCount = 5;
 
 		if (CpuRef.DidProgramCounterCrossPageBoundary(initialPC, currentPC))
