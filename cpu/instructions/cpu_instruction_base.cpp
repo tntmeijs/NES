@@ -18,6 +18,7 @@ nes::CpuInstructionBase::CpuInstructionBase(CPU& cpuRef, AddressingMode addressi
 		case nes::AddressingMode::AbsoluteY:
 		case nes::AddressingMode::Indirect:
 			InstructionSize = 3;
+			break;
 
 		case nes::AddressingMode::Immediate:
 		case nes::AddressingMode::IndirectX:
