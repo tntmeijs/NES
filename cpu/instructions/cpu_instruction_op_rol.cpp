@@ -30,11 +30,11 @@ void nes::CpuInstructionOpROL::ExecuteImpl()
 	// Old bit 7 becomes the new carry bit
 	if (IsNthBitSet(old, 7))
 	{
-		CpuRef.SetNthBit(value, 0, true);
+		SetNthBitState(value, 0, true);
 	}
 	else
 	{
-		CpuRef.SetNthBit(value, 0, false);
+		SetNthBitState(value, 0, false);
 	}
 
 	CpuRef.UpdateZeroStatusFlag(value);

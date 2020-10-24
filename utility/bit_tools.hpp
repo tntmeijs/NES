@@ -3,6 +3,10 @@
 
 #include <cstdint>
 
+/**
+ * This file contains a collection of utility functions and structures to help
+ * simplify working with bits and bytes
+ */
 namespace nes
 {
 	/**
@@ -45,6 +49,42 @@ namespace nes
 	inline constexpr bool IsNthBitSet(const Byte& byte, std::uint8_t n)
 	{
 		return ((byte.value & (1 << n)) != 0);
+	}
+
+	/**
+	 * Set the Nth bit to 0 or 1
+	 * @param   target  Target byte to modify
+	 * @param   n       Bit to modify
+	 * @param   state   State to set the bit to
+	 */
+	inline constexpr void SetNthBitState(std::uint8_t& target, std::uint8_t n, bool state)
+	{
+		if (state)
+		{
+			target |= (1 << n);
+		}
+		else
+		{
+			target &= ~(1 << n);
+		}
+	}
+
+	/**
+	 * Set the Nth bit to 0 or 1
+	 * @param   target  Target byte to modify
+	 * @param   n       Bit to modify
+	 * @param   state   State to set the bit to
+	 */
+	inline constexpr void SetNthBitState(Byte& target, std::uint8_t n, bool state)
+	{
+		if (state)
+		{
+			target.value |= (1 << n);
+		}
+		else
+		{
+			target.value &= ~(1 << n);
+		}
 	}
 }
 

@@ -620,18 +620,6 @@ bool nes::CPU::IsStatusFlagClear(StatusFlags flag) const
 	return ((P.value & static_cast<std::uint8_t>(flag)) == 0);
 }
 
-void nes::CPU::SetNthBit(std::uint8_t& target, std::uint8_t n, bool state) const
-{
-	if (state)
-	{
-		target |= (1 << n);
-	}
-	else
-	{
-		target &= ~(1 << n);
-	}
-}
-
 void nes::CPU::MatchBitStateOfNthBit(std::uint8_t& target, std::uint8_t source, std::uint8_t n) const
 {
 	if (IsNthBitSet(source, n))
