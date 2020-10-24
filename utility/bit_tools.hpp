@@ -86,6 +86,30 @@ namespace nes
 			target.value &= ~(1 << n);
 		}
 	}
+
+	/**
+	 * Set a bit when the input bit is set, clear a bit when the input bit is
+	 * clear. This is useful when matching bits at specific indices.
+	 * @param   target  Byte whose bits will be updated
+	 * @param   source  Byte whose bits will be compared against
+	 * @param   n       Bit index to compare
+	 */
+	inline constexpr void MatchBitStateOfNthBit(std::uint8_t& target, std::uint8_t source, std::uint8_t n)
+	{
+		SetNthBitState(target, n, IsNthBitSet(source, n));
+	}
+
+	/**
+	 * Set a bit when the input bit is set, clear a bit when the input bit is
+	 * clear. This is useful when matching bits at specific indices.
+	 * @param   target  Byte whose bits will be updated
+	 * @param   source  Byte whose bits will be compared against
+	 * @param   n       Bit index to compare
+	 */
+	inline constexpr void MatchBitStateOfNthBit(Byte& target, const Byte& source, std::uint8_t n)
+	{
+		SetNthBitState(target, n, IsNthBitSet(source, n));
+	}
 }
 
 #endif //! NES_BIT_TOOLS_HPP
