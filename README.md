@@ -9,6 +9,11 @@ It is very much a work in progress right now, but be sure to star this repositor
 
 If time allows, I will write a detailed tutorial that covers everything from the absolute basics all the way to getting an image on screen. Almost none of the tutorials out there do so, and those that do are either outdated or incomplete.
 
+# Branches
+- The project's master branch has been locked. Nobody should commit on master unless merging a Pull Request.
+- Pull Requests can only be merged into master by @tntmeijs.
+- Make sure to follow the commit guide in the [contributing](/contributing) section below.
+
 # Contributing
 As the complexity of this project increases, so does the need for a proper commit guide.
 The following rules need to be followed in order to make a commit:
