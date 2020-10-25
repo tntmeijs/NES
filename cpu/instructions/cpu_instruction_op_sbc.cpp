@@ -13,7 +13,7 @@ void nes::CpuInstructionOpSBC::ExecuteImpl()
 	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
 
 	// Same as ADC but we invert the bits of the value to turn ADC into SBC
-	std::uint16_t sum = CpuRef.A.value + ~value + CpuRef.P.bit1;
+	std::uint16_t sum = CpuRef.A.value + ~value + (CpuRef.P.value & static_cast<std::uint8_t>(StatusFlags::Carry));
 
 	// Carry if we did not exceed the maximum value for a byte
 	if (!(sum > 0xFF))

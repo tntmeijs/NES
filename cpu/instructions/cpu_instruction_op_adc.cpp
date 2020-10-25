@@ -11,7 +11,7 @@ nes::CpuInstructionOpADC::CpuInstructionOpADC(CPU& cpuRef, AddressingMode addres
 void nes::CpuInstructionOpADC::ExecuteImpl()
 {
 	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
-	std::uint16_t sum = CpuRef.A.value + value + CpuRef.P.bit1;
+	std::uint16_t sum = CpuRef.A.value + value + (CpuRef.P.value & static_cast<std::uint8_t>(StatusFlags::Carry));
 
 	// Carry if we exceed the maximum value for a byte
 	if (sum > 0xFF)
