@@ -25,10 +25,12 @@ The following rules need to be followed in order to make a commit:
    3. Clone the new branch.
 3. Start development.
 4. Create a new **DRAFT** Pull Request to show others that you've started working on it.
+   
+   It is recommended to create a draft Pull Request as early into development as possible to ensure that other contributers can give feedback on the code as you work on it.
 5. Make sure all tests pass.
 6. Update your Pull Request and ask for a review.
 7. Fix any problems.
-8. Merge into master, do not rebase or anything like that. We would like to preserve the history.
+8.  Merge into master, do not rebase or anything like that. We would like to preserve the history.
 
 Please note that this project is still in its very early stages. A code style guide, as well as a CI/CD pipeline will be added in the future. In the meanwhile, we would like to ask you to pay close attention to this README and follow the instructions given.
 
