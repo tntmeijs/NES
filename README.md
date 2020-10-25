@@ -9,6 +9,15 @@ It is very much a work in progress right now, but be sure to star this repositor
 
 If time allows, I will write a detailed tutorial that covers everything from the absolute basics all the way to getting an image on screen. Almost none of the tutorials out there do so, and those that do are either outdated or incomplete.
 
+# Commits
+Each commit follows the same naming standard:
+```
+Message here without a period
+[ADD] When you add new things, use proper punctuation.
+[CHANGE] When you change things, use proper punctuation.
+[DELETE] When you delete things, use proper punctuation.
+```
+
 # Branches
 - The project's master branch has been locked. Nobody should commit on master unless merging a Pull Request.
 - Pull Requests can only be merged into master by @tntmeijs.
