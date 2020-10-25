@@ -12,7 +12,7 @@ If time allows, I will write a detailed tutorial that covers everything from the
 # Branches
 - The project's master branch has been locked. Nobody should commit on master unless merging a Pull Request.
 - Pull Requests can only be merged into master by @tntmeijs.
-- Make sure to follow the commit guide in the [contributing](/contributing) section below.
+- Make sure to follow the commit guide in the "contributing" section below.
 
 # Contributing
 As the complexity of this project increases, so does the need for a proper commit guide.
