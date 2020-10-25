@@ -28,14 +28,7 @@ void nes::CpuInstructionOpROL::ExecuteImpl()
 	valueToModify.value = (valueToModify.value << 1);
 
 	// Old bit 7 becomes the new carry bit
-	if (IsNthBitSet(old, 7))
-	{
-		SetNthBitState(valueToModify, 0, true);
-	}
-	else
-	{
-		SetNthBitState(valueToModify, 0, false);
-	}
+	valueToModify.bit0 = old.bit7;
 
 	CpuRef.UpdateZeroStatusFlag(valueToModify);
 	CpuRef.UpdateNegativeStatusFlag(valueToModify);
