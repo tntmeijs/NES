@@ -14,11 +14,11 @@ As the complexity of this project increases, so does the need for a proper commi
 The following rules need to be followed in order to make a commit:
 1. Check whether there is an issue for the task you will be working on.
    1. If there isn't, create a new issue.
-2. Create a new **DRAFT** Pull Request to show others that you've started working on it.
-3. Create a new feature branch using the following format: `feature/<issue id>-<issue name>`
+2. Create a new feature branch using the following format: `feature/<issue id>-<issue name>`
    1. Make sure the branch uses dashes `-` as spaces.
    2. Ensure that the id and name both match the issue to make it easy to track work.
    3. Clone the new branch.
+3. Create a new **DRAFT** Pull Request to show others that you've started working on it.
 4. Start development.
 5. Make sure all tests pass.
 6. Update your Pull Request and ask for a review.
