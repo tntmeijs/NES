@@ -159,10 +159,13 @@ set(SFML_BUILD_NETWORK FALSE)
 set(SFML_BUILD_SYSTEM FALSE)
 add_subdirectory(_deps/SFML)
 target_link_libraries(NES PRIVATE sfml-graphics sfml-window)
-target_include_directories(NES PRIVATE _deps/SFML/include)
+
+# Configure WxWidgets
+add_subdirectory(_deps/wxWidgets)
+target_link_libraries(NES PRIVATE wx::net wx::core wx::base)
 
 # Include directories for the NES project
-target_include_directories(NES PRIVATE ./ _deps/imgui _deps/imgui-sfml)
+target_include_directories(NES PRIVATE ./ _deps/imgui _deps/imgui-sfml _deps/SFML/include _deps/wxWidgets/include)
 
 # Directory structure in IDEs that support it
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_LIST} ${IMGUI_FILES})
