@@ -126,7 +126,7 @@ std::uint16_t nes::CPU::GetStackPointer() const
 
 nes::Byte nes::CPU::GetRegister(RegisterType type) const
 {
-	Byte value;
+	Byte value {};
 
 	switch (type)
 	{
