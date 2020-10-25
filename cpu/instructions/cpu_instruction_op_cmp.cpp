@@ -9,10 +9,10 @@ nes::CpuInstructionOpCMP::CpuInstructionOpCMP(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpCMP::ExecuteImpl()
 {
-	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
-	std::uint8_t result = CpuRef.A - value;
+	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
+	std::uint8_t result = CpuRef.A.value - value;
 
-	if (CpuRef.A >= value)
+	if (CpuRef.A.value >= value)
 	{
 		CpuRef.SetStatusFlag(StatusFlags::Carry);
 	}
@@ -21,8 +21,14 @@ void nes::CpuInstructionOpCMP::ExecuteImpl()
 		CpuRef.ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	CpuRef.UpdateZeroStatusFlag(CpuRef.A - value);
-	CpuRef.UpdateNegativeStatusFlag(result);
+	Byte zero;
+	zero.value = CpuRef.A.value - value;
+
+	Byte negative;
+	negative.value = result;
+
+	CpuRef.UpdateZeroStatusFlag(zero);
+	CpuRef.UpdateNegativeStatusFlag(negative);
 
 	if (InstructionAddressingMode == AddressingMode::Immediate)
 	{

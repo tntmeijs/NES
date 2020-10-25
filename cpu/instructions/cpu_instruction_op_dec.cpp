@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_dec.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <iostream>
 
@@ -10,9 +11,9 @@ nes::CpuInstructionOpDEC::CpuInstructionOpDEC(CPU& cpuRef, AddressingMode addres
 void nes::CpuInstructionOpDEC::ExecuteImpl()
 {
 	std::uint16_t targetAddress = CpuRef.GetTargetAddress(InstructionAddressingMode);
-	std::uint8_t value = CpuRef.ReadRamValueAtAddress(targetAddress);
-	--value;
-	CpuRef.WriteRamValueAtAddress(targetAddress, value);
+	Byte ramValue = CpuRef.ReadRamValueAtAddress(targetAddress);
+	--ramValue.value;
+	CpuRef.WriteRamValueAtAddress(targetAddress, ramValue);
 
 	if (InstructionAddressingMode == AddressingMode::ZeroPage)
 	{

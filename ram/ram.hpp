@@ -1,6 +1,9 @@
 #ifndef NES_RAM_HPP
 #define NES_RAM_HPP
 
+#include "utility/bit_tools.hpp"
+
+#include <array>
 #include <cstdint>
 
 namespace nes
@@ -26,39 +29,24 @@ namespace nes
 		RAM();
 
 		/**
-		 * Initialize the RAM by allocating the specified number of bytes
-		 */
-		void Initialize(std::uint32_t size);
-
-		/**
-		 * Deallocates the block of memory
-		 */
-		void Delete();
-
-		/**
-		 * Deallocates and initializes the existing memory again to reset its state
-		 */
-		void Clear();
-
-		/**
 		 * Read a byte from memory
 		 * @param	address		Address pointing to the byte to read
 		 * @return	Value of the byte at the specified memory address
 		 */
-		const std::uint8_t ReadByte(std::uint16_t address) const;
+		Byte ReadByte(std::uint16_t address) const;
 
 		/**
 		 * Set the value of a byte in memory
 		 * @param	address		Address pointing to the byte to read
 		 * @param	value		Value to set the byte to
 		 */
-		void WriteByte(std::uint16_t address, std::uint8_t value);
+		void WriteByte(std::uint16_t address, Byte value);
 
 		/**
-		 * Retrieve a pointer to the block of memory that backs the RAM object
-		 * @return	Pointer to the raw memory block
+		 * Set the byte at the specified address to zero
+		 * @param	address		Address pointing to the byte that needs to be set to zero
 		 */
-		std::uint8_t* const GetRaw() const;
+		void ClearByte(std::uint16_t address);
 
 		/**
 		 * Store a ROM into memory
@@ -66,12 +54,14 @@ namespace nes
 		 */
 		void StoreRomData(const RomFile& romFile);
 
-	public:
-		/** Size of the RAM in bytes */
-		std::uint32_t Size;
+		/**
+		 * Returns the size of the RAM in bytes
+		 * @return	Size of the RAM in bytes
+		 */
+		std::size_t GetSize() const;
 
 	private:
-		std::uint8_t* Memory;
+		std::array<Byte, 0x10000> Memory;
 	};
 }
 

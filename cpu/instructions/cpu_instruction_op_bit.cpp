@@ -10,7 +10,7 @@ nes::CpuInstructionOpBIT::CpuInstructionOpBIT(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpBIT::ExecuteImpl()
 {
-	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
+	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
 
 	if (InstructionAddressingMode == AddressingMode::ZeroPage)
 	{
@@ -25,8 +25,13 @@ void nes::CpuInstructionOpBIT::ExecuteImpl()
 		std::cerr << "BIT - Unknown addressing mode.\n";
 	}
 
-	CpuRef.UpdateZeroStatusFlag(CpuRef.A & value);
-	CpuRef.UpdateNegativeStatusFlag(value);
+	Byte bitResult;
+	bitResult.value = CpuRef.A.value & value;
+	CpuRef.UpdateZeroStatusFlag(bitResult);
+
+	Byte valueAsByte;
+	valueAsByte.value = value;
+	CpuRef.UpdateNegativeStatusFlag(valueAsByte);
 
 	// Set the overflow flag to the value of the 6th bit
 	if (IsNthBitSet(value, 6))

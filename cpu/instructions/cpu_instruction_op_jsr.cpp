@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_jsr.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <iostream>
 
@@ -22,8 +23,9 @@ void nes::CpuInstructionOpJSR::ExecuteImpl()
 		std::uint16_t returnAddress = CpuRef.PC + 2;
 
 		// Store the target address minus one on the stack
-		std::uint8_t lsb = (returnAddress & 0x00FF);
-		std::uint8_t msb = ((returnAddress & 0xFF00) >> 8);
+		Byte lsb, msb;
+		lsb.value = (returnAddress & 0x00FF);
+		msb.value = ((returnAddress & 0xFF00) >> 8);
 
 		// According to the documentation, the high byte needs to be pushed first
 		CpuRef.PushStack(msb);

@@ -15,7 +15,7 @@ nes::UIRamVisualizer::UIRamVisualizer(const RAM& ramRef, const CPU& cpuRef) :
 
 void nes::UIRamVisualizer::Draw() const
 {
-	ImGuiListClipper clipper(static_cast<std::int32_t>(std::ceil(static_cast<float>(RamRef.Size) / 16.0f)));
+	ImGuiListClipper clipper(static_cast<std::int32_t>(std::ceil(static_cast<float>(RamRef.GetSize()) / 16.0f)));
 	while (clipper.Step())
 	{
 		for (std::int32_t row = clipper.DisplayStart; row < clipper.DisplayEnd; ++row)
@@ -33,7 +33,7 @@ void nes::UIRamVisualizer::Draw() const
 				std::uint16_t address = (row * 16) + column;
 
 				// Need to cast the value in RAM to a wider type to force it to be treated as a number rather than a character
-				std::uint16_t valueAtAddress = static_cast<std::uint16_t>(RamRef.ReadByte(address++));
+				std::uint16_t valueAtAddress = static_cast<std::uint16_t>(RamRef.ReadByte(address++).value);
 
 				if (CpuRef.GetProgramCounter() == address - 1)
 				{

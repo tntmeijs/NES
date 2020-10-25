@@ -11,8 +11,6 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	nes::RAM ram;
-	ram.Initialize(0x10000);
-
 	nes::CPU Mos6502(ram);
 
 	nes::Editor nesEditor(window, Mos6502, ram);
@@ -48,5 +46,4 @@ int main()
 	}
 
 	nesEditor.Destroy();
-	ram.Delete();
 }

@@ -9,10 +9,10 @@ nes::CpuInstructionOpORA::CpuInstructionOpORA(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpORA::ExecuteImpl()
 {
-	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
+	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
 
 	// Perform bit-wise OR on the accumulator
-	CpuRef.A |= value;
+	CpuRef.A.value |= value;
 
 	CpuRef.UpdateZeroStatusFlag(CpuRef.A);
 	CpuRef.UpdateNegativeStatusFlag(CpuRef.A);

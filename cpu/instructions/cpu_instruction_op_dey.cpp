@@ -7,7 +7,7 @@ nes::CpuInstructionOpDEY::CpuInstructionOpDEY(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpDEY::ExecuteImpl()
 {
-	--CpuRef.Y;
+	--CpuRef.Y.value;
 	CpuRef.UpdateZeroStatusFlag(CpuRef.Y);
 	CpuRef.UpdateNegativeStatusFlag(CpuRef.Y);
 

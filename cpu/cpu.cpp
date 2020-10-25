@@ -63,10 +63,6 @@
 #include <iostream>
 
 nes::CPU::CPU(RAM& ramRef) :
-	A(0),
-	X(0),
-	Y(0),
-	SP(0),
 	PC(0),
 	RamRef(ramRef),
 	CurrentCycle(0)
@@ -84,12 +80,7 @@ void nes::CPU::SetProgramCounterToResetVector()
 {
 	// The low byte of the reset vector address is stored at 0xFFFD
 	// The high byte of the reset vector address is stored at 0xFFFC
-	std::uint8_t msb = RamRef.ReadByte(0xFFFD);
-	std::uint8_t lsb = RamRef.ReadByte(0xFFFC);
-
-	// Combine the low and high components into a 16 bit address
-	// Note that the NES is a little-endian system
-	PC = ((msb << 8) | lsb);
+	PC = ConstructAddressFromBytes(RamRef.ReadByte(0xFFFD), RamRef.ReadByte(0xFFFC));
 }
 
 void nes::CPU::SetProgramCounterToAddress(std::uint16_t address)
@@ -99,7 +90,7 @@ void nes::CPU::SetProgramCounterToAddress(std::uint16_t address)
 
 void nes::CPU::ExecuteInstruction()
 {
-	std::uint8_t opCode = RamRef.ReadByte(PC);
+	Byte opCode = RamRef.ReadByte(PC);
 	ProcessOpCode(opCode);
 }
 
@@ -113,12 +104,12 @@ void nes::CPU::UpdateCurrentCycle(std::uint8_t offset)
 	CurrentCycle += offset;
 }
 
-std::uint8_t nes::CPU::ReadRamValueAtAddress(std::uint16_t address) const
+nes::Byte nes::CPU::ReadRamValueAtAddress(std::uint16_t address) const
 {
 	return RamRef.ReadByte(address);
 }
 
-void nes::CPU::WriteRamValueAtAddress(std::uint16_t address, std::uint8_t value) const
+void nes::CPU::WriteRamValueAtAddress(std::uint16_t address, Byte value) const
 {
 	RamRef.WriteByte(address, value);
 }
@@ -130,32 +121,35 @@ std::uint16_t nes::CPU::GetProgramCounter() const
 
 std::uint16_t nes::CPU::GetStackPointer() const
 {
-	return RamRef.STACK_START_ADDRESS - SP;
+	return RamRef.STACK_START_ADDRESS - SP.value;
 }
 
-std::uint8_t nes::CPU::GetRegister(RegisterType type) const
+nes::Byte nes::CPU::GetRegister(RegisterType type) const
 {
+	Byte value;
+
 	switch (type)
 	{
 		case nes::CPU::RegisterType::A:
-			return A;
+			value = A;
 			break;
 		case nes::CPU::RegisterType::X:
-			return X;
+			value = X;
 			break;
 		case nes::CPU::RegisterType::Y:
-			return Y;
+			value = Y;
 			break;
 		case nes::CPU::RegisterType::P:
-			return P.value;
+			value = P;
 			break;
 		case nes::CPU::RegisterType::SP:
-			return SP;
+			value = SP;
 			break;
 		default:
-			return 0;
 			break;
 	}
+
+	return value;
 }
 
 std::uint64_t nes::CPU::GetCurrentCycle() const
@@ -176,9 +170,13 @@ bool nes::CPU::DidProgramCounterCrossPageBoundary(std::uint16_t before, std::uin
 
 void nes::CPU::SetDefaultState()
 {
+	A.value = 0;
+	X.value = 0;
+	Y.value = 0;
+
 	// https://wiki.nesdev.com/w/index.php/CPU_power_up_state
 	P.value = 0x24;
-	SP = 0xFD;
+	SP.value = 0xFD;
 
 	// http://forum.6502.org/viewtopic.php?f=4&t=5704#:~:text=On%20the%206502%2C%20the%20reset,all%20interrupts)%20takes%207%20cycles.
 	CurrentCycle = 7;
@@ -195,76 +193,67 @@ std::uint16_t nes::CPU::GetTargetAddress(AddressingMode mode) const
 			break;
 		case nes::AddressingMode::Absolute:
 			{
-				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-				std::uint8_t msb = RamRef.ReadByte(PC + 2);
-				std::uint16_t address = ((msb << 8) | lsb);
-				return address;
+				return ConstructAddressFromBytes(RamRef.ReadByte(PC + 2), RamRef.ReadByte(PC + 1));
 			}
 			break;
 		case nes::AddressingMode::AbsoluteX:
 			{
-				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-				std::uint8_t msb = RamRef.ReadByte(PC + 2);
-				std::uint16_t address = ((msb << 8) | lsb);
-				return (address + X);
+				std::uint16_t address = ConstructAddressFromBytes(RamRef.ReadByte(PC + 2), RamRef.ReadByte(PC + 1));
+				return (address + X.value);
 			}
 			break;
 		case nes::AddressingMode::AbsoluteY:
 			{
-				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-				std::uint8_t msb = RamRef.ReadByte(PC + 2);
-				std::uint16_t address = ((msb << 8) | lsb);
-				return (address + Y);
+				std::uint16_t address = ConstructAddressFromBytes(RamRef.ReadByte(PC + 2), RamRef.ReadByte(PC + 1));
+				return (address + Y.value);
 			}
 			break;
 		case nes::AddressingMode::Indirect:
 			{
-				std::uint8_t lsb = RamRef.ReadByte(PC + 1);
-				std::uint8_t msb = RamRef.ReadByte(PC + 2);
-				std::uint16_t address = ((msb << 8) | lsb);
+				std::uint16_t address = ConstructAddressFromBytes(RamRef.ReadByte(PC + 2), RamRef.ReadByte(PC + 1));
 
-				std::uint8_t targetLsb = RamRef.ReadByte(address);
-				std::uint8_t targetMsb = RamRef.ReadByte(address + 1);
-				std::uint16_t targetAddress = ((targetMsb << 8) | targetLsb);
+				Byte targetLsb = RamRef.ReadByte(address);
+				Byte targetMsb = RamRef.ReadByte(address + 1);
+				std::uint16_t targetAddress = ConstructAddressFromBytes(targetMsb, targetLsb);
 				return targetAddress;
 			}
 			break;
 		case nes::AddressingMode::IndirectX:
 			{
-				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
-				zeroPageAddress += X;	// May wrap around
+				Byte zeroPageAddress = RamRef.ReadByte(PC + 1);
+				zeroPageAddress.value += X.value;	// May wrap around
 
-				std::uint8_t lsb = RamRef.ReadByte(zeroPageAddress);
-				std::uint8_t msb = RamRef.ReadByte(zeroPageAddress + 1);
-				std::uint16_t address = ((msb << 8) | lsb);
+				Byte lsb = RamRef.ReadByte(zeroPageAddress.value);
+				Byte msb = RamRef.ReadByte(zeroPageAddress.value + 1);
+				std::uint16_t address = ConstructAddressFromBytes(msb, lsb);
 				return address;
 			}
 			break;
 		case nes::AddressingMode::IndirectY:
 			{
-				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
-				std::uint16_t address = RamRef.ReadByte(zeroPageAddress);
-				return (address + Y);
+				Byte zeroPageAddress = RamRef.ReadByte(PC + 1);
+				std::uint16_t address = RamRef.ReadByte(zeroPageAddress.value).value;
+				return (address + Y.value);
 			}
 			break;
 		case nes::AddressingMode::ZeroPage:
 			{
-				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
+				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1).value;
 				return zeroPageAddress;
 			}
 			break;
 		case nes::AddressingMode::ZeroPageX:
 			{
-				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
-				zeroPageAddress += X;	// May wrap around
+				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1).value;
+				zeroPageAddress += X.value;	// May wrap around
 
 				return zeroPageAddress;
 			}
 			break;
 		case nes::AddressingMode::ZeroPageY:
 			{
-				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1);
-				zeroPageAddress += Y;	// May wrap around
+				std::uint8_t zeroPageAddress = RamRef.ReadByte(PC + 1).value;
+				zeroPageAddress += Y.value;	// May wrap around
 
 				return zeroPageAddress;
 			}
@@ -563,11 +552,11 @@ void nes::CPU::DeallocateInstructionTable()
 	InstructionTable.clear();
 }
 
-void nes::CPU::ProcessOpCode(std::uint8_t opCode)
+void nes::CPU::ProcessOpCode(Byte opCode)
 {
 	// Execute the instruction
 	// The instruction moves the program counter and updates the current cycle
-	CpuInstructionBase* instruction = InstructionTable[opCode];
+	CpuInstructionBase* instruction = InstructionTable[opCode.value];
 	if (instruction != nullptr)
 	{
 		instruction->PrintDebugInformation();
@@ -575,27 +564,27 @@ void nes::CPU::ProcessOpCode(std::uint8_t opCode)
 	}
 }
 
-void nes::CPU::PushStack(std::uint8_t value)
+void nes::CPU::PushStack(Byte value)
 {
 	// Stack grows downwards
-	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
+	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP.value;
 	RamRef.WriteByte(address, value);
 
 	// Move stack pointer
-	--SP;
+	--SP.value;
 }
 
-std::uint8_t nes::CPU::PopStack()
+nes::Byte nes::CPU::PopStack()
 {
 	// Move stack pointer
-	++SP;
+	++SP.value;
 
 	// Stack grows downwards
-	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP;
-	std::uint8_t value = RamRef.ReadByte(address);
+	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP.value;
+	Byte value = RamRef.ReadByte(address);
 
 	// Clear value from stack
-	RamRef.WriteByte(address, 0);
+	RamRef.ClearByte(address);
 
 	return value;
 }
@@ -620,12 +609,12 @@ bool nes::CPU::IsStatusFlagClear(StatusFlags flag) const
 	return ((P.value & static_cast<std::uint8_t>(flag)) == 0);
 }
 
-void nes::CPU::UpdateZeroStatusFlag(std::uint8_t byte)
+void nes::CPU::UpdateZeroStatusFlag(Byte byte)
 {
-	P.bit1 = (byte == 0) ? 1 : 0;
+	P.bit1 = (byte.value == 0) ? 1 : 0;
 }
 
-void nes::CPU::UpdateNegativeStatusFlag(std::uint8_t byte)
+void nes::CPU::UpdateNegativeStatusFlag(Byte byte)
 {
 	P.bit7 = IsNthBitSet(byte, 7) ? 1 : 0;
 }

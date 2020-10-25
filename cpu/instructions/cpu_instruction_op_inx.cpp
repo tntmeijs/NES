@@ -7,7 +7,7 @@ nes::CpuInstructionOpINX::CpuInstructionOpINX(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpINX::ExecuteImpl()
 {
-	++CpuRef.X;
+	++CpuRef.X.value;
 	CpuRef.UpdateZeroStatusFlag(CpuRef.X);
 	CpuRef.UpdateNegativeStatusFlag(CpuRef.X);
 

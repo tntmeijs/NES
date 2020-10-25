@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_eor.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <iostream>
 
@@ -9,10 +10,10 @@ nes::CpuInstructionOpEOR::CpuInstructionOpEOR(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpEOR::ExecuteImpl()
 {
-	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
+	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
 
 	// Perform bit-wise exclusive OR on the accumulator
-	CpuRef.A ^= value;
+	CpuRef.A.value ^= value;
 
 	CpuRef.UpdateZeroStatusFlag(CpuRef.A);
 	CpuRef.UpdateNegativeStatusFlag(CpuRef.A);

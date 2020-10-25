@@ -7,7 +7,7 @@ nes::CpuInstructionOpINY::CpuInstructionOpINY(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpINY::ExecuteImpl()
 {
-	++CpuRef.Y;
+	++CpuRef.Y.value;
 	CpuRef.UpdateZeroStatusFlag(CpuRef.Y);
 	CpuRef.UpdateNegativeStatusFlag(CpuRef.Y);
 

@@ -9,10 +9,10 @@ nes::CpuInstructionOpCPY::CpuInstructionOpCPY(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpCPY::ExecuteImpl()
 {
-	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
-	std::uint8_t result = CpuRef.Y - value;
+	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
+	std::uint8_t result = CpuRef.Y.value - value;
 
-	if (CpuRef.Y >= value)
+	if (CpuRef.Y.value >= value)
 	{
 		CpuRef.SetStatusFlag(StatusFlags::Carry);
 	}
@@ -21,8 +21,14 @@ void nes::CpuInstructionOpCPY::ExecuteImpl()
 		CpuRef.ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	CpuRef.UpdateZeroStatusFlag(CpuRef.Y - value);
-	CpuRef.UpdateNegativeStatusFlag(result);
+	Byte zero;
+	zero.value = CpuRef.Y.value - value;
+
+	Byte negative;
+	negative.value = result;
+
+	CpuRef.UpdateZeroStatusFlag(zero);
+	CpuRef.UpdateNegativeStatusFlag(negative);
 
 	if (InstructionAddressingMode == AddressingMode::Immediate)
 	{

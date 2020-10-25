@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_lsr.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <iostream>
 
@@ -14,10 +15,10 @@ void nes::CpuInstructionOpLSR::ExecuteImpl()
 		CycleCount = 2;
 	
 		// Need to shift in the accumulator
-		std::uint8_t old = CpuRef.A;
-		CpuRef.A = (CpuRef.A >> 1);
+		Byte old = CpuRef.A;
+		CpuRef.A.value = (CpuRef.A.value >> 1);
 
-		if ((old & static_cast<std::uint8_t>(StatusFlags::Carry)) != 0)
+		if (IsNthBitSet(old, static_cast<std::uint8_t>(StatusFlags::Carry)))
 		{
 			CpuRef.SetStatusFlag(StatusFlags::Carry);
 		}
@@ -32,11 +33,11 @@ void nes::CpuInstructionOpLSR::ExecuteImpl()
 	else
 	{
 		// Need to shift in a memory location
-		std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
-		std::uint8_t old = value;
-		value = (value >> 1);
+		Byte memoryValue = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
+		Byte old = memoryValue;
+		memoryValue.value = (memoryValue.value >> 1);
 
-		if ((old & static_cast<std::uint8_t>(StatusFlags::Carry)) != 0)
+		if (IsNthBitSet(old, static_cast<std::uint8_t>(StatusFlags::Carry)))
 		{
 			CpuRef.SetStatusFlag(StatusFlags::Carry);
 		}
@@ -45,8 +46,8 @@ void nes::CpuInstructionOpLSR::ExecuteImpl()
 			CpuRef.ClearStatusFlag(StatusFlags::Carry);
 		}
 
-		CpuRef.UpdateZeroStatusFlag(value);
-		CpuRef.UpdateNegativeStatusFlag(value);
+		CpuRef.UpdateZeroStatusFlag(memoryValue);
+		CpuRef.UpdateNegativeStatusFlag(memoryValue);
 
 		if (InstructionAddressingMode == AddressingMode::ZeroPage)
 		{

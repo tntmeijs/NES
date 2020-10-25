@@ -84,14 +84,14 @@ namespace nes
          * @param   address     Address to read from
          * @return  Value of the byte in RAM
          */
-        std::uint8_t ReadRamValueAtAddress(std::uint16_t address) const;
+        Byte ReadRamValueAtAddress(std::uint16_t address) const;
 
         /**
          * Write a byte to RAM at the specified address
          * @param   address     Address to write to
          * @param   value       Value to write to RAM
          */
-        void WriteRamValueAtAddress(std::uint16_t address, std::uint8_t value) const;
+        void WriteRamValueAtAddress(std::uint16_t address, Byte value) const;
 
         /**
          * Get the current value of the program counter accounting for the offset
@@ -111,7 +111,7 @@ namespace nes
          * @param   type    Register to retrieve its value for
          * @return  Register's value
          */
-        std::uint8_t GetRegister(RegisterType type) const;
+        Byte GetRegister(RegisterType type) const;
 
 		/**
          * Retrieve the current cycle index
@@ -155,19 +155,19 @@ namespace nes
          * Execute the proper op-code
          * @param   opCode  Op-code to execute
          */
-        void ProcessOpCode(std::uint8_t opCode);
+        void ProcessOpCode(Byte opCode);
 
         /**
          * Push a value to the stack
          * @param   value   Value to push to the stack
          */
-        void PushStack(std::uint8_t value);
+        void PushStack(Byte value);
 
         /**
          * Pop a value from the stack
          * @return  Value popped from the stack
          */
-        std::uint8_t PopStack();
+        Byte PopStack();
 
         /**
          * Set a processor status flag
@@ -199,13 +199,13 @@ namespace nes
          * Set or clear the zero flag based on the value of the byte passed
          * @param   byte    Byte to check
          */
-        void UpdateZeroStatusFlag(std::uint8_t byte);
+        void UpdateZeroStatusFlag(Byte byte);
 
         /**
          * Set or clear the negative flag based on the value of the byte passed
          * @param   byte    Byte to check
          */
-        void UpdateNegativeStatusFlag(std::uint8_t byte);
+        void UpdateNegativeStatusFlag(Byte byte);
 
     private:
         // Give all instructions access to the private and protected members of CPU
@@ -271,11 +271,11 @@ namespace nes
 		friend class CpuInstructionOpTYA;
 
         // Accumulator
-        std::uint8_t A;
+        Byte A;
 
         // Index registers
-        std::uint8_t X;
-        std::uint8_t Y;
+        Byte X;
+        Byte Y;
 
         // Processor status flag bits
         // 0 - carry flag
@@ -289,7 +289,7 @@ namespace nes
         Byte P;
 
         // Stack pointer
-        std::uint8_t SP;
+        Byte SP;
 
         // Program counter
         std::uint16_t PC;

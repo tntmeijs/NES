@@ -11,43 +11,43 @@ nes::CpuInstructionOpROL::CpuInstructionOpROL(CPU& cpuRef, AddressingMode addres
 void nes::CpuInstructionOpROL::ExecuteImpl()
 {
 	std::uint16_t address = CpuRef.GetTargetAddress(InstructionAddressingMode);
-	std::uint8_t value = 0;
+	Byte valueToModify;
 
 	if (InstructionAddressingMode == AddressingMode::Accumulator)
 	{
-		value = CpuRef.A;
+		valueToModify = CpuRef.A;
 	}
 	else
 	{
-		value = CpuRef.ReadRamValueAtAddress(address);
+		valueToModify = CpuRef.ReadRamValueAtAddress(address);
 	}
 
-	std::uint8_t old = value;
+	Byte old = valueToModify;
 
 	// Shift left
-	value = (value << 1);
+	valueToModify.value = (valueToModify.value << 1);
 
 	// Old bit 7 becomes the new carry bit
 	if (IsNthBitSet(old, 7))
 	{
-		SetNthBitState(value, 0, true);
+		SetNthBitState(valueToModify, 0, true);
 	}
 	else
 	{
-		SetNthBitState(value, 0, false);
+		SetNthBitState(valueToModify, 0, false);
 	}
 
-	CpuRef.UpdateZeroStatusFlag(value);
-	CpuRef.UpdateNegativeStatusFlag(value);
+	CpuRef.UpdateZeroStatusFlag(valueToModify);
+	CpuRef.UpdateNegativeStatusFlag(valueToModify);
 
 	if (InstructionAddressingMode == AddressingMode::Accumulator)
 	{
-		CpuRef.A = value;
+		CpuRef.A = valueToModify;
 		CycleCount = 2;
 	}
 	else
 	{
-		CpuRef.WriteRamValueAtAddress(address, value);
+		CpuRef.WriteRamValueAtAddress(address, valueToModify);
 
 		if (InstructionAddressingMode == AddressingMode::ZeroPage)
 		{

@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_rti.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 nes::CpuInstructionOpRTI::CpuInstructionOpRTI(CPU& cpuRef, AddressingMode addressingMode) :
 	CpuInstructionBase(cpuRef, addressingMode, "RTI")
@@ -11,8 +12,8 @@ void nes::CpuInstructionOpRTI::ExecuteImpl()
 {
 	CycleCount = 6;
 
-	CpuRef.P.value = CpuRef.PopStack();
-	std::uint8_t msb = CpuRef.PopStack();
-	std::uint8_t lsb = CpuRef.PopStack();
-	CpuRef.PC = ((msb << 8) | lsb);
+	CpuRef.P = CpuRef.PopStack();
+	Byte msb = CpuRef.PopStack();
+	Byte lsb = CpuRef.PopStack();
+	CpuRef.PC = ConstructAddressFromBytes(msb, lsb);
 }

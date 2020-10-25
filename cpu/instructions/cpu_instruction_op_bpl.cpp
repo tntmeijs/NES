@@ -12,7 +12,7 @@ void nes::CpuInstructionOpBPL::ExecuteImpl()
 	// Negative flag is clear
 	if (CpuRef.IsStatusFlagClear(StatusFlags::Negative))
 	{
-		std::int8_t displacement = CpuRef.ReadRamValueAtAddress(CpuRef.PC + 1);
+		std::int8_t displacement = CpuRef.ReadRamValueAtAddress(CpuRef.PC + 1).value;
 
 		std::uint16_t initialPC = CpuRef.PC;
 		std::uint16_t currentPC = initialPC + displacement;

@@ -2,6 +2,7 @@
 #define NES_ROM_FILE_HPP
 
 #include "utility/literals.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <cstdint>
 #include <string_view>
@@ -45,7 +46,7 @@ namespace nes
 		 * Get the raw ROM data
 		 * @return	Bytes that make up the entire ROM
 		 */
-		const std::vector<std::uint8_t>& GetRaw() const;
+		const std::vector<Byte>& GetRaw() const;
 
 		/**
 		 * Get the number of ROM banks
@@ -122,7 +123,7 @@ namespace nes
 		std::uint16_t GetSecondRomBankByteIndex() const;
 
 	private:
-		std::vector<std::uint8_t> RawData;
+		std::vector<Byte> RawData;
 	};
 }
 

@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_rts.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 nes::CpuInstructionOpRTS::CpuInstructionOpRTS(CPU& cpuRef, AddressingMode addressingMode) :
 	CpuInstructionBase(cpuRef, addressingMode, "RTS")
@@ -11,9 +12,10 @@ nes::CpuInstructionOpRTS::CpuInstructionOpRTS(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpRTS::ExecuteImpl()
 {
-	std::uint8_t lsb = CpuRef.PopStack();
-	std::uint8_t msb = CpuRef.PopStack();
-	std::uint16_t address = ((msb << 8) | lsb);
+	Byte lsb, msb;
+	lsb = CpuRef.PopStack();
+	msb = CpuRef.PopStack();
+	std::uint16_t address = ConstructAddressFromBytes(msb, lsb);
 
 	// Because JSR stores the target address - 1 on the stack, we have to add 1 to
 	// the target address to get the location of the next instruction

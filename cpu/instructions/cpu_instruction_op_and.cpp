@@ -10,10 +10,10 @@ nes::CpuInstructionOpAND::CpuInstructionOpAND(CPU& cpuRef, AddressingMode addres
 void nes::CpuInstructionOpAND::ExecuteImpl()
 {
 	// Retrieve value to AND against the accumulator
-	std::uint8_t compareAgainst = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
+	std::uint8_t compareAgainst = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
 
 	// Perform logical AND
-	CpuRef.A &= compareAgainst;
+	CpuRef.A.value &= compareAgainst;
 
 	CpuRef.UpdateNegativeStatusFlag(CpuRef.A);
 	CpuRef.UpdateZeroStatusFlag(CpuRef.A);

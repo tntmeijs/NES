@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_sbc.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <iostream>
 
@@ -9,10 +10,10 @@ nes::CpuInstructionOpSBC::CpuInstructionOpSBC(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpSBC::ExecuteImpl()
 {
-	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
+	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
 
 	// Same as ADC but we invert the bits of the value to turn ADC into SBC
-	std::uint16_t sum = CpuRef.A + ~value + CpuRef.P.bit1;
+	std::uint16_t sum = CpuRef.A.value + ~value + CpuRef.P.bit1;
 
 	// Carry if we did not exceed the maximum value for a byte
 	if (!(sum > 0xFF))
@@ -25,7 +26,7 @@ void nes::CpuInstructionOpSBC::ExecuteImpl()
 	}
 
 	// Same as ADC but we invert the bits of the value to turn ADC into SBC
-	if ((~(CpuRef.A ^ ~value) & (CpuRef.A ^ sum) & static_cast<std::uint8_t>(StatusFlags::Negative)) != 0)
+	if ((~(CpuRef.A.value ^ ~value) & (CpuRef.A.value ^ sum) & static_cast<std::uint8_t>(StatusFlags::Negative)) != 0)
 	{
 		CpuRef.SetStatusFlag(StatusFlags::Overflow);
 	}
@@ -34,11 +35,12 @@ void nes::CpuInstructionOpSBC::ExecuteImpl()
 		CpuRef.ClearStatusFlag(StatusFlags::Overflow);
 	}
 
-	CpuRef.UpdateZeroStatusFlag(static_cast<std::uint8_t>(sum));
-	CpuRef.UpdateNegativeStatusFlag(static_cast<std::uint8_t>(sum));
-
-	// Only save the lower 8 bits as the carry / overflow flags have been set by now
-	CpuRef.A = static_cast<std::uint8_t>(sum);
+	// Only save the lower 8 bits
+	Byte sumAsByte;
+	sumAsByte.value = static_cast<std::uint8_t>(sum);
+	CpuRef.UpdateZeroStatusFlag(sumAsByte);
+	CpuRef.UpdateNegativeStatusFlag(sumAsByte);
+	CpuRef.A = sumAsByte;
 
 	if (InstructionAddressingMode == AddressingMode::Immediate)
 	{

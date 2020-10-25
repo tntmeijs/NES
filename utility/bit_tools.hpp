@@ -16,14 +16,14 @@ namespace nes
 	{
 		struct
 		{
-			unsigned char bit0 : 1;
-			unsigned char bit1 : 1;
-			unsigned char bit2 : 1;
-			unsigned char bit3 : 1;
-			unsigned char bit4 : 1;
-			unsigned char bit5 : 1;
-			unsigned char bit6 : 1;
-			unsigned char bit7 : 1;
+			std::uint8_t bit0 : 1;
+			std::uint8_t bit1 : 1;
+			std::uint8_t bit2 : 1;
+			std::uint8_t bit3 : 1;
+			std::uint8_t bit4 : 1;
+			std::uint8_t bit5 : 1;
+			std::uint8_t bit6 : 1;
+			std::uint8_t bit7 : 1;
 		};
 
 		std::uint8_t value;
@@ -46,7 +46,7 @@ namespace nes
 	 * @param   n       Bit to check
 	 * @return  True when the flag is set, false when clear
 	 */
-	inline constexpr bool IsNthBitSet(const Byte& byte, std::uint8_t n)
+	inline constexpr bool IsNthBitSet(Byte byte, std::uint8_t n)
 	{
 		return ((byte.value & (1 << n)) != 0);
 	}
@@ -106,9 +106,31 @@ namespace nes
 	 * @param   source  Byte whose bits will be compared against
 	 * @param   n       Bit index to compare
 	 */
-	inline constexpr void MatchBitStateOfNthBit(Byte& target, const Byte& source, std::uint8_t n)
+	inline constexpr void MatchBitStateOfNthBit(Byte& target, Byte source, std::uint8_t n)
 	{
 		SetNthBitState(target, n, IsNthBitSet(source, n));
+	}
+
+	/**
+	 * Combine two bytes into a 16-bit address
+	 * @param	msb		Most significant byte
+	 * @param	lsb		Least significant byte
+	 * @return	Address that consists out of the two bytes
+	 */
+	inline constexpr std::uint16_t ConstructAddressFromBytes(std::uint8_t msb, std::uint8_t lsb)
+	{
+		return ((msb << 8) | lsb);
+	}
+
+	/**
+	 * Combine two bytes into a 16-bit address
+	 * @param	msb		Most significant byte
+	 * @param	lsb		Least significant byte
+	 * @return	Address that consists out of the two bytes
+	 */
+	inline constexpr std::uint16_t ConstructAddressFromBytes(Byte msb, Byte lsb)
+	{
+		return ((msb.value << 8) | lsb.value);
 	}
 }
 

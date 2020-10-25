@@ -1,5 +1,6 @@
 #include "cpu_instruction_op_adc.hpp"
 #include "cpu/cpu.hpp"
+#include "utility/bit_tools.hpp"
 
 #include <iostream>
 
@@ -9,8 +10,8 @@ nes::CpuInstructionOpADC::CpuInstructionOpADC(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpADC::ExecuteImpl()
 {
-	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
-	std::uint16_t sum = CpuRef.A + value + CpuRef.P.bit1;
+	std::uint8_t value = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode)).value;
+	std::uint16_t sum = CpuRef.A.value + value + CpuRef.P.bit1;
 
 	// Carry if we exceed the maximum value for a byte
 	if (sum > 0xFF)
@@ -25,7 +26,7 @@ void nes::CpuInstructionOpADC::ExecuteImpl()
 	// References:
 	// - https://github.com/daniel5151/ANESE/blob/master/src/nes/cpu/cpu.cc
 	// - http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
-	if ((~(CpuRef.A ^ value) & (CpuRef.A ^ sum) & static_cast<std::uint8_t>(StatusFlags::Negative)) != 0)
+	if ((~(CpuRef.A.value ^ value) & (CpuRef.A.value ^ sum) & static_cast<std::uint8_t>(StatusFlags::Negative)) != 0)
 	{
 		CpuRef.SetStatusFlag(StatusFlags::Overflow);
 	}
@@ -34,11 +35,12 @@ void nes::CpuInstructionOpADC::ExecuteImpl()
 		CpuRef.ClearStatusFlag(StatusFlags::Overflow);
 	}
 
-	CpuRef.UpdateZeroStatusFlag(static_cast<std::uint8_t>(sum));
-	CpuRef.UpdateNegativeStatusFlag(static_cast<std::uint8_t>(sum));
-
-	// Only save the lower 8 bits as the carry / overflow flags have been set by now
-	CpuRef.A = static_cast<std::uint8_t>(sum);
+	// Only save the lower 8 bits
+	Byte sumAsByte;
+	sumAsByte.value = static_cast<std::uint8_t>(sum);
+	CpuRef.UpdateZeroStatusFlag(sumAsByte);
+	CpuRef.UpdateNegativeStatusFlag(sumAsByte);
+	CpuRef.A = sumAsByte;
 
 	if (InstructionAddressingMode == AddressingMode::Immediate)
 	{

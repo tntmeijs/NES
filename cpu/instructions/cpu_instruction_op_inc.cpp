@@ -12,11 +12,12 @@ void nes::CpuInstructionOpINC::ExecuteImpl()
 	std::uint16_t address = CpuRef.GetTargetAddress(InstructionAddressingMode);
 
 	// Increment and store the value at the specified address
-	std::uint8_t value = (CpuRef.ReadRamValueAtAddress(address) + 1);
-	CpuRef.WriteRamValueAtAddress(address, value);
+	Byte valueAtAddress = CpuRef.ReadRamValueAtAddress(address);
+	++valueAtAddress.value;
+	CpuRef.WriteRamValueAtAddress(address, valueAtAddress);
 
-	CpuRef.UpdateZeroStatusFlag(value);
-	CpuRef.UpdateNegativeStatusFlag(value);
+	CpuRef.UpdateZeroStatusFlag(valueAtAddress);
+	CpuRef.UpdateNegativeStatusFlag(valueAtAddress);
 
 	if (InstructionAddressingMode == AddressingMode::ZeroPage)
 	{

@@ -8,47 +8,28 @@
 nes::RAM::RAM() :
 	FIRST_ROM_BANK_ADDRESS(0x8000),
 	SECOND_ROM_BANK_ADDRESS(FIRST_ROM_BANK_ADDRESS + RomFile::ROM_BANK_SIZE),
-	STACK_START_ADDRESS(0x01FF),
-	Memory(nullptr),
-	Size(0)
-{}
-
-void nes::RAM::Initialize(std::uint32_t size)
+	STACK_START_ADDRESS(0x01FF)
 {
-	Size = size;
-
-	Memory = new std::uint8_t[Size];
-	std::memset(Memory, 0, Size);
-}
-
-void nes::RAM::Delete()
-{
-	if (Memory)
+	// Initialize the memory to a default known state of zero
+	for (std::size_t i = 0; i < Memory.size(); ++i)
 	{
-		delete[] Memory;
-		Memory = nullptr;
+		Memory[i].value = 0;
 	}
 }
 
-void nes::RAM::Clear()
-{
-	Delete();
-	Initialize(Size);
-}
-
-const std::uint8_t nes::RAM::ReadByte(std::uint16_t address) const
+nes::Byte nes::RAM::ReadByte(std::uint16_t address) const
 {
 	return Memory[address];
 }
 
-void nes::RAM::WriteByte(std::uint16_t address, std::uint8_t value)
+void nes::RAM::WriteByte(std::uint16_t address, Byte value)
 {
 	Memory[address] = value;
 }
 
-std::uint8_t* const nes::RAM::GetRaw() const
+void nes::RAM::ClearByte(std::uint16_t address)
 {
-	return Memory;
+	Memory[address].value = 0;
 }
 
 void nes::RAM::StoreRomData(const RomFile& romFile)
@@ -56,23 +37,32 @@ void nes::RAM::StoreRomData(const RomFile& romFile)
 	std::uint8_t numRomBanks = romFile.GetNumberOfRomBanks();
 
 	// Retrieve the entire ROM as a byte array
-	const std::vector<std::uint8_t>& romDataRef = romFile.GetRaw();
+	const std::vector<Byte>& romDataRef = romFile.GetRaw();
+
+	auto firstBankStart = romFile.GetFirstRomBankByteIndex();
+	auto firstBankStop = firstBankStart + RomFile::ROM_BANK_SIZE;
 
 	// Always copy the first ROM bank to the memory array
-	std::uint16_t firstBankStart = romFile.GetFirstRomBankByteIndex();
-	std::uint16_t firstBankEnd = firstBankStart + RomFile::ROM_BANK_SIZE;
-	std::copy(romDataRef.begin() + firstBankStart, romDataRef.begin() + firstBankEnd, Memory + FIRST_ROM_BANK_ADDRESS);
+	auto firstBankBegin = romDataRef.begin() + firstBankStart;
+	auto firstBankEnd = romDataRef.begin() + firstBankStop;
+	std::copy(firstBankBegin, firstBankEnd, &Memory[0] + FIRST_ROM_BANK_ADDRESS);
 
 	if (numRomBanks == 1)
 	{
-		// If the game only uses one ROM bank, mirror the first ROM bank
-		std::copy(romDataRef.begin() + firstBankStart, romDataRef.begin() + firstBankEnd, Memory + SECOND_ROM_BANK_ADDRESS);
+		// If the game only uses one ROM bank, mirror the existing bank
+		std::copy(firstBankBegin, firstBankEnd, &Memory[0] + SECOND_ROM_BANK_ADDRESS);
 	}
 	else
 	{
-		// Copy the second ROM bank to the memory array
-		std::uint16_t secondBankStart = romFile.GetSecondRomBankByteIndex();
-		std::uint16_t secondBankEnd = secondBankStart + RomFile::ROM_BANK_SIZE;
-		std::copy(romDataRef.begin() + secondBankStart, romDataRef.begin() + secondBankEnd, Memory + SECOND_ROM_BANK_ADDRESS);
+		auto secondBankStart = romFile.GetSecondRomBankByteIndex();
+		auto secondBankEnd = secondBankStart + RomFile::ROM_BANK_SIZE;
+
+		// Copy the second ROM bank into memory
+		std::copy(romDataRef.begin() + secondBankStart, romDataRef.begin() + secondBankEnd, &Memory[0] + SECOND_ROM_BANK_ADDRESS);
 	}
+}
+
+std::size_t nes::RAM::GetSize() const
+{
+	return Memory.size();
 }

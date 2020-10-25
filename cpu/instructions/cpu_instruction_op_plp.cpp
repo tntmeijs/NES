@@ -8,14 +8,14 @@ nes::CpuInstructionOpPLP::CpuInstructionOpPLP(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpPLP::ExecuteImpl()
 {
-	std::uint8_t fromStack = CpuRef.PopStack();
+	Byte fromStack = CpuRef.PopStack();
 
-	MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 0);
-	MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 1);
-	MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 2);
-	MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 3);
-	MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 6);
-	MatchBitStateOfNthBit(CpuRef.P.value, fromStack, 7);
+	MatchBitStateOfNthBit(CpuRef.P, fromStack, 0);
+	MatchBitStateOfNthBit(CpuRef.P, fromStack, 1);
+	MatchBitStateOfNthBit(CpuRef.P, fromStack, 2);
+	MatchBitStateOfNthBit(CpuRef.P, fromStack, 3);
+	MatchBitStateOfNthBit(CpuRef.P, fromStack, 6);
+	MatchBitStateOfNthBit(CpuRef.P, fromStack, 7);
 
 	CycleCount = 4;
 }
