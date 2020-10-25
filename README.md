@@ -9,6 +9,15 @@ It is very much a work in progress right now, but be sure to star this repositor
 
 If time allows, I will write a detailed tutorial that covers everything from the absolute basics all the way to getting an image on screen. Almost none of the tutorials out there do so, and those that do are either outdated or incomplete.
 
+# Commits
+Each commit follows the same naming standard:
+```
+Message here without a period
+[ADD] When you add new things, use proper punctuation.
+[CHANGE] When you change things, use proper punctuation.
+[DELETE] When you delete things, use proper punctuation.
+```
+
 # Branches
 - The project's master branch has been locked. Nobody should commit on master unless merging a Pull Request.
 - Pull Requests can only be merged into master by @tntmeijs.
@@ -23,12 +32,15 @@ The following rules need to be followed in order to make a commit:
    1. Make sure the branch uses dashes `-` as spaces.
    2. Ensure that the id and name both match the issue to make it easy to track work.
    3. Clone the new branch.
-3. Create a new **DRAFT** Pull Request to show others that you've started working on it.
-4. Start development.
+3. Start development.
+4. Create a new **DRAFT** Pull Request to show others that you've started working on it.
+   
+   It is recommended to create a draft Pull Request as early into development as possible to ensure that other contributers can give feedback on the code as you work on it.
 5. Make sure all tests pass.
 6. Update your Pull Request and ask for a review.
+   1. Make sure your Pull Request has a proper name.
 7. Fix any problems.
-8. Merge into master, do not rebase or anything like that. We would like to preserve the history.
+8.  Merge into master, do not rebase or anything like that. We would like to preserve the history.
 
 Please note that this project is still in its very early stages. A code style guide, as well as a CI/CD pipeline will be added in the future. In the meanwhile, we would like to ask you to pay close attention to this README and follow the instructions given.
 
