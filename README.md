@@ -23,8 +23,8 @@ The following rules need to be followed in order to make a commit:
    1. Make sure the branch uses dashes `-` as spaces.
    2. Ensure that the id and name both match the issue to make it easy to track work.
    3. Clone the new branch.
-3. Create a new **DRAFT** Pull Request to show others that you've started working on it.
-4. Start development.
+3. Start development.
+4. Create a new **DRAFT** Pull Request to show others that you've started working on it.
 5. Make sure all tests pass.
 6. Update your Pull Request and ask for a review.
 7. Fix any problems.
