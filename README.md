@@ -38,6 +38,7 @@ The following rules need to be followed in order to make a commit:
    It is recommended to create a draft Pull Request as early into development as possible to ensure that other contributers can give feedback on the code as you work on it.
 5. Make sure all tests pass.
 6. Update your Pull Request and ask for a review.
+   1. Make sure your Pull Request has a proper name.
 7. Fix any problems.
 8.  Merge into master, do not rebase or anything like that. We would like to preserve the history.
 
