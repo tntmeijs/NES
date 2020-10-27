@@ -7,6 +7,10 @@ project(NES
 
 set(SOURCE_LIST
     main.cpp
+    app/app.hpp
+    app/app.cpp
+    app/app_frame.hpp
+    app/app_frame.cpp
     io/rom_file.hpp
     io/rom_file.cpp
     cpu/cpu.hpp
@@ -150,7 +154,11 @@ set(IMGUI_FILES
     _deps/imgui/imgui_widgets.cpp
     _deps/imgui-sfml/imgui-SFML.cpp)
 
-add_executable(NES ${SOURCE_LIST} ${IMGUI_FILES})
+if(WIN32)
+    add_executable(NES WIN32 ${SOURCE_LIST} ${IMGUI_FILES})
+else()
+    add_executable(NES ${SOURCE_LIST} ${IMGUI_FILES})
+endif(WIN32)
 
 # Configure SFML
 set(BUILD_SHARED_LIBS FALSE)

@@ -1,49 +1,8 @@
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Window/Event.hpp>
+// NES emulator application
+#include "app/app.hpp"
 
-#include "cpu/cpu.hpp"
-#include "ram/ram.hpp"
-#include "editor/editor.hpp"
+// WxWidgets application
+#include <wx/app.h>
 
-int main()
-{
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "NES");
-	window.setVerticalSyncEnabled(true);
-
-	nes::RAM ram;
-	nes::CPU Mos6502(ram);
-
-	nes::Editor nesEditor(window, Mos6502, ram);
-	nesEditor.Initialize();
-
-	sf::Color clearColor = sf::Color::Black;
-	sf::Clock mainLoopClock;
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-
-		while (window.pollEvent(event))
-		{
-			nesEditor.ProcessEvent(event);
-
-			if (event.type == sf::Event::Closed)
-			{
-				window.close();
-			}
-		}
-
-		// Frame delta-time
-		sf::Time delta = mainLoopClock.restart();
-
-		// Update
-		nesEditor.Update(delta);
-		
-		// Render
-		window.clear(clearColor);
-		nesEditor.DrawUI();
-		window.display();
-	}
-
-	nesEditor.Destroy();
-}
+// Entry point
+IMPLEMENT_APP(nes::NesEmulatorApplication);
