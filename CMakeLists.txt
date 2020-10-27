@@ -7,6 +7,7 @@ project(NES
 
 set(SOURCE_LIST
     main.cpp
+    global_ids.hpp
     app/app.hpp
     app/app.cpp
     app/app_frame.hpp
