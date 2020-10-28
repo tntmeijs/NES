@@ -31,12 +31,6 @@ namespace nes
 		wxMenu* const ConstructFileMenu() const;
 
 		/**
-		 * Create the items for the debug menu
-		 * @return	Debug menu
-		 */
-		wxMenu* const ConstructDebugMenu() const;
-
-		/**
 		 * Create the items for the help menu
 		 * @return	Help menu
 		 */
