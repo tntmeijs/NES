@@ -138,6 +138,8 @@ set(SOURCE_LIST
     editor/editor.cpp
     editor/root_frame.hpp
     editor/root_frame.cpp
+    editor/bottom_panel_tools/bottom_panel_notebook.hpp
+    editor/bottom_panel_tools/bottom_panel_notebook.cpp
     editor/ui/ui_cpu_controller.hpp
     editor/ui/ui_cpu_controller.cpp
     editor/ui/ui_ram_visualizer.hpp
