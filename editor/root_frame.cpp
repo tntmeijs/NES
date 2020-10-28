@@ -1,5 +1,5 @@
 #include "root_frame.hpp"
-#include "bottom_panel_tools/bottom_panel_notebook.hpp"
+#include "debugging/debug_notebook.hpp"
 
 #include <wx/menu.h>
 
@@ -8,7 +8,7 @@ nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 {
 	AppendMainMenuBar();
 
-	auto* bottomPanel = new BottomPanelNotebook(this);
+	auto* bottomPanel = new DebugNotebook(this);
 }
 
 void nes::EditorRootFrame::AppendMainMenuBar()

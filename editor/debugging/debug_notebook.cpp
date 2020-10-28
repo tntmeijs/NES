@@ -1,6 +1,6 @@
-#include "bottom_panel_notebook.hpp"
+#include "debug_notebook.hpp"
 
-nes::BottomPanelNotebook::BottomPanelNotebook(wxWindow* const parent) :
+nes::DebugNotebook::DebugNotebook(wxWindow* const parent) :
 	wxNotebook(parent, wxID_ANY)
 {
 	AddPage(new wxNotebookPage(this, -1), "stdout");
