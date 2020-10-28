@@ -5,6 +5,11 @@
 nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	wxFrame(nullptr, wxID_ANY, title)
 {
+	AppendMainMenuBar();
+}
+
+void nes::EditorRootFrame::AppendMainMenuBar()
+{
 	auto* const mainMenuBar = new wxMenuBar();
 	mainMenuBar->Append(ConstructFileMenu(), "&File");
 	mainMenuBar->Append(ConstructHelpMenu(), "&Help");

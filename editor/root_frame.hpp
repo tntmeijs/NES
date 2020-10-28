@@ -25,6 +25,11 @@ namespace nes
 
 	private:
 		/**
+		 * Append the main menu bar to this frame
+		 */
+		void AppendMainMenuBar();
+
+		/**
 		 * Create the items for the file menu
 		 * @return	File menu
 		 */
