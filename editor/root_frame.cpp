@@ -1,8 +1,8 @@
-#include "app_frame.hpp"
+#include "root_frame.hpp"
 
 #include <wx/menu.h>
 
-nes::NesEmulatorApplicationFrame::NesEmulatorApplicationFrame(const wxString& title) :
+nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	wxFrame(nullptr, wxID_ANY, title)
 {
 	auto* const mainMenuBar = new wxMenuBar();
@@ -11,7 +11,7 @@ nes::NesEmulatorApplicationFrame::NesEmulatorApplicationFrame(const wxString& ti
 	SetMenuBar(mainMenuBar);
 }
 
-wxMenu* const nes::NesEmulatorApplicationFrame::ConstructFileMenu() const
+wxMenu* const nes::EditorRootFrame::ConstructFileMenu() const
 {
 	auto* const fileMenu = new wxMenu();
 	fileMenu->Append(wxID_ANY, "&Open ROM");
@@ -19,7 +19,7 @@ wxMenu* const nes::NesEmulatorApplicationFrame::ConstructFileMenu() const
 	return fileMenu;
 }
 
-wxMenu* const nes::NesEmulatorApplicationFrame::ConstructHelpMenu() const
+wxMenu* const nes::EditorRootFrame::ConstructHelpMenu() const
 {
 	auto* const helpMenu = new wxMenu();
 	helpMenu->Append(wxID_ANY, "Version");

@@ -9,8 +9,6 @@ set(SOURCE_LIST
     main.cpp
     app/app.hpp
     app/app.cpp
-    app/app_frame.hpp
-    app/app_frame.cpp
     io/rom_file.hpp
     io/rom_file.cpp
     cpu/cpu.hpp
@@ -138,6 +136,8 @@ set(SOURCE_LIST
     ram/ram.cpp
     editor/editor.hpp
     editor/editor.cpp
+    editor/root_frame.hpp
+    editor/root_frame.cpp
     editor/ui/ui_cpu_controller.hpp
     editor/ui/ui_cpu_controller.cpp
     editor/ui/ui_ram_visualizer.hpp

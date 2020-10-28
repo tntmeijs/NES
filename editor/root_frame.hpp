@@ -1,5 +1,5 @@
-#ifndef NES_APP_FRAME_HPP
-#define NES_APP_FRAME_HPP
+#ifndef NES_EDITOR_ROOT_FRAME_HPP
+#define NES_EDITOR_ROOT_FRAME_HPP
 
 #include <wx/frame.h>
 #include <wx/string.h>
@@ -14,14 +14,14 @@ namespace nes
 	/**
 	 * Main frame of the GUI application
 	 */
-	class NesEmulatorApplicationFrame final : public wxFrame
+	class EditorRootFrame final : public wxFrame
 	{
 	public:
 		/**
 		 * Create a new application frame
 		 * @param	title	Title of the application
 		 */
-		NesEmulatorApplicationFrame(const wxString& title);
+		EditorRootFrame(const wxString& title);
 
 	private:
 		/**
@@ -38,4 +38,4 @@ namespace nes
 	};
 }
 
-#endif //! NES_APP_FRAME_HPP
+#endif //! NES_EDITOR_ROOT_FRAME_HPP
