@@ -140,6 +140,8 @@ set(SOURCE_LIST
     editor/root_frame.cpp
     editor/debugging/debug_notebook.hpp
     editor/debugging/debug_notebook.cpp
+    editor/debugging/debug_notebook_page.hpp
+    editor/debugging/debug_notebook_page.cpp
     editor/ui/ui_cpu_controller.hpp
     editor/ui/ui_cpu_controller.cpp
     editor/ui/ui_ram_visualizer.hpp

@@ -8,7 +8,9 @@ nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 {
 	AppendMainMenuBar();
 
-	auto* bottomPanel = new DebugNotebook(this);
+	auto* const bottomPanel = new DebugNotebook(this);
+
+	CreateStatusBar();
 }
 
 void nes::EditorRootFrame::AppendMainMenuBar()
