@@ -24,7 +24,8 @@ nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	vbox->Add(AutoScrollCheckbox);
 	vbox->Add(LogNotebook, 1, wxEXPAND);
 
-	SetSizer(vbox);
+	MainPanel->SetSizer(vbox);
+
 	AppendMainMenuBar();
 	BindEvents();
 	BindLogToStatusBar();
