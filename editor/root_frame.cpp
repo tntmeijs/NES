@@ -3,9 +3,12 @@
 #include "editor_logger.hpp"
 
 #include <wx/checkbox.h>
+#include <wx/filedlg.h>
 #include <wx/menu.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
+
+#include <string>
 
 nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	wxFrame(nullptr, wxID_ANY, title),
@@ -61,7 +64,17 @@ void nes::EditorRootFrame::BindEvents()
 
 void nes::EditorRootFrame::OnLoadRom(wxCommandEvent& event)
 {
-	EditorLogger::GetInstance().LogInformation("Press ROM LOAD");
+	auto* const fileDialog = new wxFileDialog(MainPanel, "Load a NES ROM file");
+	if (fileDialog->ShowModal() == wxID_OK)
+	{
+		std::string path = fileDialog->GetPath();
+		EditorLogger::GetInstance().LogInformation("User selected file: " + path);
+		StatusBar->SetStatusText("Loading \"" + path + "\"");
+	}
+	else
+	{
+		EditorLogger::GetInstance().LogError("Failed to open file dialog");
+	}
 }
 
 void nes::EditorRootFrame::OnAutoScrollUpdate(wxCommandEvent& event)
