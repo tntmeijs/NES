@@ -138,6 +138,8 @@ set(SOURCE_LIST
     editor/editor.cpp
     editor/root_frame.hpp
     editor/root_frame.cpp
+    editor/editor_logger.hpp
+    editor/editor_logger.cpp
     editor/debugging/debug_notebook.hpp
     editor/debugging/debug_notebook.cpp
     editor/debugging/debug_notebook_page.hpp

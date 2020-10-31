@@ -3,8 +3,6 @@
 
 #include <wx/notebook.h>
 
-#include <string_view>
-
 class wxWindow;
 
 namespace nes
@@ -25,23 +23,11 @@ namespace nes
 		 */
 		DebugNotebook(wxWindow* const parent);
 
+	private:
 		/**
-		 * Log an informational message to the console
-		 * @param	info	Message to log
+		 * Register the log debug pages to the events of the editor logger
 		 */
-		void LogInfo(std::string_view info);
-
-		/**
-		 * Log a warning message to the console
-		 * @param	warning		Message to log
-		 */
-		void LogWarning(std::string_view warning);
-
-		/**
-		 * Log an error message to the console
-		 * @param	error	Message to log
-		 */
-		void LogError(std::string_view error);
+		void ListenForLogs() const;
 
 	private:
 		DebugNotebookPage* const InformationLog;

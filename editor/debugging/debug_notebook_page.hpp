@@ -1,9 +1,6 @@
 #ifndef NES_EDITOR_DEBUG_NOTEBOOK_PAGE_HPP
 #define NES_EDITOR_DEBUG_NOTEBOOK_PAGE_HPP
 
-#include <wx/panel.h>
-
-#include <string>
 #include <string_view>
 
 #include <wx/listbox.h>

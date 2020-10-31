@@ -1,7 +1,8 @@
 #include "debug_notebook.hpp"
 #include "debug_notebook_page.hpp"
+#include "editor/editor_logger.hpp"
 
-#include <iostream>
+#include <string_view>
 
 // Number of lines preserved in the log queue
 constexpr unsigned int HISTORY_LENGTH = 10000;
@@ -16,19 +17,21 @@ nes::DebugNotebook::DebugNotebook(wxWindow* const parent) :
 	AddPage(WarningLog, "Warning");
 	AddPage(ErrorLog, "Error");
 	Layout();
+	
+	ListenForLogs();
 }
 
-void nes::DebugNotebook::LogInfo(std::string_view info)
+void nes::DebugNotebook::ListenForLogs() const
 {
-	InformationLog->Log(info);
-}
+	EditorLogger::GetInstance().AddInformationListener([&](std::string_view message) {
+		InformationLog->Log(message);
+	});
 
-void nes::DebugNotebook::LogWarning(std::string_view warning)
-{
-	WarningLog->Log(warning);
-}
+	EditorLogger::GetInstance().AddWarningListener([&](std::string_view message) {
+		WarningLog->Log(message);
+	});
 
-void nes::DebugNotebook::LogError(std::string_view error)
-{
-	ErrorLog->Log(error);
+	EditorLogger::GetInstance().AddErrorListener([&](std::string_view message) {
+		ErrorLog->Log(message);
+	});
 }
