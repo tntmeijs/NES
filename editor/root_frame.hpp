@@ -31,6 +31,11 @@ namespace nes
 		 */
 		EditorRootFrame(const wxString& title);
 
+		/**
+		 * Deallocate resources
+		 */
+		~EditorRootFrame();
+
 	private:
 		/**
 		 * Append the main menu bar to this frame

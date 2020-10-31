@@ -31,6 +31,11 @@ nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	Editor.Initialize();
 }
 
+nes::EditorRootFrame::~EditorRootFrame()
+{
+	Editor.Destroy();
+}
+
 void nes::EditorRootFrame::AppendMainMenuBar()
 {
 	auto* const mainMenuBar = new wxMenuBar();
@@ -68,7 +73,15 @@ void nes::EditorRootFrame::OnLoadRom(wxCommandEvent& event)
 	if (fileDialog->ShowModal() == wxID_OK)
 	{
 		std::string path = fileDialog->GetPath();
-		EditorLogger::GetInstance().LogInformation("User selected file: " + path);
+
+		if (Editor.TryLoadRomFile(path))
+		{
+			EditorLogger::GetInstance().LogInformation("Loaded ROM file: " + path);
+		}
+		else
+		{
+			EditorLogger::GetInstance().LogError("Failed to load ROM file: " + path);
+		}
 	}
 	else
 	{
