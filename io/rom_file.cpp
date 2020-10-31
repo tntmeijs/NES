@@ -7,6 +7,15 @@
 
 bool nes::RomFile::LoadFromDisk(std::string_view path)
 {
+	std::size_t extensionStart = path.find_last_of('.');
+	std::string_view extension = path.substr(extensionStart);
+
+	if (extension != ".nes")
+	{
+		EditorLogger::GetInstance().LogError("Invalid file extension.");
+		return false;
+	}
+
 	std::ifstream rom(path.data(), std::ios_base::in | std::ios_base::binary);
 	if (!rom.is_open())
 	{
