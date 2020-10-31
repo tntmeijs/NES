@@ -4,13 +4,15 @@
 
 #include <wx/checkbox.h>
 #include <wx/menu.h>
+#include <wx/panel.h>
 #include <wx/sizer.h>
 
 nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	wxFrame(nullptr, wxID_ANY, title),
-	AutoScrollCheckbox(new wxCheckBox(this, wxID_JUMP_TO, "Auto Scroll")),
+	MainPanel(new wxPanel(this)),
+	AutoScrollCheckbox(new wxCheckBox(MainPanel, wxID_JUMP_TO, "Auto Scroll")),
 	StatusBar(CreateStatusBar()),
-	LogNotebook(new DebugNotebook(this))
+	LogNotebook(new DebugNotebook(MainPanel))
 {
 	AutoScrollCheckbox->SetValue(true);
 	LogNotebook->AutoScrollAllLogs(true);

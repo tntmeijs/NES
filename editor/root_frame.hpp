@@ -10,6 +10,7 @@
 
 class wxCheckBox;
 class wxMenu;
+class wxPanel;
 class wxStatusBar;
 
 namespace nes
@@ -54,6 +55,7 @@ namespace nes
 		void OnAutoScrollUpdate(wxCommandEvent& event);
 
 	private:
+		wxPanel* const MainPanel;
 		wxCheckBox* const AutoScrollCheckbox;
 		wxStatusBar* const StatusBar;
 
