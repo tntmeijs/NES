@@ -4,9 +4,6 @@
 
 #include <string_view>
 
-// Number of lines preserved in the log queue
-constexpr unsigned int HISTORY_LENGTH = 10000;
-
 nes::DebugNotebook::DebugNotebook(wxWindow* const parent) :
 	wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM),
 	InformationLog(new DebugNotebookPage(this)),
@@ -16,9 +13,15 @@ nes::DebugNotebook::DebugNotebook(wxWindow* const parent) :
 	AddPage(InformationLog, "Info");
 	AddPage(WarningLog, "Warning");
 	AddPage(ErrorLog, "Error");
-	Layout();
-	
+
 	ListenForLogs();
+}
+
+void nes::DebugNotebook::AutoScrollAllLogs(bool scroll) const
+{
+	InformationLog->AllowAutomaticScroll = scroll;
+	WarningLog->AllowAutomaticScroll = scroll;
+	ErrorLog->AllowAutomaticScroll = scroll;
 }
 
 void nes::DebugNotebook::ListenForLogs() const

@@ -23,6 +23,12 @@ namespace nes
 		 */
 		DebugNotebook(wxWindow* const parent);
 
+		/**
+		 * Set all information logs to automatically scroll
+		 * @param	scroll		True to automatically scroll, false to disable
+		 */
+		void AutoScrollAllLogs(bool scroll) const;
+
 	private:
 		/**
 		 * Register the log debug pages to the events of the editor logger

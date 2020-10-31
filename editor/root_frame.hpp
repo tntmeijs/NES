@@ -1,17 +1,21 @@
 #ifndef NES_EDITOR_ROOT_FRAME_HPP
 #define NES_EDITOR_ROOT_FRAME_HPP
 
+#include <wx/event.h>
 #include <wx/frame.h>
 #include <wx/string.h>
 
 #include <cstdint>
 #include <string_view>
 
+class wxCheckBox;
 class wxMenu;
 class wxStatusBar;
 
 namespace nes
 {
+	class DebugNotebook;
+
 	/**
 	 * Main frame of the GUI application
 	 */
@@ -42,8 +46,18 @@ namespace nes
 		 */
 		wxMenu* const ConstructHelpMenu() const;
 
+		void BindEvents();
+
 	private:
+		void OnLoadRom(wxCommandEvent& event);
+
+		void OnAutoScrollUpdate(wxCommandEvent& event);
+
+	private:
+		wxCheckBox* const AutoScrollCheckbox;
 		wxStatusBar* const StatusBar;
+
+		DebugNotebook* const LogNotebook;
 	};
 }
 

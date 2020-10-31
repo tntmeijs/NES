@@ -26,6 +26,10 @@ namespace nes
          * Clear all log history
          */
         void ClearHistory();
+
+    public:
+        /** Automatically scroll the logs */
+        bool AllowAutomaticScroll;
     };
 }
 
