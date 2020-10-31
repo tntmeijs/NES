@@ -4,13 +4,14 @@
 #include <wx/menu.h>
 
 nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
-	wxFrame(nullptr, wxID_ANY, title)
+	wxFrame(nullptr, wxID_ANY, title),
+	StatusBar(CreateStatusBar())
 {
 	AppendMainMenuBar();
 
 	auto* const bottomPanel = new DebugNotebook(this);
 
-	CreateStatusBar();
+	StatusBar->SetStatusText("Application initialized");
 }
 
 void nes::EditorRootFrame::AppendMainMenuBar()

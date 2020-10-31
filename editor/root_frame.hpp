@@ -8,6 +8,7 @@
 #include <string_view>
 
 class wxMenu;
+class wxStatusBar;
 
 namespace nes
 {
@@ -40,6 +41,9 @@ namespace nes
 		 * @return	Help menu
 		 */
 		wxMenu* const ConstructHelpMenu() const;
+
+	private:
+		wxStatusBar* const StatusBar;
 	};
 }
 
