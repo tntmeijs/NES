@@ -27,6 +27,7 @@ nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	SetSizer(vbox);
 	AppendMainMenuBar();
 	BindEvents();
+	BindLogToStatusBar();
 
 	Editor.Initialize();
 }
@@ -65,6 +66,21 @@ void nes::EditorRootFrame::BindEvents()
 {
 	Connect(wxID_FILE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(EditorRootFrame::OnLoadRom));
 	Connect(wxID_JUMP_TO, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(EditorRootFrame::OnAutoScrollUpdate));
+}
+
+void nes::EditorRootFrame::BindLogToStatusBar() const
+{
+	EditorLogger::GetInstance().AddInformationListener([&](std::string_view msg) {
+		StatusBar->SetStatusText(msg.data());
+	});
+
+	EditorLogger::GetInstance().AddWarningListener([&](std::string_view msg) {
+		StatusBar->SetStatusText(msg.data());
+	});
+
+	EditorLogger::GetInstance().AddErrorListener([&](std::string_view msg) {
+		StatusBar->SetStatusText(msg.data());
+	});
 }
 
 void nes::EditorRootFrame::OnLoadRom(wxCommandEvent& event)

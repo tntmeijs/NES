@@ -59,6 +59,11 @@ namespace nes
 		 */
 		void BindEvents();
 
+		/**
+		 * Make all log output go to the status bar
+		 */
+		void BindLogToStatusBar() const;
+
 	private:
 		/**
 		 * Called whenever a user wants to load a ROM file from disk
