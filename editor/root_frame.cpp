@@ -29,6 +29,8 @@ nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	BindEvents();
 
 	StatusBar->SetStatusText("Application initialized");
+
+	Editor.Initialize();
 }
 
 void nes::EditorRootFrame::AppendMainMenuBar()

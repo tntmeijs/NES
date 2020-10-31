@@ -1,6 +1,8 @@
 #ifndef NES_EDITOR_ROOT_FRAME_HPP
 #define NES_EDITOR_ROOT_FRAME_HPP
 
+#include "editor_service.hpp"
+
 #include <wx/event.h>
 #include <wx/frame.h>
 #include <wx/string.h>
@@ -66,6 +68,8 @@ namespace nes
 		void OnAutoScrollUpdate(wxCommandEvent& event);
 
 	private:
+		EditorService Editor;
+
 		wxPanel* const MainPanel;
 		wxCheckBox* const AutoScrollCheckbox;
 		wxStatusBar* const StatusBar;
