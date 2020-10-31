@@ -28,8 +28,6 @@ nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	AppendMainMenuBar();
 	BindEvents();
 
-	StatusBar->SetStatusText("Application initialized");
-
 	Editor.Initialize();
 }
 
@@ -71,7 +69,6 @@ void nes::EditorRootFrame::OnLoadRom(wxCommandEvent& event)
 	{
 		std::string path = fileDialog->GetPath();
 		EditorLogger::GetInstance().LogInformation("User selected file: " + path);
-		StatusBar->SetStatusText("Loading \"" + path + "\"");
 	}
 	else
 	{
