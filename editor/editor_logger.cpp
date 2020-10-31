@@ -1,6 +1,7 @@
 #include "editor_logger.hpp"
 
 #include <ctime>
+#include <iomanip>
 #include <sstream>
 
 nes::EditorLogger& nes::EditorLogger::GetInstance()
@@ -64,7 +65,7 @@ std::string nes::EditorLogger::AddTimestampToMessage(std::string_view message) c
 
 	std::stringstream stream;
 	stream << '[';
-	stream << tm->tm_hour << ':' << tm->tm_min << ':' << tm->tm_sec;	// HH:MM:SS
+	stream << tm->tm_hour << ':' << tm->tm_min << ':' << std::setw(2) << std::setfill('0') << tm->tm_sec;
 	stream << ']';
 	stream << '\t';
 	stream << message;
