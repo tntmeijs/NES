@@ -5,6 +5,7 @@
 #include <wx/checkbox.h>
 #include <wx/filedlg.h>
 #include <wx/menu.h>
+#include <wx/msgdlg.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
 
@@ -98,6 +99,10 @@ void nes::EditorRootFrame::OnLoadRom(wxCommandEvent& event)
 		else
 		{
 			EditorLogger::GetInstance().LogError("Failed to load ROM file: " + path);
+
+			// Display error alert
+			auto* const alert = new wxMessageDialog(fileDialog, "Unable to load ROM, check the error log", "Error", wxOK | wxICON_ERROR);
+			alert->ShowModal();
 		}
 	}
 	else
