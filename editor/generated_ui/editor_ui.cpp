@@ -35,36 +35,42 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	Container = new wxBoxSizer( wxVERTICAL );
 
 	DebugOutput = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM|wxNB_FIXEDWIDTH );
-	InfoPage = new wxScrolledWindow( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
-	InfoPage->SetScrollRate( 5, 5 );
-	wxBoxSizer* InfoContainer;
-	InfoContainer = new wxBoxSizer( wxVERTICAL );
+	InfoPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* InfoLogSizer;
+	InfoLogSizer = new wxBoxSizer( wxVERTICAL );
+
+	InfoLogList = new wxListBox( InfoPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	InfoLogSizer->Add( InfoLogList, 1, wxEXPAND, 5 );
 
 
-	InfoPage->SetSizer( InfoContainer );
-	InfoPage->Layout();
-	InfoContainer->Fit( InfoPage );
-	DebugOutput->AddPage( InfoPage, wxT("Info"), true );
-	WarningPage = new wxScrolledWindow( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
-	WarningPage->SetScrollRate( 5, 5 );
-	wxBoxSizer* WarningContainer1;
-	WarningContainer1 = new wxBoxSizer( wxVERTICAL );
+	InfoPanel->SetSizer( InfoLogSizer );
+	InfoPanel->Layout();
+	InfoLogSizer->Fit( InfoPanel );
+	DebugOutput->AddPage( InfoPanel, wxT("Info"), true );
+	WarningPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* WarningLogSizer;
+	WarningLogSizer = new wxBoxSizer( wxVERTICAL );
+
+	WarningLogList = new wxListBox( WarningPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	WarningLogSizer->Add( WarningLogList, 1, wxEXPAND, 5 );
 
 
-	WarningPage->SetSizer( WarningContainer1 );
-	WarningPage->Layout();
-	WarningContainer1->Fit( WarningPage );
-	DebugOutput->AddPage( WarningPage, wxT("Warning"), false );
-	ErrorPage = new wxScrolledWindow( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
-	ErrorPage->SetScrollRate( 5, 5 );
-	wxBoxSizer* ErrorContainer;
-	ErrorContainer = new wxBoxSizer( wxVERTICAL );
+	WarningPanel->SetSizer( WarningLogSizer );
+	WarningPanel->Layout();
+	WarningLogSizer->Fit( WarningPanel );
+	DebugOutput->AddPage( WarningPanel, wxT("Warning"), false );
+	ErrorPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* ErrorLogSizer;
+	ErrorLogSizer = new wxBoxSizer( wxVERTICAL );
+
+	ErrorLogList = new wxListBox( ErrorPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	ErrorLogSizer->Add( ErrorLogList, 1, wxEXPAND, 5 );
 
 
-	ErrorPage->SetSizer( ErrorContainer );
-	ErrorPage->Layout();
-	ErrorContainer->Fit( ErrorPage );
-	DebugOutput->AddPage( ErrorPage, wxT("Error"), false );
+	ErrorPanel->SetSizer( ErrorLogSizer );
+	ErrorPanel->Layout();
+	ErrorLogSizer->Fit( ErrorPanel );
+	DebugOutput->AddPage( ErrorPanel, wxT("Error"), false );
 
 	Container->Add( DebugOutput, 1, wxEXPAND | wxALL, 5 );
 

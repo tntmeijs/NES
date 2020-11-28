@@ -18,8 +18,9 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
+#include <wx/listbox.h>
 #include <wx/sizer.h>
-#include <wx/scrolwin.h>
+#include <wx/panel.h>
 #include <wx/notebook.h>
 #include <wx/statusbr.h>
 #include <wx/frame.h>
@@ -44,9 +45,12 @@ namespace nes
 			wxMenu* FileMenu;
 			wxMenu* HelpMenu;
 			wxNotebook* DebugOutput;
-			wxScrolledWindow* InfoPage;
-			wxScrolledWindow* WarningPage;
-			wxScrolledWindow* ErrorPage;
+			wxPanel* InfoPanel;
+			wxListBox* InfoLogList;
+			wxPanel* WarningPanel;
+			wxListBox* WarningLogList;
+			wxPanel* ErrorPanel;
+			wxListBox* ErrorLogList;
 			wxStatusBar* StatusBar;
 
 			// Virtual event handlers, overide them in your derived class
