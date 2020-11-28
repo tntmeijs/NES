@@ -135,8 +135,6 @@ set(SOURCE_LIST
     cpu/flags/cpu_b_flags.hpp
     ram/ram.hpp
     ram/ram.cpp
-    editor/editor.hpp
-    editor/editor.cpp
     editor/root_frame.hpp
     editor/root_frame.cpp
     editor/editor_logger.hpp
@@ -147,12 +145,6 @@ set(SOURCE_LIST
     editor/debugging/debug_notebook.cpp
     editor/debugging/debug_notebook_page.hpp
     editor/debugging/debug_notebook_page.cpp
-    editor/ui/ui_cpu_controller.hpp
-    editor/ui/ui_cpu_controller.cpp
-    editor/ui/ui_ram_visualizer.hpp
-    editor/ui/ui_ram_visualizer.cpp
-    editor/ui/ui_rom_browser.hpp
-    editor/ui/ui_rom_browser.cpp
     utility/literals.hpp
     utility/bit_tools.hpp)
 
