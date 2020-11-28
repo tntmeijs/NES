@@ -4,9 +4,6 @@
 [submodule "_deps/imgui-sfml"]
 	path = _deps/imgui-sfml
 	url = https://github.com/eliasdaler/imgui-sfml
-[submodule "_deps/imgui"]
-	path = _deps/imgui
-	url = https://github.com/ocornut/imgui
 [submodule "_deps/wxWidgets"]
 	path = _deps/wxWidgets
 	url = https://github.com/wxWidgets/wxWidgets
