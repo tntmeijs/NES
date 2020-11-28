@@ -52,5 +52,5 @@ void nes::EditorMain::OnLoadRomFromDisk(wxCommandEvent& event)
 void nes::EditorMain::OnDisplayAboutDialog(wxCommandEvent& event)
 {
 	auto* dialog = new AboutDialog(this);
-	dialog->ShowWindowModal();
+	dialog->ShowModal();
 }
