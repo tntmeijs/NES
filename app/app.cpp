@@ -7,6 +7,7 @@ bool nes::NesEmulatorApplication::OnInit()
 
 	Editor = new EditorMain(EditorLogic);
 	Editor->Show();
+	Editor->ListenForLogs();
 
 	return success;
 }

@@ -16,6 +16,11 @@ namespace nes
 		 */
 		EditorMain(const EditorService& editorService);
 
+		/**
+		 * Start listening to the editor logs and dump the results to the output
+		 */
+		void ListenForLogs();
+
 	private:
 		/**
 		 * Called when load from disk in the main menu is clicked
