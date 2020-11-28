@@ -3,7 +3,16 @@
 
 bool nes::NesEmulatorApplication::OnInit()
 {
-	auto* const editor = new EditorMain();
-	editor->Show();
-	return true;
+	auto success = EditorLogic.Initialize();
+
+	Editor = new EditorMain(EditorLogic);
+	Editor->Show();
+
+	return success;
+}
+
+int nes::NesEmulatorApplication::OnExit()
+{
+	EditorLogic.Destroy();
+	return 0;
 }

@@ -5,15 +5,32 @@
 
 namespace nes
 {
+	class EditorService;
+
 	class EditorMain final : public EmulatorEditorUI
 	{
 	public:
-		EditorMain();
+		/**
+		 * Create a new editor instance
+		 * @param	editorService	Object that contains the editor business logic
+		 */
+		EditorMain(const EditorService& editorService);
 
 	private:
+		/**
+		 * Called when load from disk in the main menu is clicked
+		 * @param	event	WxWidgets event data
+		 */
 		void OnLoadRomFromDisk(wxCommandEvent& event) override;
 
+		/**
+		 * Called when the about button in the main menu is clicked
+		 * @param	event	WxWidgets event data
+		 */
 		void OnDisplayAboutDialog(wxCommandEvent& event) override;
+
+	private:
+		const EditorService& EditorLogic;
 	};
 }
 
