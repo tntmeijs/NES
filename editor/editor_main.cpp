@@ -94,6 +94,13 @@ void nes::EditorMain::OnLoadRomFromDisk(wxCommandEvent& event)
 		wxMessageDialog alert(this, "Unable to load ROM, check the error log", "Error", wxOK | wxICON_ERROR);
 		alert.ShowModal();
 	}
+
+	//#DEBUG: Remove once CPU works
+	if (fileDialog.GetFilename() == "nestest.nes")
+	{
+		logger.LogWarning("DEBUG: Setting program counter to 0xC000 to make nestest work!");
+		EditorLogic.SetCpuProgramCounter(0xC000);
+	}
 }
 
 void nes::EditorMain::OnDisplayAboutDialog(wxCommandEvent& event)
