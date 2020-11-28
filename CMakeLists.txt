@@ -7,6 +7,7 @@ project(NES
 
 set(SOURCE_LIST
     main.cpp
+    globals.hpp
     app/app.hpp
     app/app.cpp
     io/rom_file.hpp

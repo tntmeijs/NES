@@ -1,6 +1,7 @@
 #include "root_frame.hpp"
 #include "debugging/debug_notebook.hpp"
 #include "editor_logger.hpp"
+#include "globals.hpp"
 
 #include <wx/checkbox.h>
 #include <wx/filedlg.h>
@@ -59,7 +60,7 @@ wxMenu* const nes::EditorRootFrame::ConstructFileMenu() const
 wxMenu* const nes::EditorRootFrame::ConstructHelpMenu() const
 {
 	auto* const helpMenu = new wxMenu();
-	helpMenu->Append(wxID_ANY, "Version");
+	helpMenu->Append(wxID_ABOUT, "Version");
 	helpMenu->Append(wxID_ANY, "About");
 
 	return helpMenu;
@@ -69,6 +70,7 @@ void nes::EditorRootFrame::BindEvents()
 {
 	Connect(wxID_FILE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(EditorRootFrame::OnLoadRom));
 	Connect(wxID_JUMP_TO, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(EditorRootFrame::OnAutoScrollUpdate));
+	Connect(wxID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(EditorRootFrame::OnRetrieveVersionInfo));
 }
 
 void nes::EditorRootFrame::BindLogToStatusBar() const
@@ -115,4 +117,9 @@ void nes::EditorRootFrame::OnLoadRom(wxCommandEvent& event)
 void nes::EditorRootFrame::OnAutoScrollUpdate(wxCommandEvent& event)
 {
 	LogNotebook->AutoScrollAllLogs(AutoScrollCheckbox->GetValue());
+}
+
+void nes::EditorRootFrame::OnRetrieveVersionInfo(wxCommandEvent& event)
+{
+	wxMessageDialog(nullptr, Globals::DIALOG_VERSION_INFO.data(), "Version Information", wxCLOSE | wxICON_INFORMATION).ShowModal();
 }

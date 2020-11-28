@@ -77,6 +77,13 @@ namespace nes
 		 */
 		void OnAutoScrollUpdate(wxCommandEvent& event);
 
+		/**
+		 * Called whenever a user wants to view the version information of the
+		 * current build
+		 * @param	event	WxWidgets event
+		 */
+		void OnRetrieveVersionInfo(wxCommandEvent& event);
+
 	private:
 		EditorService Editor;
 
