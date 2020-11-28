@@ -1,2 +1,5 @@
 # Ignore the build folder, those files can be regenerated
 [Bb]uild/
+
+# Ignore visual studio code files
+.vscode/
