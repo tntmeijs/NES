@@ -47,6 +47,16 @@ void nes::EditorMain::ListenForLogs()
 			ErrorLogList->EnsureVisible(index);
 		}
 	});
+
+	logger.AddDebugListener([&](std::string_view msg) {
+		auto index = CpuLogList->Append(msg.data());
+		auto scroll = EnableAutoScrollCheckbox->GetValue();
+
+		if (scroll)
+		{
+			CpuLogList->EnsureVisible(index);
+		}
+	});
 }
 
 void nes::EditorMain::OnLoadRomFromDisk(wxCommandEvent& event)
