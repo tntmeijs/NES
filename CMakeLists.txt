@@ -135,8 +135,12 @@ set(SOURCE_LIST
     cpu/flags/cpu_b_flags.hpp
     ram/ram.hpp
     ram/ram.cpp
+    editor/editor_main.hpp
+    editor/editor_main.cpp
     editor/root_frame.hpp
     editor/root_frame.cpp
+    editor/generated_ui/editor_ui.h
+    editor/generated_ui/editor_ui.cpp
     editor/editor_logger.hpp
     editor/editor_logger.cpp
     editor/editor_service.hpp

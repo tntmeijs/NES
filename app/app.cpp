@@ -1,10 +1,9 @@
 #include "app.hpp"
-#include "editor/root_frame.hpp"
+#include "editor/editor_main.hpp"
 
 bool nes::NesEmulatorApplication::OnInit()
 {
-	auto* const mainFrame = new EditorRootFrame("NES Emulator | Tahar Meijs");
-	mainFrame->Show(true);
-
+	auto* const editor = new EditorMain();
+	editor->Show();
 	return true;
 }
