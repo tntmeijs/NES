@@ -137,18 +137,12 @@ set(SOURCE_LIST
     ram/ram.cpp
     editor/editor_main.hpp
     editor/editor_main.cpp
-    editor/root_frame.hpp
-    editor/root_frame.cpp
     editor/generated_ui/editor_ui.h
     editor/generated_ui/editor_ui.cpp
     editor/editor_logger.hpp
     editor/editor_logger.cpp
     editor/editor_service.hpp
     editor/editor_service.cpp
-    editor/debugging/debug_notebook.hpp
-    editor/debugging/debug_notebook.cpp
-    editor/debugging/debug_notebook_page.hpp
-    editor/debugging/debug_notebook_page.cpp
     utility/literals.hpp
     utility/bit_tools.hpp)
 
