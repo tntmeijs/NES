@@ -50,14 +50,14 @@ namespace nes
 			wxToolBarToolBase* ExecuteCpuInstruction;
 			wxCheckBox* EnableAutoScrollCheckbox;
 			wxNotebook* DebugOutput;
+			wxPanel* CpuPanel;
+			wxListBox* CpuLogList;
 			wxPanel* InfoPanel;
 			wxListBox* InfoLogList;
 			wxPanel* WarningPanel;
 			wxListBox* WarningLogList;
 			wxPanel* ErrorPanel;
 			wxListBox* ErrorLogList;
-			wxPanel* CpuPanel;
-			wxListBox* CpuLogList;
 			wxStatusBar* StatusBar;
 
 			// Virtual event handlers, overide them in your derived class
