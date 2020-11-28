@@ -34,6 +34,10 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* Container;
 	Container = new wxBoxSizer( wxVERTICAL );
 
+	EnableAutoScrollCheckbox = new wxCheckBox( this, wxID_ANY, wxT("Enable Auto Scroll"), wxDefaultPosition, wxDefaultSize, 0 );
+	EnableAutoScrollCheckbox->SetValue(true);
+	Container->Add( EnableAutoScrollCheckbox, 0, wxALL, 5 );
+
 	DebugOutput = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM|wxNB_FIXEDWIDTH );
 	InfoPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* InfoLogSizer;

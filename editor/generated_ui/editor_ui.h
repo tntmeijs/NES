@@ -18,6 +18,7 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
+#include <wx/checkbox.h>
 #include <wx/listbox.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
@@ -44,6 +45,7 @@ namespace nes
 			wxMenuBar* MainMenuBar;
 			wxMenu* FileMenu;
 			wxMenu* HelpMenu;
+			wxCheckBox* EnableAutoScrollCheckbox;
 			wxNotebook* DebugOutput;
 			wxPanel* InfoPanel;
 			wxListBox* InfoLogList;
