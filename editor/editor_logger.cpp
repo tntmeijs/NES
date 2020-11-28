@@ -43,6 +43,17 @@ void nes::EditorLogger::LogError(std::string_view message) const
 	}
 }
 
+void nes::EditorLogger::LogDebug(std::string_view message) const
+{
+	for (const auto& callback : DebugCallbacks)
+	{
+		if (callback)
+		{
+			callback(AddTimestampToMessage(message));
+		}
+	}
+}
+
 void nes::EditorLogger::AddInformationListener(const std::function<void(std::string_view)>& callback)
 {
 	InformationCallbacks.push_back(callback);
@@ -56,6 +67,11 @@ void nes::EditorLogger::AddWarningListener(const std::function<void(std::string_
 void nes::EditorLogger::AddErrorListener(const std::function<void(std::string_view)>& callback)
 {
 	ErrorCallbacks.push_back(callback);
+}
+
+void nes::EditorLogger::AddDebugListener(const std::function<void(std::string_view)>& callback)
+{
+	DebugCallbacks.push_back(callback);
 }
 
 std::string nes::EditorLogger::AddTimestampToMessage(std::string_view message) const

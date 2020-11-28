@@ -39,6 +39,7 @@ namespace nes
 		DebugNotebookPage* const InformationLog;
 		DebugNotebookPage* const WarningLog;
 		DebugNotebookPage* const ErrorLog;
+		DebugNotebookPage* const DebugLog;
 	};
 }
 

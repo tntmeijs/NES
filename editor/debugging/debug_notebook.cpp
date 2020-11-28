@@ -8,11 +8,13 @@ nes::DebugNotebook::DebugNotebook(wxWindow* const parent) :
 	wxNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM),
 	InformationLog(new DebugNotebookPage(this)),
 	WarningLog(new DebugNotebookPage(this)),
-	ErrorLog(new DebugNotebookPage(this))
+	ErrorLog(new DebugNotebookPage(this)),
+	DebugLog(new DebugNotebookPage(this))
 {
 	AddPage(InformationLog, "Info");
 	AddPage(WarningLog, "Warning");
 	AddPage(ErrorLog, "Error");
+	AddPage(DebugLog, "Debug");
 
 	ListenForLogs();
 }
@@ -22,6 +24,7 @@ void nes::DebugNotebook::AutoScrollAllLogs(bool scroll) const
 	InformationLog->AllowAutomaticScroll = scroll;
 	WarningLog->AllowAutomaticScroll = scroll;
 	ErrorLog->AllowAutomaticScroll = scroll;
+	DebugLog->AllowAutomaticScroll = scroll;
 }
 
 void nes::DebugNotebook::ListenForLogs() const
@@ -36,5 +39,9 @@ void nes::DebugNotebook::ListenForLogs() const
 
 	EditorLogger::GetInstance().AddErrorListener([&](std::string_view message) {
 		ErrorLog->Log(message);
+	});
+
+	EditorLogger::GetInstance().AddDebugListener([&](std::string_view message) {
+		DebugLog->Log(message);
 	});
 }
