@@ -238,7 +238,7 @@
                                     <property name="minimum_size"></property>
                                     <property name="name">InfoContainer</property>
                                     <property name="orient">wxVERTICAL</property>
-                                    <property name="permission">none</property>
+                                    <property name="permission">protected</property>
                                 </object>
                             </object>
                         </object>
@@ -303,7 +303,7 @@
                                     <property name="minimum_size"></property>
                                     <property name="name">WarningContainer1</property>
                                     <property name="orient">wxVERTICAL</property>
-                                    <property name="permission">none</property>
+                                    <property name="permission">protected</property>
                                 </object>
                             </object>
                         </object>
@@ -368,7 +368,7 @@
                                     <property name="minimum_size"></property>
                                     <property name="name">ErrorContainer</property>
                                     <property name="orient">wxVERTICAL</property>
-                                    <property name="permission">none</property>
+                                    <property name="permission">protected</property>
                                 </object>
                             </object>
                         </object>
