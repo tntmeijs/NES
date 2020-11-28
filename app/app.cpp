@@ -1,10 +1,19 @@
 #include "app.hpp"
-#include "editor/root_frame.hpp"
+#include "editor/editor_main.hpp"
 
 bool nes::NesEmulatorApplication::OnInit()
 {
-	auto* const mainFrame = new EditorRootFrame("NES Emulator | Tahar Meijs");
-	mainFrame->Show(true);
+	auto success = EditorLogic.Initialize();
 
-	return true;
+	Editor = new EditorMain(EditorLogic);
+	Editor->Show();
+	Editor->ListenForLogs();
+
+	return success;
+}
+
+int nes::NesEmulatorApplication::OnExit()
+{
+	EditorLogic.Destroy();
+	return 0;
 }

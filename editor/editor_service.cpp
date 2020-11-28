@@ -9,7 +9,7 @@ bool nes::EditorService::Initialize()
 	Cpu = new CPU(*Ram);
 	ActiveRom = new RomFile();
 
-	return false;
+	return true;
 }
 
 void nes::EditorService::Destroy()

@@ -70,3 +70,9 @@ Thank you.
 | [./io](/io)                               | iNES file format implementation and rom loading.          |
 | [./ram](/ram)                             | Representation of the NES' RAM.                           |
 | [./utility](/utility)                     | Useful functions and miscellaneous helpers.               |
+
+# Third-party resources and libraries
+- [WxWidgets](https://www.wxwidgets.org/)
+- [WxFormBuilder](https://github.com/wxFormBuilder/wxFormBuilder/)
+- [Kenney](https://kenney.nl/)
+- [SFML](https://www.sfml-dev.org/)
