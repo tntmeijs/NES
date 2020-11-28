@@ -1,8 +1,7 @@
 #include "cpu_instruction_base.hpp"
 #include "cpu/cpu.hpp"
 #include "cpu/cpu_logger.hpp"
-
-#include <iostream>
+#include "editor/editor_logger.hpp"
 
 nes::CpuInstructionBase::CpuInstructionBase(CPU& cpuRef, AddressingMode addressingMode, std::string_view name) :
 	CpuRef(cpuRef),
@@ -43,8 +42,8 @@ nes::CpuInstructionBase::CpuInstructionBase(CPU& cpuRef, AddressingMode addressi
 
 void nes::CpuInstructionBase::PrintDebugInformation() const
 {
-	// Output to the console window
-    std::cout << CpuLogger::ConstructStreamFromData(CpuRef, Name, InstructionSize).str() << std::endl;
+	// Output every instruction to the debug window
+	EditorLogger::GetInstance().LogCpu(CpuLogger::ConstructStreamFromData(CpuRef, Name, InstructionSize).str());
 }
 
 void nes::CpuInstructionBase::Execute()

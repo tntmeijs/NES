@@ -9,6 +9,17 @@ It is very much a work in progress right now, but be sure to star this repositor
 
 If time allows, I will write a detailed tutorial that covers everything from the absolute basics all the way to getting an image on screen. Almost none of the tutorials out there do so, and those that do are either outdated or incomplete.
 
+# Building
+1. `mkdir build`
+2. `cmake ..`
+3. ??
+4. Profit.
+
+Since we use WxWidgets, we have one additional step.
+The GUI library works natively on each platform.
+To build and run under windows, go to `Project Settings > Linker > System > SubSystem` and select `/SUBSYSTEM:WINDOWS`.
+Most of the time CMake will default to the console subsystem, which is why it is important to double-check this.
+
 # Commits
 Each commit follows the same naming standard:
 ```
@@ -59,3 +70,9 @@ Thank you.
 | [./io](/io)                               | iNES file format implementation and rom loading.          |
 | [./ram](/ram)                             | Representation of the NES' RAM.                           |
 | [./utility](/utility)                     | Useful functions and miscellaneous helpers.               |
+
+# Third-party resources and libraries
+- [WxWidgets](https://www.wxwidgets.org/)
+- [WxFormBuilder](https://github.com/wxFormBuilder/wxFormBuilder/)
+- [Kenney](https://kenney.nl/)
+- [SFML](https://www.sfml-dev.org/)
