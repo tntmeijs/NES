@@ -60,8 +60,8 @@ wxMenu* const nes::EditorRootFrame::ConstructFileMenu() const
 wxMenu* const nes::EditorRootFrame::ConstructHelpMenu() const
 {
 	auto* const helpMenu = new wxMenu();
-	helpMenu->Append(wxID_ABOUT, "Version");
-	helpMenu->Append(wxID_ANY, "About");
+	helpMenu->Append(wxID_PROPERTIES, "Version");
+	helpMenu->Append(wxID_ABOUT, "About");
 
 	return helpMenu;
 }
@@ -70,7 +70,8 @@ void nes::EditorRootFrame::BindEvents()
 {
 	Connect(wxID_FILE, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(EditorRootFrame::OnLoadRom));
 	Connect(wxID_JUMP_TO, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(EditorRootFrame::OnAutoScrollUpdate));
-	Connect(wxID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(EditorRootFrame::OnRetrieveVersionInfo));
+	Connect(wxID_PROPERTIES, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(EditorRootFrame::OnRetrieveVersionInfo));
+	Connect(wxID_ABOUT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(EditorRootFrame::OnRetrieveAboutInfo));
 }
 
 void nes::EditorRootFrame::BindLogToStatusBar() const
@@ -122,4 +123,9 @@ void nes::EditorRootFrame::OnAutoScrollUpdate(wxCommandEvent& event)
 void nes::EditorRootFrame::OnRetrieveVersionInfo(wxCommandEvent& event)
 {
 	wxMessageDialog(nullptr, Globals::DIALOG_VERSION_INFO.data(), "Version Information", wxCLOSE | wxICON_INFORMATION).ShowModal();
+}
+
+void nes::EditorRootFrame::OnRetrieveAboutInfo(wxCommandEvent& event)
+{
+	wxMessageDialog(nullptr, Globals::DIALOG_ABOUT_INFO.data(), "About the Project", wxCLOSE | wxICON_INFORMATION).ShowModal();
 }

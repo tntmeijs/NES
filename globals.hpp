@@ -11,10 +11,11 @@ namespace nes
     class Globals final
     {
     public:
-        /**
-         * Version information text that will be displayed in the version dialog
-         */
+        /** Version information text that will be displayed in the version dialog */
 		static constexpr std::string_view DIALOG_VERSION_INFO = "Unreleased version.\nPlease check back later.";
+
+        /** Information that will be displayed in the about dialog */
+        static constexpr std::string_view DIALOG_ABOUT_INFO = "Found an issue?\nPlease report it here: https://github.com/tntmeijs/NES";
 
     private:
         Globals();

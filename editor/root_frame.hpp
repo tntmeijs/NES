@@ -84,6 +84,12 @@ namespace nes
 		 */
 		void OnRetrieveVersionInfo(wxCommandEvent& event);
 
+		/**
+		 * Called whenever a user wants to view information about the project
+		 * @param	event	WxWidgets event
+		 */
+		void OnRetrieveAboutInfo(wxCommandEvent& event);
+
 	private:
 		EditorService Editor;
 
