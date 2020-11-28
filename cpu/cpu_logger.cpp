@@ -24,21 +24,21 @@ std::stringstream nes::CpuLogger::ConstructStreamFromData(const CPU& cpuRef, std
 	std::uint16_t SP = cpuRef.GetRegister(CPU::RegisterType::SP).value;
 
 	// Write current address of the program counter
-	stream << programCounter << "  ";
+	stream << programCounter << '\t';
 
 	// Display instruction bytes
 	for (std::uint8_t i = 0; i < opSize; ++i)
 	{
-		stream << std::setfill('0') << std::setw(2) << static_cast<std::uint16_t>(cpuRef.ReadRamValueAtAddress(programCounter + i).value) << ' ';
+		stream << std::setfill('0') << std::setw(2) << static_cast<std::uint16_t>(cpuRef.ReadRamValueAtAddress(programCounter + i).value) << '\t';
 	}
 
 	// An instruction may use up to three bytes
 	// Add padding to make lines align nicely
 	for (std::uint8_t i = 0; i < 3 - opSize; ++i)
 	{
-		stream << "   ";
+		stream << '\t';
 	}
-	stream << ' ';
+	stream << '\t';
 
 	// Write the instruction's Assembly name
 	stream << opName << '\t';
@@ -47,12 +47,12 @@ std::stringstream nes::CpuLogger::ConstructStreamFromData(const CPU& cpuRef, std
 	stream << std::setfill(' ') << std::setw(30);
 
 	// Write register states
-	stream << "A:" << std::setfill('0') << std::setw(2) << A << ' ';
-	stream << "X:" << std::setfill('0') << std::setw(2) << X << ' ';
-	stream << "Y:" << std::setfill('0') << std::setw(2) << Y << ' ';
-	stream << "P:" << std::setfill('0') << std::setw(2) << P << ' ';
-	stream << "SP:" << SP << ' ';
-	stream << "PPU:  " << "     " << ' ';
+	stream << "A:" << std::setfill('0') << std::setw(2) << A << '\t';
+	stream << "X:" << std::setfill('0') << std::setw(2) << X << '\t';
+	stream << "Y:" << std::setfill('0') << std::setw(2) << Y << '\t';
+	stream << "P:" << std::setfill('0') << std::setw(2) << P << '\t';
+	stream << "SP:" << SP << '\t';
+	stream << "PPU:  " << "     " << '\t';
 	stream << "CYC:" << std::dec << cpuRef.GetCurrentCycle();
 
 	return stream;
