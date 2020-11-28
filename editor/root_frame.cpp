@@ -30,7 +30,8 @@ nes::EditorRootFrame::EditorRootFrame(const wxString& title) :
 	AppendMainMenuBar();
 	BindEvents();
 	BindLogToStatusBar();
-
+	SetMinSize(GetEffectiveMinSize());
+	
 	Editor.Initialize();
 }
 
