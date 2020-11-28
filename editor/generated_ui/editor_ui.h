@@ -56,6 +56,8 @@ namespace nes
 			wxListBox* WarningLogList;
 			wxPanel* ErrorPanel;
 			wxListBox* ErrorLogList;
+			wxPanel* CpuPanel;
+			wxListBox* CpuLogList;
 			wxStatusBar* StatusBar;
 
 			// Virtual event handlers, overide them in your derived class

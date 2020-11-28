@@ -80,6 +80,18 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	ErrorPanel->Layout();
 	ErrorLogSizer->Fit( ErrorPanel );
 	DebugOutput->AddPage( ErrorPanel, wxT("Error"), false );
+	CpuPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* CpuLogSizer;
+	CpuLogSizer = new wxBoxSizer( wxVERTICAL );
+
+	CpuLogList = new wxListBox( CpuPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	CpuLogSizer->Add( CpuLogList, 1, wxEXPAND, 5 );
+
+
+	CpuPanel->SetSizer( CpuLogSizer );
+	CpuPanel->Layout();
+	CpuLogSizer->Fit( CpuPanel );
+	DebugOutput->AddPage( CpuPanel, wxT("CPU"), false );
 
 	Container->Add( DebugOutput, 1, wxEXPAND | wxALL, 5 );
 
