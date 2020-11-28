@@ -1,6 +1,7 @@
 #ifndef NES_EDITOR_SERVICE_HPP
 #define NES_EDITOR_SERVICE_HPP
 
+#include <cstdint>
 #include <string_view>
 
 namespace nes
@@ -37,6 +38,12 @@ namespace nes
          * Execute the next CPU instruction
          */
         void ExecuteNextCpuInstruction() const;
+
+        /**
+         * Set the address of the program counter to the specified value
+         * @param   address     Address to set the program counter to
+         */
+        void SetCpuProgramCounter(std::uint16_t address) const;
 
     private:
 		CPU* Cpu;

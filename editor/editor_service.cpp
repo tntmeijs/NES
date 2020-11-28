@@ -41,3 +41,8 @@ void nes::EditorService::ExecuteNextCpuInstruction() const
 {
 	Cpu->ExecuteInstruction();
 }
+
+void nes::EditorService::SetCpuProgramCounter(std::uint16_t address) const
+{
+	Cpu->SetProgramCounterToAddress(address);
+}
