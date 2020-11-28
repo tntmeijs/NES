@@ -50,6 +50,8 @@ namespace nes
 			wxToolBarToolBase* ExecuteCpuInstruction;
 			wxCheckBox* EnableAutoScrollCheckbox;
 			wxNotebook* DebugOutput;
+			wxPanel* AllPanel;
+			wxListBox* AllLogList;
 			wxPanel* CpuPanel;
 			wxListBox* CpuLogList;
 			wxPanel* InfoPanel;

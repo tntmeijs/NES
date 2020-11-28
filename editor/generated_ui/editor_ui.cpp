@@ -44,6 +44,18 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	Container->Add( EnableAutoScrollCheckbox, 0, wxALL, 5 );
 
 	DebugOutput = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM|wxNB_FIXEDWIDTH );
+	AllPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* AllLogSizer;
+	AllLogSizer = new wxBoxSizer( wxVERTICAL );
+
+	AllLogList = new wxListBox( AllPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	AllLogSizer->Add( AllLogList, 1, wxEXPAND, 5 );
+
+
+	AllPanel->SetSizer( AllLogSizer );
+	AllPanel->Layout();
+	AllLogSizer->Fit( AllPanel );
+	DebugOutput->AddPage( AllPanel, wxT("All"), true );
 	CpuPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* CpuLogSizer;
 	CpuLogSizer = new wxBoxSizer( wxVERTICAL );
@@ -55,7 +67,7 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	CpuPanel->SetSizer( CpuLogSizer );
 	CpuPanel->Layout();
 	CpuLogSizer->Fit( CpuPanel );
-	DebugOutput->AddPage( CpuPanel, wxT("CPU"), true );
+	DebugOutput->AddPage( CpuPanel, wxT("CPU"), false );
 	InfoPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* InfoLogSizer;
 	InfoLogSizer = new wxBoxSizer( wxVERTICAL );

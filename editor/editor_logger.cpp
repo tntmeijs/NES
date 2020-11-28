@@ -50,6 +50,14 @@ void nes::EditorLogger::AddCpuListener(const std::function<void(std::string_view
 	CpuCallbacks.push_back(callback);
 }
 
+void nes::EditorLogger::AddAnyListener(const std::function<void(std::string_view)>& callback)
+{
+	AddInformationListener(callback);
+	AddWarningListener(callback);
+	AddErrorListener(callback);
+	AddCpuListener(callback);
+}
+
 void nes::EditorLogger::Log(std::string_view message, const std::vector<std::function<void(std::string_view)>>& callbacks) const
 {
 	for (const auto& callback : callbacks)

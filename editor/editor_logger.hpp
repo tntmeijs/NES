@@ -74,6 +74,12 @@ namespace nes
          */
         void AddCpuListener(const std::function<void(std::string_view)>& callback);
 
+        /**
+         * Register a callback to every channel available
+         * @param   callback    Callback to register
+         */
+        void AddAnyListener(const std::function<void(std::string_view)>& callback);
+
     private:
         EditorLogger() = default;
 		~EditorLogger() noexcept = default;
