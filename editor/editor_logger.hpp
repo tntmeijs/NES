@@ -80,6 +80,13 @@ namespace nes
 
     private:
         /**
+         * Helper function to log messages to a channel
+         * @param   message     Message to log
+         * @param   callbacks   Callbacks to call with the message
+         */
+        void Log(std::string_view message, const std::vector<std::function<void(std::string_view)>>& callbacks) const;
+
+        /**
          * Helper function to construct a message with a timestamp
          * @param   message     Message to add the timestamp to
          * @return  Message with a timestamp added in front of it

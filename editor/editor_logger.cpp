@@ -12,46 +12,22 @@ nes::EditorLogger& nes::EditorLogger::GetInstance()
 
 void nes::EditorLogger::LogInformation(std::string_view message) const
 {
-	for (const auto& callback : InformationCallbacks)
-	{
-		if (callback)
-		{
-			callback(AddTimestampToMessage(message));
-		}
-	}
+	Log(message, InformationCallbacks);
 }
 
 void nes::EditorLogger::LogWarning(std::string_view message) const
 {
-	for (const auto& callback : WarningCallbacks)
-	{
-		if (callback)
-		{
-			callback(AddTimestampToMessage(message));
-		}
-	}
+	Log(message, WarningCallbacks);
 }
 
 void nes::EditorLogger::LogError(std::string_view message) const
 {
-	for (const auto& callback : ErrorCallbacks)
-	{
-		if (callback)
-		{
-			callback(AddTimestampToMessage(message));
-		}
-	}
+	Log(message, ErrorCallbacks);
 }
 
 void nes::EditorLogger::LogDebug(std::string_view message) const
 {
-	for (const auto& callback : DebugCallbacks)
-	{
-		if (callback)
-		{
-			callback(AddTimestampToMessage(message));
-		}
-	}
+	Log(message, DebugCallbacks);
 }
 
 void nes::EditorLogger::AddInformationListener(const std::function<void(std::string_view)>& callback)
@@ -72,6 +48,17 @@ void nes::EditorLogger::AddErrorListener(const std::function<void(std::string_vi
 void nes::EditorLogger::AddDebugListener(const std::function<void(std::string_view)>& callback)
 {
 	DebugCallbacks.push_back(callback);
+}
+
+void nes::EditorLogger::Log(std::string_view message, const std::vector<std::function<void(std::string_view)>>& callbacks) const
+{
+	for (const auto& callback : callbacks)
+	{
+		if (callback)
+		{
+			callback(AddTimestampToMessage(message));
+		}
+	}
 }
 
 std::string nes::EditorLogger::AddTimestampToMessage(std::string_view message) const
