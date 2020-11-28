@@ -45,10 +45,10 @@ namespace nes
         void LogError(std::string_view message) const;
 
         /**
-         * Log to the debug channel
+         * Log to the cpu channel
          * @param   message     Message to log
          */
-        void LogDebug(std::string_view message) const;
+        void LogCpu(std::string_view message) const;
 
         /**
          * Register a callback to the information channel
@@ -72,7 +72,7 @@ namespace nes
          * Register a callback to the error channel
          * @param   callback    Callback to register
          */
-        void AddDebugListener(const std::function<void(std::string_view)>& callback);
+        void AddCpuListener(const std::function<void(std::string_view)>& callback);
 
     private:
         EditorLogger() = default;
@@ -97,7 +97,7 @@ namespace nes
 		std::vector<std::function<void(std::string_view)>> InformationCallbacks;
 		std::vector<std::function<void(std::string_view)>> WarningCallbacks;
 		std::vector<std::function<void(std::string_view)>> ErrorCallbacks;
-		std::vector<std::function<void(std::string_view)>> DebugCallbacks;
+		std::vector<std::function<void(std::string_view)>> CpuCallbacks;
     };
 }
 

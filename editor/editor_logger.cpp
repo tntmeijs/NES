@@ -25,9 +25,9 @@ void nes::EditorLogger::LogError(std::string_view message) const
 	Log(message, ErrorCallbacks);
 }
 
-void nes::EditorLogger::LogDebug(std::string_view message) const
+void nes::EditorLogger::LogCpu(std::string_view message) const
 {
-	Log(message, DebugCallbacks);
+	Log(message, CpuCallbacks);
 }
 
 void nes::EditorLogger::AddInformationListener(const std::function<void(std::string_view)>& callback)
@@ -45,9 +45,9 @@ void nes::EditorLogger::AddErrorListener(const std::function<void(std::string_vi
 	ErrorCallbacks.push_back(callback);
 }
 
-void nes::EditorLogger::AddDebugListener(const std::function<void(std::string_view)>& callback)
+void nes::EditorLogger::AddCpuListener(const std::function<void(std::string_view)>& callback)
 {
-	DebugCallbacks.push_back(callback);
+	CpuCallbacks.push_back(callback);
 }
 
 void nes::EditorLogger::Log(std::string_view message, const std::vector<std::function<void(std::string_view)>>& callbacks) const

@@ -43,7 +43,7 @@ nes::CpuInstructionBase::CpuInstructionBase(CPU& cpuRef, AddressingMode addressi
 void nes::CpuInstructionBase::PrintDebugInformation() const
 {
 	// Output every instruction to the debug window
-	EditorLogger::GetInstance().LogDebug(CpuLogger::ConstructStreamFromData(CpuRef, Name, InstructionSize).str());
+	EditorLogger::GetInstance().LogCpu(CpuLogger::ConstructStreamFromData(CpuRef, Name, InstructionSize).str());
 }
 
 void nes::CpuInstructionBase::Execute()

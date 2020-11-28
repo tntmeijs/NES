@@ -48,7 +48,7 @@ void nes::EditorMain::ListenForLogs()
 		}
 	});
 
-	logger.AddDebugListener([&](std::string_view msg) {
+	logger.AddCpuListener([&](std::string_view msg) {
 		auto index = CpuLogList->Append(msg.data());
 		auto scroll = EnableAutoScrollCheckbox->GetValue();
 
