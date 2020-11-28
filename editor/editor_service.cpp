@@ -36,3 +36,8 @@ bool nes::EditorService::TryLoadRomFile(std::string_view path)
 
 	return true;
 }
+
+void nes::EditorService::ExecuteNextCpuInstruction() const
+{
+	Cpu->ExecuteInstruction();
+}

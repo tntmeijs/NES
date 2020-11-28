@@ -34,6 +34,12 @@ namespace nes
 		 */
 		void OnDisplayAboutDialog(wxCommandEvent& event) override;
 
+		/**
+		 * Execute the next CPU instruction
+		 * @param	event	WxWidgets event data
+		 */
+		void OnExecuteNextInstruction(wxCommandEvent& event) override;
+
 	private:
 		EditorService& EditorLogic;
 	};

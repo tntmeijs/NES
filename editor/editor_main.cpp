@@ -81,3 +81,8 @@ void nes::EditorMain::OnDisplayAboutDialog(wxCommandEvent& event)
 	AboutDialog dialog(this);
 	dialog.ShowModal();
 }
+
+void nes::EditorMain::OnExecuteNextInstruction(wxCommandEvent& event)
+{
+	EditorLogic.ExecuteNextCpuInstruction();
+}

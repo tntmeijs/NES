@@ -33,6 +33,11 @@ namespace nes
          */
         bool TryLoadRomFile(std::string_view path);
 
+        /**
+         * Execute the next CPU instruction
+         */
+        void ExecuteNextCpuInstruction() const;
+
     private:
 		CPU* Cpu;
 		RAM* Ram;
