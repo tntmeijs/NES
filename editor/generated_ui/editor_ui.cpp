@@ -31,11 +31,6 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 
 	this->SetMenuBar( MainMenuBar );
 
-	MainToolbar = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY );
-	NextInstruction = MainToolbar->AddTool( wxID_ANY, wxT("Execute Instruction"), wxBitmap( wxT("../resources/next.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Execute the next instruction"), wxT("Execute the next instruction"), NULL );
-
-	MainToolbar->Realize();
-
 	wxBoxSizer* Container;
 	Container = new wxBoxSizer( wxVERTICAL );
 
@@ -83,13 +78,11 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	// Connect Events
 	FileMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( EmulatorEditorUI::OnLoadRomFromDisk ), this, LoadRomFromDisk->GetId());
 	HelpMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( EmulatorEditorUI::OnDisplayAboutDialog ), this, AboutInfo->GetId());
-	this->Connect( NextInstruction->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ) );
 }
 
 EmulatorEditorUI::~EmulatorEditorUI()
 {
 	// Disconnect Events
-	this->Disconnect( NextInstruction->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ) );
 
 }
 

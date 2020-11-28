@@ -18,7 +18,6 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
-#include <wx/toolbar.h>
 #include <wx/sizer.h>
 #include <wx/scrolwin.h>
 #include <wx/notebook.h>
@@ -44,8 +43,6 @@ namespace nes
 			wxMenuBar* MainMenuBar;
 			wxMenu* FileMenu;
 			wxMenu* HelpMenu;
-			wxToolBar* MainToolbar;
-			wxToolBarToolBase* NextInstruction;
 			wxNotebook* DebugOutput;
 			wxScrolledWindow* InfoPage;
 			wxScrolledWindow* WarningPage;
@@ -55,7 +52,6 @@ namespace nes
 			// Virtual event handlers, overide them in your derived class
 			virtual void OnLoadRomFromDisk( wxCommandEvent& event ) = 0;
 			virtual void OnDisplayAboutDialog( wxCommandEvent& event ) = 0;
-			virtual void OnExecuteNextInstruction( wxCommandEvent& event ) = 0;
 
 
 		public:
