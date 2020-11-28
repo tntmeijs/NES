@@ -31,61 +31,65 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
-/// Class Root
-///////////////////////////////////////////////////////////////////////////////
-class Root : public wxFrame
+namespace nes
 {
-	private:
+	///////////////////////////////////////////////////////////////////////////////
+	/// Class Root
+	///////////////////////////////////////////////////////////////////////////////
+	class Root : public wxFrame
+	{
+		private:
 
-	protected:
-		wxMenuBar* MainMenuBar;
-		wxMenu* FileMenu;
-		wxMenu* HelpMenu;
-		wxToolBar* MainToolbar;
-		wxToolBarToolBase* NextInstruction;
-		wxNotebook* DebugOutput;
-		wxScrolledWindow* InfoPage;
-		wxScrolledWindow* WarningPage;
-		wxScrolledWindow* ErrorPage;
-		wxStatusBar* StatusBar;
+		protected:
+			wxMenuBar* MainMenuBar;
+			wxMenu* FileMenu;
+			wxMenu* HelpMenu;
+			wxToolBar* MainToolbar;
+			wxToolBarToolBase* NextInstruction;
+			wxNotebook* DebugOutput;
+			wxScrolledWindow* InfoPage;
+			wxScrolledWindow* WarningPage;
+			wxScrolledWindow* ErrorPage;
+			wxStatusBar* StatusBar;
 
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnLoadRomFromDisk( wxCommandEvent& event ) = 0;
-		virtual void OnDisplayAboutDialog( wxCommandEvent& event ) = 0;
-		virtual void OnExecuteNextInstruction( wxCommandEvent& event ) = 0;
+			// Virtual event handlers, overide them in your derived class
+			virtual void OnLoadRomFromDisk( wxCommandEvent& event ) = 0;
+			virtual void OnDisplayAboutDialog( wxCommandEvent& event ) = 0;
+			virtual void OnExecuteNextInstruction( wxCommandEvent& event ) = 0;
 
 
-	public:
+		public:
 
-		Root( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("NES Emulator | Tahar Meijs"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1280,720 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+			Root( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("NES Emulator | Tahar Meijs"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1280,720 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
-		~Root();
+			~Root();
 
-};
+	};
 
-///////////////////////////////////////////////////////////////////////////////
-/// Class AboutDialog
-///////////////////////////////////////////////////////////////////////////////
-class AboutDialog : public wxDialog
-{
-	private:
+	///////////////////////////////////////////////////////////////////////////////
+	/// Class AboutDialog
+	///////////////////////////////////////////////////////////////////////////////
+	class AboutDialog : public wxDialog
+	{
+		private:
 
-	protected:
-		wxStaticText* Title;
-		wxStaticText* Subtitle;
-		wxStaticLine* HorizontalDivider;
-		wxStaticText* AuthorLabel;
-		wxStaticText* AuthorValue;
-		wxStaticText* SourceCodeLabel;
-		wxHyperlinkCtrl* SourceCodeHyperlink;
-		wxStaticText* IconsLabel;
-		wxHyperlinkCtrl* IconsHyperlink;
+		protected:
+			wxStaticText* Title;
+			wxStaticText* Subtitle;
+			wxStaticLine* HorizontalDivider;
+			wxStaticText* AuthorLabel;
+			wxStaticText* AuthorValue;
+			wxStaticText* SourceCodeLabel;
+			wxHyperlinkCtrl* SourceCodeHyperlink;
+			wxStaticText* IconsLabel;
+			wxHyperlinkCtrl* IconsHyperlink;
 
-	public:
+		public:
 
-		AboutDialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("About the Project"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
-		~AboutDialog();
+			AboutDialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("About the Project"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP );
+			~AboutDialog();
 
-};
+	};
+
+} // namespace nes
 
