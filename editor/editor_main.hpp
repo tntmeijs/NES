@@ -14,7 +14,7 @@ namespace nes
 		 * Create a new editor instance
 		 * @param	editorService	Object that contains the editor business logic
 		 */
-		EditorMain(const EditorService& editorService);
+		EditorMain(EditorService& editorService);
 
 		/**
 		 * Start listening to the editor logs and dump the results to the output
@@ -35,7 +35,7 @@ namespace nes
 		void OnDisplayAboutDialog(wxCommandEvent& event) override;
 
 	private:
-		const EditorService& EditorLogic;
+		EditorService& EditorLogic;
 	};
 }
 
