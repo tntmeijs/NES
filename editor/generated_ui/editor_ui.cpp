@@ -10,7 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////
 using namespace nes;
 
-Root::Root( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
+EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -81,15 +81,15 @@ Root::Root( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoin
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	FileMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Root::OnLoadRomFromDisk ), this, LoadRomFromDisk->GetId());
-	HelpMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( Root::OnDisplayAboutDialog ), this, AboutInfo->GetId());
-	this->Connect( NextInstruction->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Root::OnExecuteNextInstruction ) );
+	FileMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( EmulatorEditorUI::OnLoadRomFromDisk ), this, LoadRomFromDisk->GetId());
+	HelpMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( EmulatorEditorUI::OnDisplayAboutDialog ), this, AboutInfo->GetId());
+	this->Connect( NextInstruction->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ) );
 }
 
-Root::~Root()
+EmulatorEditorUI::~EmulatorEditorUI()
 {
 	// Disconnect Events
-	this->Disconnect( NextInstruction->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( Root::OnExecuteNextInstruction ) );
+	this->Disconnect( NextInstruction->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ) );
 
 }
 

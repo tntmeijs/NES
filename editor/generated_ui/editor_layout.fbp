@@ -43,7 +43,7 @@
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
             <property name="minimum_size"></property>
-            <property name="name">Root</property>
+            <property name="name">EmulatorEditorUI</property>
             <property name="pos"></property>
             <property name="size">1280,720</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>

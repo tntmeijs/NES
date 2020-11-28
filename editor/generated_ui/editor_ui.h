@@ -34,9 +34,9 @@
 namespace nes
 {
 	///////////////////////////////////////////////////////////////////////////////
-	/// Class Root
+	/// Class EmulatorEditorUI
 	///////////////////////////////////////////////////////////////////////////////
-	class Root : public wxFrame
+	class EmulatorEditorUI : public wxFrame
 	{
 		private:
 
@@ -60,9 +60,9 @@ namespace nes
 
 		public:
 
-			Root( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("NES Emulator | Tahar Meijs"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1280,720 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+			EmulatorEditorUI( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("NES Emulator | Tahar Meijs"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1280,720 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
-			~Root();
+			~EmulatorEditorUI();
 
 	};
 
