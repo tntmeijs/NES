@@ -12,7 +12,7 @@ using namespace nes;
 
 EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	this->SetSizeHints( wxSize( 640,360 ), wxDefaultSize );
 
 	MainMenuBar = new wxMenuBar( 0 );
 	FileMenu = new wxMenu();
