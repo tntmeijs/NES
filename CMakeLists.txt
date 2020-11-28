@@ -148,17 +148,10 @@ set(SOURCE_LIST
     utility/literals.hpp
     utility/bit_tools.hpp)
 
-# Easiest way to add ImGui to a project is to simply compile the files with the project itself
-set(IMGUI_FILES
-    _deps/imgui/imgui.cpp
-    _deps/imgui/imgui_draw.cpp
-    _deps/imgui/imgui_widgets.cpp
-    _deps/imgui-sfml/imgui-SFML.cpp)
-
 if(WIN32)
-    add_executable(NES WIN32 ${SOURCE_LIST} ${IMGUI_FILES})
+    add_executable(NES WIN32 ${SOURCE_LIST})
 else()
-    add_executable(NES ${SOURCE_LIST} ${IMGUI_FILES})
+    add_executable(NES ${SOURCE_LIST})
 endif(WIN32)
 
 # Configure SFML
@@ -174,10 +167,10 @@ add_subdirectory(_deps/wxWidgets)
 target_link_libraries(NES PRIVATE wx::net wx::core wx::base)
 
 # Include directories for the NES project
-target_include_directories(NES PRIVATE ./ _deps/imgui _deps/imgui-sfml _deps/SFML/include _deps/wxWidgets/include)
+target_include_directories(NES PRIVATE ./ _deps/SFML/include _deps/wxWidgets/include)
 
 # Directory structure in IDEs that support it
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_LIST} ${IMGUI_FILES})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_LIST})
 
 # Use C++17
 target_compile_features(NES PRIVATE cxx_std_17)
