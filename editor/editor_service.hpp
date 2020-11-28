@@ -45,6 +45,12 @@ namespace nes
          */
         void SetCpuProgramCounter(std::uint16_t address) const;
 
+        /**
+         * Retrieve the current value of the CPU's program counter
+         * @return  Program counter's value
+         */
+        std::uint16_t GetCpuProgramCounterValue() const;
+
     private:
 		CPU* Cpu;
 		RAM* Ram;
