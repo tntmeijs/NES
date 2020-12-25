@@ -37,6 +37,11 @@ bool nes::EditorService::TryLoadRomFile(std::string_view path)
 	return true;
 }
 
+bool nes::EditorService::HasLoadedRom() const
+{
+	return ActiveRom->IsValidRom();
+}
+
 void nes::EditorService::ExecuteNextCpuInstruction() const
 {
 	Cpu->ExecuteInstruction();
@@ -50,4 +55,9 @@ void nes::EditorService::SetCpuProgramCounter(std::uint16_t address) const
 std::uint16_t nes::EditorService::GetCpuProgramCounterValue() const
 {
 	return Cpu->GetProgramCounter();
+}
+
+std::uint64_t nes::EditorService::GetCpuCurrentCycle() const
+{
+	return Cpu->GetCurrentCycle();
 }

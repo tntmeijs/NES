@@ -74,5 +74,4 @@ Thank you.
 # Third-party resources and libraries
 - [WxWidgets](https://www.wxwidgets.org/)
 - [WxFormBuilder](https://github.com/wxFormBuilder/wxFormBuilder/)
-- [Kenney](https://kenney.nl/)
 - [SFML](https://www.sfml-dev.org/)

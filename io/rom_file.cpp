@@ -40,6 +40,11 @@ bool nes::RomFile::LoadFromDisk(std::string_view path)
 
 bool nes::RomFile::IsValidRom() const
 {
+	if (RawData.empty())
+	{
+		return false;
+	}
+
 	std::uint8_t magicNumber[5];
 	std::memcpy(magicNumber, RawData.data(), 5);
 

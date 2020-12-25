@@ -18,8 +18,9 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
-#include <wx/toolbar.h>
 #include <wx/checkbox.h>
+#include <wx/button.h>
+#include <wx/spinctrl.h>
 #include <wx/listbox.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
@@ -46,9 +47,10 @@ namespace nes
 			wxMenuBar* MainMenuBar;
 			wxMenu* FileMenu;
 			wxMenu* HelpMenu;
-			wxToolBar* MainToolbar;
-			wxToolBarToolBase* ExecuteCpuInstruction;
 			wxCheckBox* EnableAutoScrollCheckbox;
+			wxButton* ExecuteNext;
+			wxSpinCtrl* ExecuteUntilCycleValue;
+			wxButton* ExecuteUntilCycle;
 			wxNotebook* DebugOutput;
 			wxPanel* AllPanel;
 			wxListBox* AllLogList;
@@ -66,6 +68,7 @@ namespace nes
 			virtual void OnLoadRomFromDisk( wxCommandEvent& event ) = 0;
 			virtual void OnDisplayAboutDialog( wxCommandEvent& event ) = 0;
 			virtual void OnExecuteNextInstruction( wxCommandEvent& event ) = 0;
+			virtual void OnExecuteUntilCycle( wxCommandEvent& event ) = 0;
 
 
 		public:

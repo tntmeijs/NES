@@ -111,5 +111,29 @@ void nes::EditorMain::OnDisplayAboutDialog(wxCommandEvent& event)
 
 void nes::EditorMain::OnExecuteNextInstruction(wxCommandEvent& event)
 {
+	if (!EditorLogic.HasLoadedRom())
+	{
+		EditorLogger::GetInstance().LogError("Cannot execute instruction without a ROM");
+		return;
+	}
+
 	EditorLogic.ExecuteNextCpuInstruction();
+}
+
+void nes::EditorMain::OnExecuteUntilCycle(wxCommandEvent& event)
+{
+	if (!EditorLogic.HasLoadedRom())
+	{
+		EditorLogger::GetInstance().LogError("Cannot execute instruction without a ROM");
+		return;
+	}
+
+	auto targetCycle = ExecuteUntilCycleValue->GetValue();
+	auto currentCycle = EditorLogic.GetCpuCurrentCycle();
+
+	while (currentCycle < targetCycle)
+	{
+		EditorLogic.ExecuteNextCpuInstruction();
+		currentCycle = EditorLogic.GetCpuCurrentCycle();
+	}
 }

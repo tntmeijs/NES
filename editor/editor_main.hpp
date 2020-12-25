@@ -40,6 +40,13 @@ namespace nes
 		 */
 		void OnExecuteNextInstruction(wxCommandEvent& event) override;
 
+		/**
+		 * Keep executing instructions until the cycle counter equals or exceeds
+		 * the specified value
+		 * @param	event	WxWidgets event data
+		 */
+		void OnExecuteUntilCycle(wxCommandEvent& event) override;
+
 	private:
 		EditorService& EditorLogic;
 	};
