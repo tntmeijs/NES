@@ -55,6 +55,12 @@ namespace nes
 		 */
 		void OnExecuteUntilCycle(wxCommandEvent& event) override;
 
+		/**
+		 * Clear all logs on the output pane
+		 * @param	event	WxWidgets event data
+		 */
+		void OnClearAllLogs(wxCommandEvent& event) override;
+
 	private:
 		/**
 		 * Load a ROM file into memory from a location on disk

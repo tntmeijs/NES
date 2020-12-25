@@ -65,6 +65,7 @@ namespace nes
 			wxPanel* ErrorPanel;
 			wxListBox* ErrorLogList;
 			wxCheckBox* EnableAutoScrollCheckbox;
+			wxButton* ClearLogsButton;
 			wxStatusBar* StatusBar;
 
 			// Virtual event handlers, overide them in your derived class
@@ -73,6 +74,7 @@ namespace nes
 			virtual void OnExecuteNextInstruction( wxCommandEvent& event ) = 0;
 			virtual void OnExecuteUntilCycle( wxCommandEvent& event ) = 0;
 			virtual void OnRomSelectedFromTree( wxCommandEvent& event ) = 0;
+			virtual void OnClearAllLogs( wxCommandEvent& event ) = 0;
 
 
 		public:

@@ -60,6 +60,9 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	FileBrowser->ShowHidden( false );
 	FileExplorerAndLog->Add( FileBrowser, 1, wxALL|wxEXPAND, 5 );
 
+	wxBoxSizer* Column;
+	Column = new wxBoxSizer( wxVERTICAL );
+
 	DebugOutput = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM );
 	AllPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* AllLogSizer;
@@ -122,14 +125,26 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	ErrorLogSizer->Fit( ErrorPanel );
 	DebugOutput->AddPage( ErrorPanel, wxT("Error"), false );
 
-	FileExplorerAndLog->Add( DebugOutput, 4, wxEXPAND | wxALL, 5 );
+	Column->Add( DebugOutput, 1, wxEXPAND | wxALL, 5 );
 
-
-	Container->Add( FileExplorerAndLog, 1, wxEXPAND, 5 );
+	wxBoxSizer* Row;
+	Row = new wxBoxSizer( wxHORIZONTAL );
 
 	EnableAutoScrollCheckbox = new wxCheckBox( this, wxID_ANY, wxT("Automatically scroll logs"), wxDefaultPosition, wxDefaultSize, 0 );
 	EnableAutoScrollCheckbox->SetValue(true);
-	Container->Add( EnableAutoScrollCheckbox, 0, wxALL, 5 );
+	Row->Add( EnableAutoScrollCheckbox, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	ClearLogsButton = new wxButton( this, wxID_ANY, wxT("Clear all logs"), wxDefaultPosition, wxDefaultSize, 0 );
+	Row->Add( ClearLogsButton, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	Column->Add( Row, 0, wxEXPAND, 5 );
+
+
+	FileExplorerAndLog->Add( Column, 4, wxEXPAND, 5 );
+
+
+	Container->Add( FileExplorerAndLog, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( Container );
@@ -144,6 +159,7 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	ExecuteNext->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ), NULL, this );
 	ExecuteUntilCycle->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteUntilCycle ), NULL, this );
 	FileBrowser->Connect( wxEVT_DIRCTRL_FILEACTIVATED, wxCommandEventHandler( EmulatorEditorUI::OnRomSelectedFromTree ), NULL, this );
+	ClearLogsButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnClearAllLogs ), NULL, this );
 }
 
 EmulatorEditorUI::~EmulatorEditorUI()
@@ -152,6 +168,7 @@ EmulatorEditorUI::~EmulatorEditorUI()
 	ExecuteNext->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ), NULL, this );
 	ExecuteUntilCycle->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteUntilCycle ), NULL, this );
 	FileBrowser->Disconnect( wxEVT_DIRCTRL_FILEACTIVATED, wxCommandEventHandler( EmulatorEditorUI::OnRomSelectedFromTree ), NULL, this );
+	ClearLogsButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnClearAllLogs ), NULL, this );
 
 }
 
