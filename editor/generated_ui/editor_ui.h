@@ -21,6 +21,7 @@
 #include <wx/checkbox.h>
 #include <wx/button.h>
 #include <wx/spinctrl.h>
+#include <wx/dirctrl.h>
 #include <wx/listbox.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
@@ -51,6 +52,7 @@ namespace nes
 			wxButton* ExecuteNext;
 			wxSpinCtrl* ExecuteUntilCycleValue;
 			wxButton* ExecuteUntilCycle;
+			wxGenericDirCtrl* FileBrowser;
 			wxNotebook* DebugOutput;
 			wxPanel* AllPanel;
 			wxListBox* AllLogList;
@@ -69,6 +71,7 @@ namespace nes
 			virtual void OnDisplayAboutDialog( wxCommandEvent& event ) = 0;
 			virtual void OnExecuteNextInstruction( wxCommandEvent& event ) = 0;
 			virtual void OnExecuteUntilCycle( wxCommandEvent& event ) = 0;
+			virtual void OnRomSelectedFromTree( wxCommandEvent& event ) = 0;
 
 
 		public:

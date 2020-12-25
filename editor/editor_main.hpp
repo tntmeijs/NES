@@ -3,6 +3,8 @@
 
 #include "generated_ui/editor_ui.h"
 
+#include <string_view>
+
 namespace nes
 {
 	class EditorService;
@@ -27,6 +29,12 @@ namespace nes
 		 * @param	event	WxWidgets event data
 		 */
 		void OnLoadRomFromDisk(wxCommandEvent& event) override;
+		
+		/**
+		 * Called when a ROM is selected using the integrated tree file explorer
+		 * @param	event	WxWidgets event data
+		 */
+		void OnRomSelectedFromTree(wxCommandEvent& event) override;
 
 		/**
 		 * Called when the about button in the main menu is clicked
@@ -46,6 +54,13 @@ namespace nes
 		 * @param	event	WxWidgets event data
 		 */
 		void OnExecuteUntilCycle(wxCommandEvent& event) override;
+
+	private:
+		/**
+		 * Load a ROM file into memory from a location on disk
+		 * @param	path	Path to the ROM file
+		 */
+		void LoadRomFromDisk(std::string_view path);
 
 	private:
 		EditorService& EditorLogic;

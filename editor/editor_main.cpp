@@ -7,7 +7,6 @@
 #include <wx/msgdlg.h>
 
 #include <string>
-#include <string_view>
 
 nes::EditorMain::EditorMain(EditorService& editorService) :
 	EmulatorEditorUI(nullptr),
@@ -79,26 +78,26 @@ void nes::EditorMain::OnLoadRomFromDisk(wxCommandEvent& event)
 		return;
 	}
 
-	auto& logger = EditorLogger::GetInstance();
-
 	std::string path = fileDialog.GetPath();
-	if (EditorLogic.TryLoadRomFile(path))
-	{
-		EditorLogger::GetInstance().LogInformation("Loaded ROM file: " + path);
-	}
-	else
-	{
-		EditorLogger::GetInstance().LogError("Failed to load ROM file: " + path);
-
-		// Display error alert
-		wxMessageDialog alert(this, "Unable to load ROM, check the error log", "Error", wxOK | wxICON_ERROR);
-		alert.ShowModal();
-	}
+	LoadRomFromDisk(path);
 
 	//#DEBUG: Remove once CPU works
 	if (fileDialog.GetFilename() == "nestest.nes")
 	{
-		logger.LogWarning("DEBUG: Setting program counter to 0xC000 to make nestest work!");
+		EditorLogger::GetInstance().LogWarning("DEBUG: Setting program counter to 0xC000 to make nestest work!");
+		EditorLogic.SetCpuProgramCounter(0xC000);
+	}
+}
+
+void nes::EditorMain::OnRomSelectedFromTree(wxCommandEvent& event)
+{
+	std::string path = FileBrowser->GetFilePath();
+	LoadRomFromDisk(path);
+
+	//#DEBUG: Remove once CPU works
+	if (path.substr(path.find_last_of('/\\') + 1, path.size()) == "nestest.nes")
+	{
+		EditorLogger::GetInstance().LogWarning("DEBUG: Setting program counter to 0xC000 to make nestest work!");
 		EditorLogic.SetCpuProgramCounter(0xC000);
 	}
 }
@@ -135,5 +134,21 @@ void nes::EditorMain::OnExecuteUntilCycle(wxCommandEvent& event)
 	{
 		EditorLogic.ExecuteNextCpuInstruction();
 		currentCycle = EditorLogic.GetCpuCurrentCycle();
+	}
+}
+
+void nes::EditorMain::LoadRomFromDisk(std::string_view path)
+{
+	if (EditorLogic.TryLoadRomFile(path))
+	{
+		EditorLogger::GetInstance().LogInformation("Loaded ROM file: " + std::string(path));
+	}
+	else
+	{
+		EditorLogger::GetInstance().LogError("Failed to load ROM file: " + std::string(path));
+
+		// Display error alert
+		wxMessageDialog alert(this, "Unable to load ROM, check the error log", "Error", wxOK | wxICON_ERROR);
+		alert.ShowModal();
 	}
 }

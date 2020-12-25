@@ -47,6 +47,14 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	ExecuteUntilCycle = new wxButton( this, wxID_ANY, wxT("Execute until cycle"), wxDefaultPosition, wxDefaultSize, 0 );
 	Container->Add( ExecuteUntilCycle, 0, wxALL, 5 );
 
+	wxBoxSizer* FileExplorerAndLog;
+	FileExplorerAndLog = new wxBoxSizer( wxHORIZONTAL );
+
+	FileBrowser = new wxGenericDirCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_3D_INTERNAL|wxDIRCTRL_EDIT_LABELS|wxSUNKEN_BORDER, wxT("*.nes"), 0 );
+
+	FileBrowser->ShowHidden( false );
+	FileExplorerAndLog->Add( FileBrowser, 1, wxALL|wxEXPAND, 5 );
+
 	DebugOutput = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM );
 	AllPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* AllLogSizer;
@@ -109,7 +117,10 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	ErrorLogSizer->Fit( ErrorPanel );
 	DebugOutput->AddPage( ErrorPanel, wxT("Error"), false );
 
-	Container->Add( DebugOutput, 1, wxEXPAND | wxALL, 5 );
+	FileExplorerAndLog->Add( DebugOutput, 4, wxEXPAND | wxALL, 5 );
+
+
+	Container->Add( FileExplorerAndLog, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( Container );
@@ -123,6 +134,7 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	HelpMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( EmulatorEditorUI::OnDisplayAboutDialog ), this, AboutInfo->GetId());
 	ExecuteNext->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ), NULL, this );
 	ExecuteUntilCycle->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteUntilCycle ), NULL, this );
+	FileBrowser->Connect( wxEVT_DIRCTRL_FILEACTIVATED, wxCommandEventHandler( EmulatorEditorUI::OnRomSelectedFromTree ), NULL, this );
 }
 
 EmulatorEditorUI::~EmulatorEditorUI()
@@ -130,6 +142,7 @@ EmulatorEditorUI::~EmulatorEditorUI()
 	// Disconnect Events
 	ExecuteNext->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ), NULL, this );
 	ExecuteUntilCycle->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteUntilCycle ), NULL, this );
+	FileBrowser->Disconnect( wxEVT_DIRCTRL_FILEACTIVATED, wxCommandEventHandler( EmulatorEditorUI::OnRomSelectedFromTree ), NULL, this );
 
 }
 
