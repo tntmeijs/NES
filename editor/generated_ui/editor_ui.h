@@ -18,18 +18,18 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
-#include <wx/checkbox.h>
 #include <wx/button.h>
+#include <wx/statline.h>
 #include <wx/spinctrl.h>
+#include <wx/sizer.h>
 #include <wx/dirctrl.h>
 #include <wx/listbox.h>
-#include <wx/sizer.h>
 #include <wx/panel.h>
 #include <wx/notebook.h>
+#include <wx/checkbox.h>
 #include <wx/statusbr.h>
 #include <wx/frame.h>
 #include <wx/stattext.h>
-#include <wx/statline.h>
 #include <wx/hyperlink.h>
 #include <wx/dialog.h>
 
@@ -48,8 +48,8 @@ namespace nes
 			wxMenuBar* MainMenuBar;
 			wxMenu* FileMenu;
 			wxMenu* HelpMenu;
-			wxCheckBox* EnableAutoScrollCheckbox;
 			wxButton* ExecuteNext;
+			wxStaticLine* Divider;
 			wxSpinCtrl* ExecuteUntilCycleValue;
 			wxButton* ExecuteUntilCycle;
 			wxGenericDirCtrl* FileBrowser;
@@ -64,6 +64,7 @@ namespace nes
 			wxListBox* WarningLogList;
 			wxPanel* ErrorPanel;
 			wxListBox* ErrorLogList;
+			wxCheckBox* EnableAutoScrollCheckbox;
 			wxStatusBar* StatusBar;
 
 			// Virtual event handlers, overide them in your derived class

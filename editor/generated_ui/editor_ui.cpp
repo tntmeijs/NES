@@ -34,18 +34,23 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	wxBoxSizer* Container;
 	Container = new wxBoxSizer( wxVERTICAL );
 
-	EnableAutoScrollCheckbox = new wxCheckBox( this, wxID_ANY, wxT("Enable Auto Scroll"), wxDefaultPosition, wxDefaultSize, 0 );
-	EnableAutoScrollCheckbox->SetValue(true);
-	Container->Add( EnableAutoScrollCheckbox, 0, wxALL, 5 );
+	wxBoxSizer* CpuControls;
+	CpuControls = new wxBoxSizer( wxHORIZONTAL );
 
 	ExecuteNext = new wxButton( this, wxID_ANY, wxT("Execute next instruction"), wxDefaultPosition, wxDefaultSize, 0 );
-	Container->Add( ExecuteNext, 0, wxALL, 5 );
+	CpuControls->Add( ExecuteNext, 0, wxALL, 5 );
 
-	ExecuteUntilCycleValue = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 65536, 0 );
-	Container->Add( ExecuteUntilCycleValue, 0, wxALL|wxSHAPED, 5 );
+	Divider = new wxStaticLine( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+	CpuControls->Add( Divider, 0, wxEXPAND | wxALL, 5 );
+
+	ExecuteUntilCycleValue = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, 0, 65536, 0 );
+	CpuControls->Add( ExecuteUntilCycleValue, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND|wxSHAPED, 5 );
 
 	ExecuteUntilCycle = new wxButton( this, wxID_ANY, wxT("Execute until cycle"), wxDefaultPosition, wxDefaultSize, 0 );
-	Container->Add( ExecuteUntilCycle, 0, wxALL, 5 );
+	CpuControls->Add( ExecuteUntilCycle, 0, wxALL, 5 );
+
+
+	Container->Add( CpuControls, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* FileExplorerAndLog;
 	FileExplorerAndLog = new wxBoxSizer( wxHORIZONTAL );
@@ -121,6 +126,10 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 
 
 	Container->Add( FileExplorerAndLog, 1, wxEXPAND, 5 );
+
+	EnableAutoScrollCheckbox = new wxCheckBox( this, wxID_ANY, wxT("Automatically scroll logs"), wxDefaultPosition, wxDefaultSize, 0 );
+	EnableAutoScrollCheckbox->SetValue(true);
+	Container->Add( EnableAutoScrollCheckbox, 0, wxALL, 5 );
 
 
 	this->SetSizer( Container );
