@@ -1,5 +1,5 @@
-#ifndef NES_LITERALS_HPP
-#define NES_LITERALS_HPP
+#ifndef NES_UTILITY_LITERALS_HPP
+#define NES_UTILITY_LITERALS_HPP
 
 /**
  * Easily convert from bytes to kilobytes
@@ -11,4 +11,4 @@ inline constexpr long operator""_KB(const unsigned long long size)
 	return size * 1024L;
 }
 
-#endif //! NES_LITERALS_HPP
+#endif //! NES_UTILITY_LITERALS_HPP
