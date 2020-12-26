@@ -31,17 +31,37 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 
 	this->SetMenuBar( MainMenuBar );
 
-	MainToolbar = this->CreateToolBar( wxTB_HORIZONTAL, wxID_ANY );
-	ExecuteCpuInstruction = MainToolbar->AddTool( wxID_ANY, wxT("Execute CPU instruction"), wxBitmap( wxT("resources/next.png"), wxBITMAP_TYPE_ANY ), wxNullBitmap, wxITEM_NORMAL, wxT("Execute the next CPU instruction"), wxT("Execute the next CPU instruction"), NULL );
-
-	MainToolbar->Realize();
-
 	wxBoxSizer* Container;
 	Container = new wxBoxSizer( wxVERTICAL );
 
-	EnableAutoScrollCheckbox = new wxCheckBox( this, wxID_ANY, wxT("Enable Auto Scroll"), wxDefaultPosition, wxDefaultSize, 0 );
-	EnableAutoScrollCheckbox->SetValue(true);
-	Container->Add( EnableAutoScrollCheckbox, 0, wxALL, 5 );
+	wxBoxSizer* CpuControls;
+	CpuControls = new wxBoxSizer( wxHORIZONTAL );
+
+	ExecuteNext = new wxButton( this, wxID_ANY, wxT("Execute next instruction"), wxDefaultPosition, wxDefaultSize, 0 );
+	CpuControls->Add( ExecuteNext, 0, wxALL, 5 );
+
+	Divider = new wxStaticLine( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+	CpuControls->Add( Divider, 0, wxEXPAND | wxALL, 5 );
+
+	ExecuteUntilCycleValue = new wxSpinCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, 0, 65536, 0 );
+	CpuControls->Add( ExecuteUntilCycleValue, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND|wxSHAPED, 5 );
+
+	ExecuteUntilCycle = new wxButton( this, wxID_ANY, wxT("Execute until cycle"), wxDefaultPosition, wxDefaultSize, 0 );
+	CpuControls->Add( ExecuteUntilCycle, 0, wxALL, 5 );
+
+
+	Container->Add( CpuControls, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* FileExplorerAndLog;
+	FileExplorerAndLog = new wxBoxSizer( wxHORIZONTAL );
+
+	FileBrowser = new wxGenericDirCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_3D_INTERNAL|wxDIRCTRL_EDIT_LABELS|wxSUNKEN_BORDER, wxT("*.nes"), 0 );
+
+	FileBrowser->ShowHidden( false );
+	FileExplorerAndLog->Add( FileBrowser, 1, wxALL|wxEXPAND, 5 );
+
+	wxBoxSizer* Column;
+	Column = new wxBoxSizer( wxVERTICAL );
 
 	DebugOutput = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM );
 	AllPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -105,7 +125,26 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	ErrorLogSizer->Fit( ErrorPanel );
 	DebugOutput->AddPage( ErrorPanel, wxT("Error"), false );
 
-	Container->Add( DebugOutput, 1, wxEXPAND | wxALL, 5 );
+	Column->Add( DebugOutput, 1, wxEXPAND | wxALL, 5 );
+
+	wxBoxSizer* Row;
+	Row = new wxBoxSizer( wxHORIZONTAL );
+
+	EnableAutoScrollCheckbox = new wxCheckBox( this, wxID_ANY, wxT("Automatically scroll logs"), wxDefaultPosition, wxDefaultSize, 0 );
+	EnableAutoScrollCheckbox->SetValue(true);
+	Row->Add( EnableAutoScrollCheckbox, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	ClearLogsButton = new wxButton( this, wxID_ANY, wxT("Clear all logs"), wxDefaultPosition, wxDefaultSize, 0 );
+	Row->Add( ClearLogsButton, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	Column->Add( Row, 0, wxEXPAND, 5 );
+
+
+	FileExplorerAndLog->Add( Column, 4, wxEXPAND, 5 );
+
+
+	Container->Add( FileExplorerAndLog, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( Container );
@@ -117,13 +156,19 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	// Connect Events
 	FileMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( EmulatorEditorUI::OnLoadRomFromDisk ), this, LoadRomFromDisk->GetId());
 	HelpMenu->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( EmulatorEditorUI::OnDisplayAboutDialog ), this, AboutInfo->GetId());
-	this->Connect( ExecuteCpuInstruction->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ) );
+	ExecuteNext->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ), NULL, this );
+	ExecuteUntilCycle->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteUntilCycle ), NULL, this );
+	FileBrowser->Connect( wxEVT_DIRCTRL_FILEACTIVATED, wxCommandEventHandler( EmulatorEditorUI::OnRomSelectedFromTree ), NULL, this );
+	ClearLogsButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnClearAllLogs ), NULL, this );
 }
 
 EmulatorEditorUI::~EmulatorEditorUI()
 {
 	// Disconnect Events
-	this->Disconnect( ExecuteCpuInstruction->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ) );
+	ExecuteNext->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteNextInstruction ), NULL, this );
+	ExecuteUntilCycle->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnExecuteUntilCycle ), NULL, this );
+	FileBrowser->Disconnect( wxEVT_DIRCTRL_FILEACTIVATED, wxCommandEventHandler( EmulatorEditorUI::OnRomSelectedFromTree ), NULL, this );
+	ClearLogsButton->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( EmulatorEditorUI::OnClearAllLogs ), NULL, this );
 
 }
 

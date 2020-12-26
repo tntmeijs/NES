@@ -35,6 +35,12 @@ namespace nes
         bool TryLoadRomFile(std::string_view path);
 
         /**
+         * Check if a ROM has been loaded into memory
+         * @return  True if a ROM file has been loaded into memory, false otherwise
+         */
+        bool HasLoadedRom() const;
+
+        /**
          * Execute the next CPU instruction
          */
         void ExecuteNextCpuInstruction() const;
@@ -50,6 +56,12 @@ namespace nes
          * @return  Program counter's value
          */
         std::uint16_t GetCpuProgramCounterValue() const;
+
+        /**
+         * Retrieve the current execution cycle of the CPU
+         * @return  Current cycle
+         */
+        std::uint64_t GetCpuCurrentCycle() const;
 
     private:
 		CPU* Cpu;
