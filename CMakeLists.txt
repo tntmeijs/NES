@@ -143,6 +143,8 @@ set(SOURCE_LIST
     editor/editor_logger.cpp
     editor/editor_service.hpp
     editor/editor_service.cpp
+    editor/wx_sfml_canvas.cpp
+    editor/wx_sfml_canvas.hpp
     utility/literals.hpp
     utility/bit_tools.hpp)
 

@@ -52,6 +52,9 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 
 	Container->Add( CpuControls, 0, wxEXPAND, 5 );
 
+	SfmlCanvas = new wxSfmlCanvas( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	Container->Add( SfmlCanvas, 1, wxALL, 5 );
+
 	wxBoxSizer* FileExplorerAndLog;
 	FileExplorerAndLog = new wxBoxSizer( wxHORIZONTAL );
 
