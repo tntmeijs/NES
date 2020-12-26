@@ -137,14 +137,14 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	EnableAutoScrollCheckbox->SetValue(true);
 	Row->Add( EnableAutoScrollCheckbox, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	ClearLogsButton = new wxButton( this, wxID_ANY, wxT("Clear all logs"), wxDefaultPosition, wxDefaultSize, 0 );
-	Row->Add( ClearLogsButton, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	DumpLogs = new wxButton( this, wxID_ANY, wxT("Dump logs to disk"), wxDefaultPosition, wxDefaultSize, 0 );
+	Row->Add( DumpLogs, 0, wxALL, 5 );
 
 
 	Row->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	DumpLogs = new wxButton( this, wxID_ANY, wxT("Dump logs to disk"), wxDefaultPosition, wxDefaultSize, 0 );
-	Row->Add( DumpLogs, 0, wxALL, 5 );
+	ClearLogsButton = new wxButton( this, wxID_ANY, wxT("Clear all logs"), wxDefaultPosition, wxDefaultSize, 0 );
+	Row->Add( ClearLogsButton, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	Column->Add( Row, 0, wxEXPAND, 5 );

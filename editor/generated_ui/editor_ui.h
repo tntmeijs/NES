@@ -67,8 +67,8 @@ namespace nes
 			wxPanel* ErrorPanel;
 			wxListBox* ErrorLogList;
 			wxCheckBox* EnableAutoScrollCheckbox;
-			wxButton* ClearLogsButton;
 			wxButton* DumpLogs;
+			wxButton* ClearLogsButton;
 			wxStatusBar* StatusBar;
 
 			// Virtual event handlers, overide them in your derived class
