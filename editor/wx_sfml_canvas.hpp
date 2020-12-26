@@ -35,8 +35,6 @@ namespace nes
 
 	private:
 
-		DECLARE_EVENT_TABLE()
-
 		/**
 		 * Empty update function that can be implemented by a derived class
 		 */
@@ -54,6 +52,8 @@ namespace nes
 		 * @param	event	WxWidgets event data
 		 */
 		void OnPaint(wxPaintEvent& event);
+
+		DECLARE_EVENT_TABLE()
     };
 }
 

@@ -1,5 +1,9 @@
 #include "wx_sfml_canvas.hpp"
 
+BEGIN_EVENT_TABLE(nes::wxSfmlCanvas, wxControl)
+EVT_IDLE(nes::wxSfmlCanvas::OnIdle)
+END_EVENT_TABLE()
+
 nes::wxSfmlCanvas::wxSfmlCanvas(
 	wxWindow* parent,
 	wxWindowID id,
@@ -16,12 +20,19 @@ nes::wxSfmlCanvas::~wxSfmlCanvas()
 void nes::wxSfmlCanvas::OnUpdate()
 {}
 
-void nes::wxSfmlCanvas::OnIdle(wxIdleEvent&)
+void nes::wxSfmlCanvas::OnIdle(wxIdleEvent& event)
 {
-	Refresh();
+	// Give the derived class a chance to update
+	OnUpdate();
+
+	// SFML render call
+	display();
+
+	// Draw the widget again
+	event.RequestMore();
 }
 
-void nes::wxSfmlCanvas::OnPaint(wxPaintEvent&)
+void nes::wxSfmlCanvas::OnPaint(wxPaintEvent& event)
 {
 	// Prepare to be repainted
 	wxPaintDC dc(this);
