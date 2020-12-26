@@ -145,6 +145,8 @@ set(SOURCE_LIST
     editor/editor_service.cpp
     editor/wx_sfml_canvas.cpp
     editor/wx_sfml_canvas.hpp
+    editor/editor_game_window.cpp
+    editor/editor_game_window.hpp
     utility/literals.hpp
     utility/bit_tools.hpp)
 

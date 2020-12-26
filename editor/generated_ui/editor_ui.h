@@ -22,7 +22,7 @@
 #include <wx/statline.h>
 #include <wx/spinctrl.h>
 #include <wx/sizer.h>
-#include "editor/wx_sfml_canvas.hpp"
+#include "editor/editor_game_window.hpp"
 #include <wx/dirctrl.h>
 #include <wx/listbox.h>
 #include <wx/panel.h>
@@ -53,7 +53,7 @@ namespace nes
 			wxStaticLine* Divider;
 			wxSpinCtrl* ExecuteUntilCycleValue;
 			wxButton* ExecuteUntilCycle;
-			wxSfmlCanvas* SfmlCanvas;
+			EditorGameWindow* GameWindow;
 			wxGenericDirCtrl* FileBrowser;
 			wxNotebook* DebugOutput;
 			wxPanel* AllPanel;
