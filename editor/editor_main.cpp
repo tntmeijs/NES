@@ -146,6 +146,9 @@ void nes::EditorMain::OnClearAllLogs(wxCommandEvent& event)
 	ErrorLogList->Clear();
 }
 
+void nes::EditorMain::OnDumpLogsToDisk(wxCommandEvent& event)
+{}
+
 void nes::EditorMain::LoadRomFromDisk(std::string_view path)
 {
 	if (EditorLogic.TryLoadRomFile(path))

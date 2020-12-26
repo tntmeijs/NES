@@ -77,6 +77,7 @@ namespace nes
 			virtual void OnExecuteNextInstruction( wxCommandEvent& event ) = 0;
 			virtual void OnExecuteUntilCycle( wxCommandEvent& event ) = 0;
 			virtual void OnRomSelectedFromTree( wxCommandEvent& event ) = 0;
+			virtual void OnDumpLogsToDisk( wxCommandEvent& event ) = 0;
 			virtual void OnClearAllLogs( wxCommandEvent& event ) = 0;
 
 

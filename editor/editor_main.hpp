@@ -61,6 +61,13 @@ namespace nes
 		 */
 		void OnClearAllLogs(wxCommandEvent& event) override;
 
+		/**
+		 * Save all logs to disk
+		 * Each logging channel will be saved to its own file
+		 * The files will be placed in the current working directory
+		 */
+		void OnDumpLogsToDisk(wxCommandEvent& event) override;
+
 	private:
 		/**
 		 * Load a ROM file into memory from a location on disk
