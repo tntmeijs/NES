@@ -76,7 +76,9 @@ std::string nes::EditorLogger::AddTimestampToMessage(std::string_view message) c
 
 	std::stringstream stream;
 	stream << '[';
-	stream << tm->tm_hour << ':' << tm->tm_min << ':' << std::setw(2) << std::setfill('0') << tm->tm_sec;
+	stream << std::setw(2) << std::setfill('0') << tm->tm_hour << ':';
+	stream << std::setw(2) << std::setfill('0') << tm->tm_min << ':';
+	stream << std::setw(2) << std::setfill('0') << tm->tm_sec;
 	stream << ']';
 	stream << '\t';
 	stream << message;

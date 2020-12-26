@@ -1,11 +1,14 @@
 #include "editor_main.hpp"
 #include "editor_service.hpp"
 #include "editor_logger.hpp"
+#include "utility/timestamp.hpp"
 
 #include <wx/filedlg.h>
 #include <wx/listbox.h>
 #include <wx/msgdlg.h>
 
+#include <filesystem>
+#include <fstream>
 #include <string>
 
 nes::EditorMain::EditorMain(EditorService& editorService) :
@@ -146,6 +149,17 @@ void nes::EditorMain::OnClearAllLogs(wxCommandEvent& event)
 	ErrorLogList->Clear();
 }
 
+void nes::EditorMain::OnDumpLogsToDisk(wxCommandEvent& event)
+{
+	auto timestamp_str = std::to_string(GenerateUnixTimestamp());
+
+	WriteListBoxContentToFile(AllLogList, "./logs/" + timestamp_str + "_all.log");
+	WriteListBoxContentToFile(CpuLogList, "./logs/" + timestamp_str + "_cpu.log");
+	WriteListBoxContentToFile(InfoLogList, "./logs/" + timestamp_str + "_info.log");
+	WriteListBoxContentToFile(WarningLogList, "./logs/" + timestamp_str + "_warning.log");
+	WriteListBoxContentToFile(ErrorLogList, "./logs/" + timestamp_str + "_error.log");
+}
+
 void nes::EditorMain::LoadRomFromDisk(std::string_view path)
 {
 	if (EditorLogic.TryLoadRomFile(path))
@@ -160,4 +174,39 @@ void nes::EditorMain::LoadRomFromDisk(std::string_view path)
 		wxMessageDialog alert(this, "Unable to load ROM, check the error log", "Error", wxOK | wxICON_ERROR);
 		alert.ShowModal();
 	}
+}
+
+void nes::EditorMain::WriteListBoxContentToFile(
+	const wxListBox* const widget,
+	std::string_view filePath) const
+{
+	auto& logger = EditorLogger::GetInstance();
+	
+	if (widget->IsEmpty())
+	{
+		return;
+	}
+
+	auto path = std::filesystem::path(filePath).remove_filename();
+	if (!std::filesystem::exists(path))
+	{
+		std::filesystem::create_directories(path);
+	}
+
+	auto file = std::ofstream(filePath);
+	if (!file.is_open())
+	{
+		logger.LogError("Unable to open " + std::string(filePath));
+		logger.LogError("Failed to write content to disk.");
+		logger.LogError("Check if you have write permissions in the working directory.");
+		return;
+	}
+
+	// Save all items in the list box
+	for (auto i = 0; i < widget->GetCount(); ++i)
+	{
+		file << widget->GetString(i) << std::endl;
+	}
+
+	file.close();
 }

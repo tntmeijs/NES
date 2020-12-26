@@ -7,7 +7,6 @@ project(NES
 
 set(SOURCE_LIST
     main.cpp
-    globals.hpp
     app/app.hpp
     app/app.cpp
     io/rom_file.hpp
@@ -148,7 +147,8 @@ set(SOURCE_LIST
     editor/editor_game_window.cpp
     editor/editor_game_window.hpp
     utility/literals.hpp
-    utility/bit_tools.hpp)
+    utility/bit_tools.hpp
+    utility/timestamp.hpp)
 
 if(WIN32)
     add_executable(NES WIN32 ${SOURCE_LIST})

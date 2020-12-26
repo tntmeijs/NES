@@ -67,6 +67,7 @@ namespace nes
 			wxPanel* ErrorPanel;
 			wxListBox* ErrorLogList;
 			wxCheckBox* EnableAutoScrollCheckbox;
+			wxButton* DumpLogs;
 			wxButton* ClearLogsButton;
 			wxStatusBar* StatusBar;
 
@@ -76,6 +77,7 @@ namespace nes
 			virtual void OnExecuteNextInstruction( wxCommandEvent& event ) = 0;
 			virtual void OnExecuteUntilCycle( wxCommandEvent& event ) = 0;
 			virtual void OnRomSelectedFromTree( wxCommandEvent& event ) = 0;
+			virtual void OnDumpLogsToDisk( wxCommandEvent& event ) = 0;
 			virtual void OnClearAllLogs( wxCommandEvent& event ) = 0;
 
 

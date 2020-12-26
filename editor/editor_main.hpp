@@ -61,12 +61,28 @@ namespace nes
 		 */
 		void OnClearAllLogs(wxCommandEvent& event) override;
 
+		/**
+		 * Save all logs to disk
+		 * Each logging channel will be saved to its own file
+		 * The files will be placed in a "logs" folder in the working directory
+		 */
+		void OnDumpLogsToDisk(wxCommandEvent& event) override;
+
 	private:
 		/**
 		 * Load a ROM file into memory from a location on disk
 		 * @param	path	Path to the ROM file
 		 */
 		void LoadRomFromDisk(std::string_view path);
+
+		/**
+		 * Write all lines from a list box to a file
+		 * @param	widget					List box widget to read from
+		 * @param	filePath				Path to the output file
+		 */
+		void WriteListBoxContentToFile(
+			const wxListBox* const widget,
+			std::string_view filePath) const;
 
 	private:
 		EditorService& EditorLogic;

@@ -1,5 +1,5 @@
-#ifndef NES_BIT_TOOLS_HPP
-#define NES_BIT_TOOLS_HPP
+#ifndef NES_UTILITY_BIT_TOOLS_HPP
+#define NES_UTILITY_BIT_TOOLS_HPP
 
 #include <cstdint>
 
@@ -134,4 +134,4 @@ namespace nes
 	}
 }
 
-#endif //! NES_BIT_TOOLS_HPP
+#endif //! NES_UTILITY_BIT_TOOLS_HPP
