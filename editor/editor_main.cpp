@@ -141,7 +141,7 @@ void nes::EditorMain::OnExecuteUntilCycle(wxCommandEvent& event)
 	auto targetCycle = ExecuteUntilCycleValue->GetValue();
 	auto currentCycle = EditorLogic.GetCpuCurrentCycle();
 
-	while (currentCycle < targetCycle)
+	while (currentCycle <= targetCycle)
 	{
 		EditorLogic.ExecuteNextCpuInstruction();
 		currentCycle = EditorLogic.GetCpuCurrentCycle();
