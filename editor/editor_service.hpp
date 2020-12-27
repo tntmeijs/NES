@@ -3,9 +3,10 @@
 
 #include "utility/bit_tools.hpp"
 
-#include <cstdint>
-#include <string_view>
 #include <array>
+#include <cstdint>
+#include <functional>
+#include <string_view>
 
 namespace nes
 {
@@ -70,7 +71,14 @@ namespace nes
          * Retrieve a copy of the current state of the stack
          * @return  Array that contains the most recent stack state
          */
-        std::array<nes::Byte, 256>& GetCurrentStackState() const;
+        const std::array<nes::Byte, 256>& GetCurrentStackState() const;
+
+    public:
+        /**
+         * Called whenever the editor has to update the stack visualization
+         * The function argument passed is the index that needs to be updated
+         */
+        std::function<void(std::uint8_t)> OnUpdateStackVisualization;
 
     private:
         /**

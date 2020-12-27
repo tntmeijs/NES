@@ -7,14 +7,39 @@
 #include <wx/listbox.h>
 #include <wx/msgdlg.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
 nes::EditorMain::EditorMain(EditorService& editorService) :
 	EmulatorEditorUI(nullptr),
 	EditorLogic(editorService)
-{}
+{
+	// Initialize the CPU stack visualizer
+	{
+		// Allocate stack entries in the list box
+		for (auto& byte : EditorLogic.GetCurrentStackState())
+		{
+			// Need to cast to a wider type to prevent the value from implicitly
+			// being casted to a character
+			auto value = static_cast<std::uint16_t>(byte.value);
+
+			std::stringstream stream;
+			stream << "0x";					// Pretty print hexadecimal values
+			stream << std::hex;				// Write as hexadecimal
+			stream << std::setw(2);			// Need all entries to be 0x__
+			stream << std::setfill('0');	// Fill any unused values with zeros
+			stream << value;				// Save the value
+			StackVisualization->Append(stream.str());
+		}
+	}
+
+	// Update the CPU stack visualizer whenever the stack is changed
+	EditorLogic.OnUpdateStackVisualization = [](auto index) {};
+}
 
 void nes::EditorMain::ListenForLogs()
 {
