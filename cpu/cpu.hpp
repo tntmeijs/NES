@@ -106,10 +106,10 @@ namespace nes
         std::uint16_t GetProgramCounter() const;
 
         /**
-         * Get the current value of the stack pointer
+         * Get the current value of the stack pointer's address in RAM
          * @return  Current value of the stack pointer
          */
-        std::uint16_t GetStackPointer() const;
+        std::uint16_t GetStackPointerAbsoluteAddress() const;
 
         /**
          * Retrieve the value of a register

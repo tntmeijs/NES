@@ -119,7 +119,7 @@ std::uint16_t nes::CPU::GetProgramCounter() const
 	return PC;
 }
 
-std::uint16_t nes::CPU::GetStackPointer() const
+std::uint16_t nes::CPU::GetStackPointerAbsoluteAddress() const
 {
 	return RamRef.STACK_START_ADDRESS - SP.value;
 }
