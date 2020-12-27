@@ -10,18 +10,16 @@ nes::CpuInstructionOpLSR::CpuInstructionOpLSR(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpLSR::ExecuteImpl()
 {
-	Byte valueToShift = {};
+	// Assume the accumulator needs to be shifted
+	Byte valueToShift = CpuRef.A;
 
 	if (InstructionAddressingMode == AddressingMode::Accumulator)
 	{
 		CycleCount = 2;
-	
-		// Need to shift in the accumulator
-		valueToShift = CpuRef.A;
 	}
 	else
 	{
-		// Need to shift in a memory location
+		// Need to shift in a memory location instead
 		Byte valueToShift = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
 
 		if (InstructionAddressingMode == AddressingMode::ZeroPage)
