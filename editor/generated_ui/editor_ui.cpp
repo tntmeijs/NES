@@ -49,7 +49,7 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	CpuControls->Add( ExecuteUntilCycleValue, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxEXPAND|wxSHAPED, 5 );
 
 	ExecuteUntilCycle = new wxButton( this, wxID_ANY, wxT("Execute until cycle"), wxDefaultPosition, wxDefaultSize, 0 );
-	ExecuteUntilCycle->SetToolTip( wxT("Keep executing instructions until the specified cycle has been reached (blocks the UI thread)") );
+	ExecuteUntilCycle->SetToolTip( wxT("Keep executing instructions until the specified cycle has been reached") );
 
 	CpuControls->Add( ExecuteUntilCycle, 0, wxALL, 5 );
 
