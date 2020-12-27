@@ -119,7 +119,7 @@ std::uint16_t nes::CPU::GetProgramCounter() const
 	return PC;
 }
 
-std::uint16_t nes::CPU::GetStackPointer() const
+std::uint16_t nes::CPU::GetStackPointerAbsoluteAddress() const
 {
 	return RamRef.STACK_START_ADDRESS - SP.value;
 }
@@ -570,6 +570,11 @@ void nes::CPU::PushStack(Byte value)
 	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP.value;
 	RamRef.WriteByte(address, value);
 
+	if (OnStackPush)
+	{
+		OnStackPush(value);
+	}
+
 	// Move stack pointer
 	--SP.value;
 }
@@ -585,6 +590,12 @@ nes::Byte nes::CPU::PopStack()
 
 	// Clear value from stack
 	RamRef.ClearByte(address);
+
+	if (OnStackPop)
+	{
+		// Notify the listener
+		OnStackPop(value);
+	}
 
 	return value;
 }

@@ -7,14 +7,22 @@
 #include <wx/listbox.h>
 #include <wx/msgdlg.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
 nes::EditorMain::EditorMain(EditorService& editorService) :
 	EmulatorEditorUI(nullptr),
 	EditorLogic(editorService)
-{}
+{
+	StackVisualization->EnableVisibleFocus(false);
+	
+	// Update the CPU stack visualizer whenever the stack is changed
+	EditorLogic.OnUpdateStackVisualization = [&](auto stack) { UpdateStackVisualization(stack); };
+}
 
 void nes::EditorMain::ListenForLogs()
 {
@@ -209,4 +217,31 @@ void nes::EditorMain::WriteListBoxContentToFile(
 	}
 
 	file.close();
+}
+
+void nes::EditorMain::UpdateStackVisualization(std::vector<Byte> stack)
+{
+	// Utility function for converting value to its hexadecimal representation
+	auto ByteToHexStr = [](const Byte& byte) -> auto
+	{
+		// Need to cast to a wider type to prevent the value from implicitly
+		// being casted to a character
+		auto value = static_cast<std::uint16_t>(byte.value);
+
+		std::stringstream stream;
+		stream << "0x";					// Pretty print hexadecimal values
+		stream << std::hex;				// Write as hexadecimal
+		stream << std::setw(2);			// Need all entries to be 0x__
+		stream << std::setfill('0');	// Fill any unused values with zeros
+		stream << value;				// Save the value
+
+		return stream.str();
+	};
+
+	StackVisualization->Clear();
+
+	for (auto& byte : stack)
+	{
+		StackVisualization->AppendString(ByteToHexStr(byte));
+	}
 }

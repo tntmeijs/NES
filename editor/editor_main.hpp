@@ -2,8 +2,10 @@
 #define NES_EDITOR_MAIN_HPP
 
 #include "generated_ui/editor_ui.h"
+#include "utility/bit_tools.hpp"
 
 #include <string_view>
+#include <vector>
 
 namespace nes
 {
@@ -83,6 +85,12 @@ namespace nes
 		void WriteListBoxContentToFile(
 			const wxListBox* const widget,
 			std::string_view filePath) const;
+
+		/**
+		 * Recreate the stack visualization
+		 * @param	stack	Copy of the current values on the stack
+		 */
+		void UpdateStackVisualization(std::vector<Byte> stack);
 
 	private:
 		EditorService& EditorLogic;

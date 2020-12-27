@@ -6,6 +6,7 @@
 #include "utility/bit_tools.hpp"
 
 #include <cstdint>
+#include <functional>
 #include <string_view>
 #include <unordered_map>
 
@@ -30,6 +31,13 @@ namespace nes
             P,  // P register (flags)
             SP  // Stack pointer
         };
+
+    public:
+        /** Callback that will be called every time a value is pushed on the stack */
+        std::function<void(Byte)> OnStackPush;
+
+        /** Callback that will be called every time a value is popped from the stack */
+        std::function<void(Byte)> OnStackPop;
 
     public:
         /**
@@ -101,10 +109,10 @@ namespace nes
         std::uint16_t GetProgramCounter() const;
 
         /**
-         * Get the current value of the stack pointer
+         * Get the current value of the stack pointer's address in RAM
          * @return  Current value of the stack pointer
          */
-        std::uint16_t GetStackPointer() const;
+        std::uint16_t GetStackPointerAbsoluteAddress() const;
 
         /**
          * Retrieve the value of a register

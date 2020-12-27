@@ -1,8 +1,12 @@
 #ifndef NES_EDITOR_SERVICE_HPP
 #define NES_EDITOR_SERVICE_HPP
 
+#include "utility/bit_tools.hpp"
+
 #include <cstdint>
+#include <functional>
 #include <string_view>
+#include <vector>
 
 namespace nes
 {
@@ -63,10 +67,25 @@ namespace nes
          */
         std::uint64_t GetCpuCurrentCycle() const;
 
+        /**
+         * Get the raw value of the stack pointer register
+         * @return  Value of the stack pointer
+         */
+        std::uint8_t GetStackPointerValue() const;
+
+    public:
+        /**
+         * Called whenever the editor has to update the stack visualization
+         * The function argument passed is the current list of values on the stack
+         */
+        std::function<void(const std::vector<Byte>&)> OnUpdateStackVisualization;
+
     private:
 		CPU* Cpu;
 		RAM* Ram;
 		RomFile* ActiveRom;
+
+        std::vector<Byte> MinimalStack;
     };
 }
 
