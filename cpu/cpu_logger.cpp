@@ -38,13 +38,9 @@ std::stringstream nes::CpuLogger::ConstructStreamFromData(const CPU& cpuRef, std
 	{
 		stream << '\t';
 	}
-	stream << '\t';
 
 	// Write the instruction's Assembly name
 	stream << opName << '\t';
-
-	// Padding
-	stream << std::setfill(' ') << std::setw(30);
 
 	// Write register states
 	stream << "A:" << std::setfill('0') << std::setw(2) << A << '\t';
