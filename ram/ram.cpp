@@ -8,7 +8,7 @@
 nes::RAM::RAM() :
 	FIRST_ROM_BANK_ADDRESS(0x8000),
 	SECOND_ROM_BANK_ADDRESS(FIRST_ROM_BANK_ADDRESS + RomFile::ROM_BANK_SIZE),
-	STACK_START_ADDRESS(0x01FF)
+	STACK_START_ADDRESS(0x0100)
 {
 	// Initialize the memory to a default known state of zero
 	for (std::size_t i = 0; i < Memory.size(); ++i)

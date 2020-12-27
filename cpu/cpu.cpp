@@ -121,7 +121,7 @@ std::uint16_t nes::CPU::GetProgramCounter() const
 
 std::uint16_t nes::CPU::GetStackPointerAbsoluteAddress() const
 {
-	return RamRef.STACK_START_ADDRESS - SP.value;
+	return RamRef.STACK_START_ADDRESS + SP.value;
 }
 
 nes::Byte nes::CPU::GetRegister(RegisterType type) const
@@ -567,7 +567,7 @@ void nes::CPU::ProcessOpCode(Byte opCode)
 void nes::CPU::PushStack(Byte value)
 {
 	// Stack grows downwards
-	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP.value;
+	std::uint16_t address = RamRef.STACK_START_ADDRESS + SP.value;
 	RamRef.WriteByte(address, value);
 
 	if (OnStackPush)
@@ -575,17 +575,17 @@ void nes::CPU::PushStack(Byte value)
 		OnStackPush(value);
 	}
 
-	// Move stack pointer
-	--SP.value;
+	// Stack wraps around and grows downwards
+	SP.value = (SP.value == 0x00) ? 0xFF : SP.value - 1;
 }
 
 nes::Byte nes::CPU::PopStack()
 {
-	// Move stack pointer
-	++SP.value;
+	// Stack wraps around and shrinks upwards
+	SP.value = (SP.value == 0xFF) ? 0x00 : SP.value + 1;
 
 	// Stack grows downwards
-	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP.value;
+	std::uint16_t address = RamRef.STACK_START_ADDRESS + SP.value;
 	Byte value = RamRef.ReadByte(address);
 
 	if (OnStackPop)

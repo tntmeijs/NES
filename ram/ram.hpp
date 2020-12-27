@@ -19,7 +19,7 @@ namespace nes
 		/** Starting address of the second ROM bank */
 		const std::uint16_t SECOND_ROM_BANK_ADDRESS;
 
-		/** Stack starts at this address and grows downwards */
+		/** Stack starts at this address */
 		const std::uint16_t STACK_START_ADDRESS;
 
 	public:
