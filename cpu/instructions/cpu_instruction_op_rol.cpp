@@ -10,7 +10,7 @@ nes::CpuInstructionOpROL::CpuInstructionOpROL(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpROL::ExecuteImpl()
 {
-	Byte valueToModify;
+	Byte valueToModify = {};
 
 	if (InstructionAddressingMode == AddressingMode::Accumulator)
 	{
