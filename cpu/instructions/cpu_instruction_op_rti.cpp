@@ -13,7 +13,7 @@ void nes::CpuInstructionOpRTI::ExecuteImpl()
 	CycleCount = 6;
 
 	CpuRef.P = CpuRef.PopStack();
-	Byte msb = CpuRef.PopStack();
 	Byte lsb = CpuRef.PopStack();
+	Byte msb = CpuRef.PopStack();
 	CpuRef.PC = ConstructAddressFromBytes(msb, lsb);
 }
