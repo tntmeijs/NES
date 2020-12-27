@@ -10,44 +10,19 @@ nes::CpuInstructionOpLSR::CpuInstructionOpLSR(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpLSR::ExecuteImpl()
 {
+	Byte valueToShift = {};
+
 	if (InstructionAddressingMode == AddressingMode::Accumulator)
 	{
 		CycleCount = 2;
 	
 		// Need to shift in the accumulator
-		Byte old = CpuRef.A;
-		CpuRef.A.value = (CpuRef.A.value >> 1);
-
-		if (IsNthBitSet(old, static_cast<std::uint8_t>(StatusFlags::Carry)))
-		{
-			CpuRef.SetStatusFlag(StatusFlags::Carry);
-		}
-		else
-		{
-			CpuRef.ClearStatusFlag(StatusFlags::Carry);
-		}
-
-		CpuRef.UpdateZeroStatusFlag(CpuRef.A);
-		CpuRef.UpdateNegativeStatusFlag(CpuRef.A);
+		valueToShift = CpuRef.A;
 	}
 	else
 	{
 		// Need to shift in a memory location
-		Byte memoryValue = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
-		Byte old = memoryValue;
-		memoryValue.value = (memoryValue.value >> 1);
-
-		if (IsNthBitSet(old, static_cast<std::uint8_t>(StatusFlags::Carry)))
-		{
-			CpuRef.SetStatusFlag(StatusFlags::Carry);
-		}
-		else
-		{
-			CpuRef.ClearStatusFlag(StatusFlags::Carry);
-		}
-
-		CpuRef.UpdateZeroStatusFlag(memoryValue);
-		CpuRef.UpdateNegativeStatusFlag(memoryValue);
+		Byte valueToShift = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
 
 		if (InstructionAddressingMode == AddressingMode::ZeroPage)
 		{
@@ -65,5 +40,32 @@ void nes::CpuInstructionOpLSR::ExecuteImpl()
 		{
 			std::cerr << "LSR - Unknown addressing mode.\n";
 		}
+	}
+
+	// Store old bit 0 in the carry flag
+	if (IsNthBitSet(valueToShift, 0))
+	{
+		CpuRef.SetStatusFlag(StatusFlags::Carry);
+	}
+	else
+	{
+		CpuRef.ClearStatusFlag(StatusFlags::Carry);
+	}
+
+	// Shift all bits one place to the right
+	valueToShift.value >>= 1;
+
+	// Update flags
+	CpuRef.UpdateZeroStatusFlag(valueToShift);
+	CpuRef.UpdateNegativeStatusFlag(valueToShift);
+
+	// Save the result
+	if (InstructionAddressingMode == AddressingMode::Accumulator)
+	{
+		CpuRef.A = valueToShift;
+	}
+	else
+	{
+		CpuRef.WriteRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode), valueToShift);
 	}
 }
