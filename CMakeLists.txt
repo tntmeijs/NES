@@ -130,8 +130,7 @@ set(SOURCE_LIST
     cpu/instructions/cpu_instruction_op_txs.cpp
     cpu/instructions/cpu_instruction_op_tya.hpp
     cpu/instructions/cpu_instruction_op_tya.cpp
-    cpu/flags/cpu_status_flags.hpp
-    cpu/flags/cpu_b_flags.hpp
+    cpu/cpu_status_flags.hpp
     ram/ram.hpp
     ram/ram.cpp
     editor/editor_main.hpp

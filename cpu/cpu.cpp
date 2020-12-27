@@ -1,6 +1,5 @@
 #include "cpu.hpp"
 #include "ram/ram.hpp"
-#include "flags/cpu_b_flags.hpp"
 
 #include "editor/editor_logger.hpp"
 #include <sstream>

@@ -1,7 +1,7 @@
 #ifndef NES_CPU_HPP
 #define NES_CPU_HPP
 
-#include "flags/cpu_status_flags.hpp"
+#include "cpu_status_flags.hpp"
 #include "instructions/cpu_instruction_addressing_mode.hpp"
 #include "utility/bit_tools.hpp"
 
