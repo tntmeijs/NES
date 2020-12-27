@@ -20,7 +20,7 @@ void nes::CpuInstructionOpROL::ExecuteImpl()
 	Byte old = valueToModify;
 
 	// Shift left
-	valueToModify.value = (valueToModify.value << 1);
+	valueToModify.value <<= 1;
 
 	// Old bit 7 becomes the new carry bit
 	valueToModify.bit0 = old.bit7;
