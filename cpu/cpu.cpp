@@ -588,9 +588,6 @@ nes::Byte nes::CPU::PopStack()
 	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP.value;
 	Byte value = RamRef.ReadByte(address);
 
-	// Clear value from stack
-	RamRef.ClearByte(address);
-
 	if (OnStackPop)
 	{
 		// Notify the listener

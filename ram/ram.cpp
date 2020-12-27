@@ -27,11 +27,6 @@ void nes::RAM::WriteByte(std::uint16_t address, Byte value)
 	Memory[address] = value;
 }
 
-void nes::RAM::ClearByte(std::uint16_t address)
-{
-	Memory[address].value = 0;
-}
-
 void nes::RAM::StoreRomData(const RomFile& romFile)
 {
 	std::uint8_t numRomBanks = romFile.GetNumberOfRomBanks();

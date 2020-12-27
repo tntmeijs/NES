@@ -43,12 +43,6 @@ namespace nes
 		void WriteByte(std::uint16_t address, Byte value);
 
 		/**
-		 * Set the byte at the specified address to zero
-		 * @param	address		Address pointing to the byte that needs to be set to zero
-		 */
-		void ClearByte(std::uint16_t address);
-
-		/**
 		 * Store a ROM into memory
 		 * @param	romFile		ROM data to store
 		 */
