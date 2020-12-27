@@ -1,6 +1,8 @@
 #ifndef NES_EDITOR_SERVICE_HPP
 #define NES_EDITOR_SERVICE_HPP
 
+#include "utility/bit_tools.hpp"
+
 #include <cstdint>
 #include <string_view>
 #include <array>
@@ -10,8 +12,6 @@ namespace nes
     class CPU;
     class RAM;
     class RomFile;
-
-    union Byte;
 
     /**
      * Contains all editor business logic
@@ -68,14 +68,23 @@ namespace nes
 
         /**
          * Retrieve a copy of the current state of the stack
-         * @return  Array that contains the stack
+         * @return  Array that contains the most recent stack state
          */
-        std::array<nes::Byte, 256> GetCopyOfCurrentStack() const;
+        std::array<nes::Byte, 256>& GetCurrentStackState() const;
+
+    private:
+        /**
+         * Update the local copy of the stack every time the stack changes
+         */
+        void OnStackChanged();
 
     private:
 		CPU* Cpu;
 		RAM* Ram;
 		RomFile* ActiveRom;
+
+        // Copy of the most recent stack state
+        std::array<nes::Byte, 256> StackCopy;
     };
 }
 

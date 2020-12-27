@@ -2,13 +2,17 @@
 #include "cpu/cpu.hpp"
 #include "ram/ram.hpp"
 #include "io/rom_file.hpp"
-#include "utility/bit_tools.hpp"
+
+#include "editor_logger.hpp"
 
 bool nes::EditorService::Initialize()
 {
 	Ram = new RAM();
 	Cpu = new CPU(*Ram);
 	ActiveRom = new RomFile();
+
+	// Keep track of any changes to the stack pointer
+	Cpu->OnStackPointerChange = std::bind(&EditorService::OnStackChanged, this);
 
 	return true;
 }
@@ -63,7 +67,7 @@ std::uint64_t nes::EditorService::GetCpuCurrentCycle() const
 	return Cpu->GetCurrentCycle();
 }
 
-std::array<nes::Byte, 256> nes::EditorService::GetCopyOfCurrentStack() const
+std::array<nes::Byte, 256>& nes::EditorService::GetCurrentStackState() const
 {
 	// The stack has a maximum size of 256 bytes
 	auto stack = std::array<Byte, 256>();
@@ -80,4 +84,16 @@ std::array<nes::Byte, 256> nes::EditorService::GetCopyOfCurrentStack() const
 	}
 
 	return stack;
+}
+
+void nes::EditorService::OnStackChanged()
+{
+	// Value of the stack pointer index
+	auto registerValue = Cpu->GetRegister(CPU::RegisterType::SP).value;
+
+	// Value of the byte pointed to by the stack pointer
+	auto stackValue = Ram->ReadByte(Cpu->GetStackPointerAbsoluteAddress()).value;
+
+	// Update our local copy of the stack
+	StackCopy[registerValue].value = stackValue;
 }
