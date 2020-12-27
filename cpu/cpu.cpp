@@ -2,6 +2,10 @@
 #include "ram/ram.hpp"
 #include "flags/cpu_b_flags.hpp"
 
+#include "editor/editor_logger.hpp"
+#include <sstream>
+#include <iomanip>
+
 #include "instructions/cpu_instruction_base.hpp"
 #include "instructions/cpu_instruction_op_adc.hpp"
 #include "instructions/cpu_instruction_op_and.hpp"
@@ -575,6 +579,10 @@ void nes::CPU::PushStack(Byte value)
 		OnStackPush(value);
 	}
 
+	std::stringstream ss;
+	ss << "0x" << std::uppercase << std::hex << (int)value.value;
+	EditorLogger::GetInstance().LogInformation("Pushed " + ss.str() + " to the stack");
+
 	// Stack wraps around and grows downwards
 	SP.value = (SP.value == 0x00) ? 0xFF : SP.value - 1;
 }
@@ -593,6 +601,10 @@ nes::Byte nes::CPU::PopStack()
 		// Notify the listener
 		OnStackPop(value);
 	}
+
+	std::stringstream ss;
+	ss << std::uppercase << std::hex << (int)value.value;
+	EditorLogger::GetInstance().LogInformation("Popped " + ss.str() + " from the stack");
 
 	return value;
 }
