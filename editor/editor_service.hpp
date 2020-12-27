@@ -67,12 +67,6 @@ namespace nes
          */
         std::uint64_t GetCpuCurrentCycle() const;
 
-        /**
-         * Get the raw value of the stack pointer register
-         * @return  Value of the stack pointer
-         */
-        std::uint8_t GetStackPointerValue() const;
-
     public:
         /**
          * Called whenever the editor has to update the stack visualization

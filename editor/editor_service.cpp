@@ -79,8 +79,3 @@ std::uint64_t nes::EditorService::GetCpuCurrentCycle() const
 {
 	return Cpu->GetCurrentCycle();
 }
-
-std::uint8_t nes::EditorService::GetStackPointerValue() const
-{
-	return Cpu->GetRegister(CPU::RegisterType::SP).value;
-}
