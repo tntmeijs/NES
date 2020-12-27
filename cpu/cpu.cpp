@@ -580,7 +580,7 @@ void nes::CPU::PushStack(Byte value)
 	}
 
 	std::stringstream ss;
-	ss << "0x" << std::uppercase << std::hex << (int)value.value;
+	ss << std::uppercase << std::hex << (int)value.value;
 	EditorLogger::GetInstance().LogInformation("Pushed " + ss.str() + " to the stack");
 
 	// Stack wraps around and grows downwards
