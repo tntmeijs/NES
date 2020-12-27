@@ -33,8 +33,11 @@ namespace nes
         };
 
     public:
-        /** Callback that will be called every time the stack pointer changes */
-        std::function<void()> OnStackPointerChange;
+        /** Callback that will be called every time a value is pushed on the stack */
+        std::function<void(Byte)> OnStackPush;
+
+        /** Callback that will be called every time a value is popped from the stack */
+        std::function<void(Byte)> OnStackPop;
 
     public:
         /**

@@ -570,14 +570,13 @@ void nes::CPU::PushStack(Byte value)
 	std::uint16_t address = RamRef.STACK_START_ADDRESS - SP.value;
 	RamRef.WriteByte(address, value);
 
+	if (OnStackPush)
+	{
+		OnStackPush(value);
+	}
+
 	// Move stack pointer
 	--SP.value;
-
-	if (OnStackPointerChange)
-	{
-		// Notify the listener
-		OnStackPointerChange();
-	}
 }
 
 nes::Byte nes::CPU::PopStack()
@@ -592,10 +591,10 @@ nes::Byte nes::CPU::PopStack()
 	// Clear value from stack
 	RamRef.ClearByte(address);
 
-	if (OnStackPointerChange)
+	if (OnStackPop)
 	{
 		// Notify the listener
-		OnStackPointerChange();
+		OnStackPop(value);
 	}
 
 	return value;

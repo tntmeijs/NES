@@ -15,25 +15,16 @@ bool nes::EditorService::Initialize()
 	ActiveRom = new RomFile();
 
 	// Keep track of any changes to the stack pointer
-	Cpu->OnStackPointerChange = [&]()
+	Cpu->OnStackPush = [&](auto byte)
 	{
-		/**
-		 * Make a copy of the current stack
-		 * 
-		 * This is not super efficient, but it works well enough
-		 * We only copy 256 bytes, which is not that much data
-		 * 
-		 * There are bigger performance gains to be had elsewhere in this emulator
-		 */
-		std::array<Byte, 256> stack;
-		for (std::uint16_t i = 0; i < 256; ++i)
-		{
-			auto address = Ram->STACK_START_ADDRESS - i;
-			auto value = Ram->ReadByte(address);
-			stack[i] = value;
-		}
+		MinimalStack.push_back(byte);
+		OnUpdateStackVisualization(MinimalStack);
+	};
 
-		OnUpdateStackVisualization(stack);
+	Cpu->OnStackPop = [&](auto byte)
+	{
+		MinimalStack.erase(MinimalStack.end() - 1);
+		OnUpdateStackVisualization(MinimalStack);
 	};
 
 	return true;

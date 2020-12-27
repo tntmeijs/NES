@@ -3,10 +3,10 @@
 
 #include "utility/bit_tools.hpp"
 
-#include <array>
 #include <cstdint>
 #include <functional>
 #include <string_view>
+#include <vector>
 
 namespace nes
 {
@@ -76,14 +76,16 @@ namespace nes
     public:
         /**
          * Called whenever the editor has to update the stack visualization
-         * The function argument passed is a copy of the current stack
+         * The function argument passed is the current list of values on the stack
          */
-        std::function<void(std::array<Byte, 256>)> OnUpdateStackVisualization;
+        std::function<void(const std::vector<Byte>&)> OnUpdateStackVisualization;
 
     private:
 		CPU* Cpu;
 		RAM* Ram;
 		RomFile* ActiveRom;
+
+        std::vector<Byte> MinimalStack;
     };
 }
 

@@ -5,6 +5,7 @@
 #include "utility/bit_tools.hpp"
 
 #include <string_view>
+#include <vector>
 
 namespace nes
 {
@@ -87,9 +88,9 @@ namespace nes
 
 		/**
 		 * Recreate the stack visualization
-		 * @param	stack	Copy of the current stack state
+		 * @param	stack	Copy of the current values on the stack
 		 */
-		void UpdateStackVisualization(std::array<Byte, 256> stack);
+		void UpdateStackVisualization(std::vector<Byte> stack);
 
 	private:
 		EditorService& EditorLogic;

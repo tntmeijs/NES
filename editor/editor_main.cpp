@@ -20,9 +20,6 @@ nes::EditorMain::EditorMain(EditorService& editorService) :
 {
 	StackVisualization->EnableVisibleFocus(false);
 	
-	// Create an empty stack
-	UpdateStackVisualization(std::array<Byte, 256>());
-
 	// Update the CPU stack visualizer whenever the stack is changed
 	EditorLogic.OnUpdateStackVisualization = [&](auto stack) { UpdateStackVisualization(stack); };
 }
@@ -222,7 +219,7 @@ void nes::EditorMain::WriteListBoxContentToFile(
 	file.close();
 }
 
-void nes::EditorMain::UpdateStackVisualization(std::array<nes::Byte, 256> stack)
+void nes::EditorMain::UpdateStackVisualization(std::vector<Byte> stack)
 {
 	// Utility function for converting value to its hexadecimal representation
 	auto ByteToHexStr = [](const Byte& byte) -> auto
@@ -242,13 +239,9 @@ void nes::EditorMain::UpdateStackVisualization(std::array<nes::Byte, 256> stack)
 	};
 
 	StackVisualization->Clear();
-	
+
 	for (auto& byte : stack)
 	{
 		StackVisualization->AppendString(ByteToHexStr(byte));
 	}
-
-	// Highlight the stack pointer's address
-	StackVisualization->DeselectAll();
-	StackVisualization->SetSelection(EditorLogic.GetStackPointerValue(), true);
 }
