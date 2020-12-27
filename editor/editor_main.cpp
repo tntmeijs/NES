@@ -145,6 +145,7 @@ void nes::EditorMain::OnExecuteUntilCycle(wxCommandEvent& event)
 	{
 		EditorLogic.ExecuteNextCpuInstruction();
 		currentCycle = EditorLogic.GetCpuCurrentCycle();
+		wxYieldIfNeeded();
 	}
 }
 
