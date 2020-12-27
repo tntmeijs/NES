@@ -22,19 +22,8 @@ void nes::CpuInstructionOpROR::ExecuteImpl()
 	// Save in a wider value to make shifting easier
 	std::uint16_t wideValueToShift = valueToShift.value;
 
-	// Store old bit 0 in the carry flag
 	if (CpuRef.IsStatusFlagSet(StatusFlags::Carry))
 	{
-		/**
-		 * Bit 0 (carry) will get lost when shifting right, so wrap it around
-		 * 
-		 * This will cause the bit to end up in the 8th place, which falls outside
-		 * of the values an unsigned byte can hold.
-		 * 
-		 * However, when shifting right, bit 0 (current carry) will be lost in the
-		 * process, and bit 8 (current out of bounds carry) will be put in the
-		 * seventh place.
-		 */
 		wideValueToShift |= (1 << 8);
 	}
 
