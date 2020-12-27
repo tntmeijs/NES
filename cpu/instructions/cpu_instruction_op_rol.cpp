@@ -10,13 +10,9 @@ nes::CpuInstructionOpROL::CpuInstructionOpROL(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpROL::ExecuteImpl()
 {
-	Byte valueToModify = {};
+	Byte valueToModify = CpuRef.A;
 
-	if (InstructionAddressingMode == AddressingMode::Accumulator)
-	{
-		valueToModify = CpuRef.A;
-	}
-	else
+	if (InstructionAddressingMode != AddressingMode::Accumulator)
 	{
 		valueToModify = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
 	}
