@@ -8,11 +8,38 @@ nes::CpuInstructionOpASL::CpuInstructionOpASL(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpASL::ExecuteImpl()
 {
-	std::uint8_t old = CpuRef.A.value;
-	CpuRef.A.value = (CpuRef.A.value << 1);
+	// Assume the accumulator needs to be shifted
+	Byte valueToShift = CpuRef.A;
 
-	// Set carry to the old contents of bit 7
-	if (IsNthBitSet(old, static_cast<std::uint8_t>(StatusFlags::Negative)))
+	if (InstructionAddressingMode == AddressingMode::Accumulator)
+	{
+		CycleCount = 2;
+	}
+	else
+	{
+		// Need to shift in a memory location instead
+		Byte valueToShift = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
+
+		if (InstructionAddressingMode == AddressingMode::ZeroPage)
+		{
+			CycleCount = 5;
+		}
+		else if (InstructionAddressingMode == AddressingMode::ZeroPageX || InstructionAddressingMode == AddressingMode::Absolute)
+		{
+			CycleCount = 6;
+		}
+		else if (InstructionAddressingMode == AddressingMode::AbsoluteX)
+		{
+			CycleCount = 7;
+		}
+		else
+		{
+			//#TODO: Find all std::cerr usages and replace it with EditorLogger::LogError()
+		}
+	}
+
+	// Store old bit 7 in the carry flag
+	if (IsNthBitSet(valueToShift, 7))
 	{
 		CpuRef.SetStatusFlag(StatusFlags::Carry);
 	}
@@ -21,6 +48,20 @@ void nes::CpuInstructionOpASL::ExecuteImpl()
 		CpuRef.ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	CpuRef.UpdateZeroStatusFlag(CpuRef.A);
-	CpuRef.UpdateNegativeStatusFlag(CpuRef.A);
+	// Shift all bits one place to the left
+	valueToShift.value <<= 1;
+
+	// Update flags
+	CpuRef.UpdateZeroStatusFlag(valueToShift);
+	CpuRef.UpdateNegativeStatusFlag(valueToShift);
+
+	// Save the result
+	if (InstructionAddressingMode == AddressingMode::Accumulator)
+	{
+		CpuRef.A = valueToShift;
+	}
+	else
+	{
+		CpuRef.WriteRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode), valueToShift);
+	}
 }
