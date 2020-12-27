@@ -3,12 +3,15 @@
 
 #include <cstdint>
 #include <string_view>
+#include <array>
 
 namespace nes
 {
     class CPU;
     class RAM;
     class RomFile;
+
+    union Byte;
 
     /**
      * Contains all editor business logic
@@ -62,6 +65,12 @@ namespace nes
          * @return  Current cycle
          */
         std::uint64_t GetCpuCurrentCycle() const;
+
+        /**
+         * Retrieve a copy of the current state of the stack
+         * @return  Array that contains the stack
+         */
+        std::array<nes::Byte, 256> GetCopyOfCurrentStack() const;
 
     private:
 		CPU* Cpu;

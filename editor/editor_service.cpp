@@ -2,6 +2,7 @@
 #include "cpu/cpu.hpp"
 #include "ram/ram.hpp"
 #include "io/rom_file.hpp"
+#include "utility/bit_tools.hpp"
 
 bool nes::EditorService::Initialize()
 {
@@ -60,4 +61,23 @@ std::uint16_t nes::EditorService::GetCpuProgramCounterValue() const
 std::uint64_t nes::EditorService::GetCpuCurrentCycle() const
 {
 	return Cpu->GetCurrentCycle();
+}
+
+std::array<nes::Byte, 256> nes::EditorService::GetCopyOfCurrentStack() const
+{
+	// The stack has a maximum size of 256 bytes
+	auto stack = std::array<Byte, 256>();
+
+	// Stack grows downwards
+	for (std::uint8_t i = 0; i < stack.size(); ++i)
+	{
+		// The stack is stored in an 8-bit register, however, the actual location in
+		// memory is on the first page. This is why the STACK_START_ADDRESS is used
+		// when calculating the raw pointer into memory.
+		// Reference: https://wiki.nesdev.com/w/index.php/Stack
+		std::uint16_t address_of_sp_in_ram = Ram->STACK_START_ADDRESS - i;
+		stack[i] = Ram->ReadByte(address_of_sp_in_ram);
+	}
+
+	return stack;
 }
