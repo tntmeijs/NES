@@ -10,7 +10,6 @@ nes::CpuInstructionOpROL::CpuInstructionOpROL(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpROL::ExecuteImpl()
 {
-	std::uint16_t address = CpuRef.GetTargetAddress(InstructionAddressingMode);
 	Byte valueToModify;
 
 	if (InstructionAddressingMode == AddressingMode::Accumulator)
@@ -19,7 +18,7 @@ void nes::CpuInstructionOpROL::ExecuteImpl()
 	}
 	else
 	{
-		valueToModify = CpuRef.ReadRamValueAtAddress(address);
+		valueToModify = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
 	}
 
 	Byte old = valueToModify;
@@ -40,7 +39,7 @@ void nes::CpuInstructionOpROL::ExecuteImpl()
 	}
 	else
 	{
-		CpuRef.WriteRamValueAtAddress(address, valueToModify);
+		CpuRef.WriteRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode), valueToModify);
 
 		if (InstructionAddressingMode == AddressingMode::ZeroPage)
 		{
