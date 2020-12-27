@@ -11,6 +11,12 @@ bool nes::EditorService::Initialize()
 	Cpu = new CPU(*Ram);
 	ActiveRom = new RomFile();
 
+	// Ensure the stack is set to a known state (zero)
+	for (auto i = 0; i < StackCopy.size(); ++i)
+	{
+		StackCopy[i] = Byte();
+	}
+
 	// Keep track of any changes to the stack pointer
 	Cpu->OnStackPointerChange = std::bind(&EditorService::OnStackChanged, this);
 
