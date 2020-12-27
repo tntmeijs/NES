@@ -572,6 +572,12 @@ void nes::CPU::PushStack(Byte value)
 
 	// Move stack pointer
 	--SP.value;
+
+	if (OnStackPointerChange)
+	{
+		// Notify the listener
+		OnStackPointerChange();
+	}
 }
 
 nes::Byte nes::CPU::PopStack()
@@ -585,6 +591,12 @@ nes::Byte nes::CPU::PopStack()
 
 	// Clear value from stack
 	RamRef.ClearByte(address);
+
+	if (OnStackPointerChange)
+	{
+		// Notify the listener
+		OnStackPointerChange();
+	}
 
 	return value;
 }

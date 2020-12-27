@@ -6,6 +6,7 @@
 #include "utility/bit_tools.hpp"
 
 #include <cstdint>
+#include <functional>
 #include <string_view>
 #include <unordered_map>
 
@@ -30,6 +31,10 @@ namespace nes
             P,  // P register (flags)
             SP  // Stack pointer
         };
+
+    public:
+        /** Callback that will be called every time the stack pointer changes */
+        std::function<void()> OnStackPointerChange;
 
     public:
         /**
