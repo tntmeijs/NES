@@ -5,20 +5,36 @@
 
 #include "editor_logger.hpp"
 
+#include <array>
+#include <cstdint>
+
 bool nes::EditorService::Initialize()
 {
 	Ram = new RAM();
 	Cpu = new CPU(*Ram);
 	ActiveRom = new RomFile();
 
-	// Ensure the stack is set to a known state (zero)
-	for (auto i = 0; i < StackCopy.size(); ++i)
-	{
-		StackCopy[i] = Byte();
-	}
-
 	// Keep track of any changes to the stack pointer
-	Cpu->OnStackPointerChange = std::bind(&EditorService::OnStackChanged, this);
+	Cpu->OnStackPointerChange = [&]()
+	{
+		/**
+		 * Make a copy of the current stack
+		 * 
+		 * This is not super efficient, but it works well enough
+		 * We only copy 256 bytes, which is not that much data
+		 * 
+		 * There are bigger performance gains to be had elsewhere in this emulator
+		 */
+		std::array<Byte, 256> stack;
+		for (std::uint16_t i = 0; i < 256; ++i)
+		{
+			auto address = Ram->STACK_START_ADDRESS - i;
+			auto value = Ram->ReadByte(address);
+			stack[i] = value;
+		}
+
+		OnUpdateStackVisualization(stack);
+	};
 
 	return true;
 }
@@ -73,19 +89,7 @@ std::uint64_t nes::EditorService::GetCpuCurrentCycle() const
 	return Cpu->GetCurrentCycle();
 }
 
-const std::array<nes::Byte, 256>& nes::EditorService::GetCurrentStackState() const
+std::uint8_t nes::EditorService::GetStackPointerValue() const
 {
-	return StackCopy;
-}
-
-void nes::EditorService::OnStackChanged()
-{
-	// Value of the stack pointer index
-	auto registerValue = Cpu->GetRegister(CPU::RegisterType::SP).value;
-
-	// Value of the byte pointed to by the stack pointer
-	auto stackValue = Ram->ReadByte(Cpu->GetStackPointerAbsoluteAddress()).value;
-
-	// Update our local copy of the stack
-	StackCopy[registerValue].value = stackValue;
+	return Cpu->GetRegister(CPU::RegisterType::SP).value;
 }

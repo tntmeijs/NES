@@ -18,27 +18,13 @@ nes::EditorMain::EditorMain(EditorService& editorService) :
 	EmulatorEditorUI(nullptr),
 	EditorLogic(editorService)
 {
-	// Initialize the CPU stack visualizer
-	{
-		// Allocate stack entries in the list box
-		for (auto& byte : EditorLogic.GetCurrentStackState())
-		{
-			// Need to cast to a wider type to prevent the value from implicitly
-			// being casted to a character
-			auto value = static_cast<std::uint16_t>(byte.value);
-
-			std::stringstream stream;
-			stream << "0x";					// Pretty print hexadecimal values
-			stream << std::hex;				// Write as hexadecimal
-			stream << std::setw(2);			// Need all entries to be 0x__
-			stream << std::setfill('0');	// Fill any unused values with zeros
-			stream << value;				// Save the value
-			StackVisualization->Append(stream.str());
-		}
-	}
+	StackVisualization->EnableVisibleFocus(false);
+	
+	// Create an empty stack
+	UpdateStackVisualization(std::array<Byte, 256>());
 
 	// Update the CPU stack visualizer whenever the stack is changed
-	EditorLogic.OnUpdateStackVisualization = [](auto index) {};
+	EditorLogic.OnUpdateStackVisualization = [&](auto stack) { UpdateStackVisualization(stack); };
 }
 
 void nes::EditorMain::ListenForLogs()
@@ -234,4 +220,35 @@ void nes::EditorMain::WriteListBoxContentToFile(
 	}
 
 	file.close();
+}
+
+void nes::EditorMain::UpdateStackVisualization(std::array<nes::Byte, 256> stack)
+{
+	// Utility function for converting value to its hexadecimal representation
+	auto ByteToHexStr = [](const Byte& byte) -> auto
+	{
+		// Need to cast to a wider type to prevent the value from implicitly
+		// being casted to a character
+		auto value = static_cast<std::uint16_t>(byte.value);
+
+		std::stringstream stream;
+		stream << "0x";					// Pretty print hexadecimal values
+		stream << std::hex;				// Write as hexadecimal
+		stream << std::setw(2);			// Need all entries to be 0x__
+		stream << std::setfill('0');	// Fill any unused values with zeros
+		stream << value;				// Save the value
+
+		return stream.str();
+	};
+
+	StackVisualization->Clear();
+	
+	for (auto& byte : stack)
+	{
+		StackVisualization->AppendString(ByteToHexStr(byte));
+	}
+
+	// Highlight the stack pointer's address
+	StackVisualization->DeselectAll();
+	StackVisualization->SetSelection(EditorLogic.GetStackPointerValue(), true);
 }

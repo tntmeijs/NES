@@ -68,31 +68,22 @@ namespace nes
         std::uint64_t GetCpuCurrentCycle() const;
 
         /**
-         * Retrieve a copy of the current state of the stack
-         * @return  Array that contains the most recent stack state
+         * Get the raw value of the stack pointer register
+         * @return  Value of the stack pointer
          */
-        const std::array<nes::Byte, 256>& GetCurrentStackState() const;
+        std::uint8_t GetStackPointerValue() const;
 
     public:
         /**
          * Called whenever the editor has to update the stack visualization
-         * The function argument passed is the index that needs to be updated
+         * The function argument passed is a copy of the current stack
          */
-        std::function<void(std::uint8_t)> OnUpdateStackVisualization;
-
-    private:
-        /**
-         * Update the local copy of the stack every time the stack changes
-         */
-        void OnStackChanged();
+        std::function<void(std::array<Byte, 256>)> OnUpdateStackVisualization;
 
     private:
 		CPU* Cpu;
 		RAM* Ram;
 		RomFile* ActiveRom;
-
-        // Copy of the most recent stack state
-        std::array<nes::Byte, 256> StackCopy;
     };
 }
 
