@@ -10,37 +10,66 @@ nes::CpuInstructionOpROR::CpuInstructionOpROR(CPU& cpuRef, AddressingMode addres
 
 void nes::CpuInstructionOpROR::ExecuteImpl()
 {
-	std::uint16_t address = CpuRef.GetTargetAddress(InstructionAddressingMode);
-	Byte valueToModify;
+	// Assume the accumulator needs to be shifted
+	Byte valueToShift = CpuRef.A;
 
-	if (InstructionAddressingMode == AddressingMode::Accumulator)
+	if (InstructionAddressingMode != AddressingMode::Accumulator)
 	{
-		valueToModify = CpuRef.A;
+		// Memory needs to be shifted instead
+		valueToShift = CpuRef.ReadRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode));
+	}
+
+	// Save in a wider value to make shifting easier
+	std::uint16_t wideValueToShift = valueToShift.value;
+
+	// Store old bit 0 in the carry flag
+	if (CpuRef.IsStatusFlagSet(StatusFlags::Carry))
+	{
+		/**
+		 * Bit 0 (carry) will get lost when shifting right, so wrap it around
+		 * 
+		 * This will cause the bit to end up in the 8th place, which falls outside
+		 * of the values an unsigned byte can hold.
+		 * 
+		 * However, when shifting right, bit 0 (current carry) will be lost in the
+		 * process, and bit 8 (current out of bounds carry) will be put in the
+		 * seventh place.
+		 */
+		wideValueToShift |= (1 << 8);
+	}
+
+	// Store carry bit state so it can be restored later
+	auto oldCarryWasSet = IsNthBitSet(valueToShift, 0);
+
+	// Shift all bits to the right
+	wideValueToShift >>= 1;
+
+	// All relevant data should now be stored in the lower 8 bits
+	valueToShift.value = wideValueToShift & 0xFF;
+
+	// Update CPU flags
+	CpuRef.UpdateZeroStatusFlag(valueToShift);
+	CpuRef.UpdateNegativeStatusFlag(valueToShift);
+
+	// Restore the carry bit state
+	if (oldCarryWasSet)
+	{
+		CpuRef.SetStatusFlag(StatusFlags::Carry);
 	}
 	else
 	{
-		valueToModify = CpuRef.ReadRamValueAtAddress(address);
+		CpuRef.ClearStatusFlag(StatusFlags::Carry);
 	}
 
-	Byte old = valueToModify;
-
-	// Shift right
-	valueToModify.value = (valueToModify.value >> 1);
-
-	// Old bit 0 becomes the new carry bit
-	valueToModify.bit0 = old.bit0;
-
-	CpuRef.UpdateZeroStatusFlag(valueToModify);
-	CpuRef.UpdateNegativeStatusFlag(valueToModify);
-
+	// Save the result
 	if (InstructionAddressingMode == AddressingMode::Accumulator)
 	{
-		CpuRef.A = valueToModify;
+		CpuRef.A = valueToShift;
 		CycleCount = 2;
 	}
 	else
 	{
-		CpuRef.WriteRamValueAtAddress(address, valueToModify);
+		CpuRef.WriteRamValueAtAddress(CpuRef.GetTargetAddress(InstructionAddressingMode), valueToShift);
 
 		if (InstructionAddressingMode == AddressingMode::ZeroPage)
 		{
@@ -56,7 +85,8 @@ void nes::CpuInstructionOpROR::ExecuteImpl()
 		}
 		else
 		{
-			std::cerr << "ROL - Unknown addressing mode.\n";
+			//#TODO: Add editor logger here, perhaps use the base class for this
+			//		 All instructions need this anyway
 		}
 	}
 }
