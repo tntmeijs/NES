@@ -23,6 +23,7 @@
 #include <wx/spinctrl.h>
 #include <wx/sizer.h>
 #include "editor/editor_game_window.hpp"
+#include <wx/stattext.h>
 #include <wx/dirctrl.h>
 #include <wx/listbox.h>
 #include <wx/panel.h>
@@ -30,7 +31,6 @@
 #include <wx/checkbox.h>
 #include <wx/statusbr.h>
 #include <wx/frame.h>
-#include <wx/stattext.h>
 #include <wx/hyperlink.h>
 #include <wx/dialog.h>
 
@@ -54,7 +54,9 @@ namespace nes
 			wxSpinCtrl* ExecuteUntilCycleValue;
 			wxButton* ExecuteUntilCycle;
 			EditorGameWindow* GameWindow;
+			wxStaticText* FileBrowserTitle;
 			wxGenericDirCtrl* FileBrowser;
+			wxStaticText* LogOutputTitle;
 			wxNotebook* DebugOutput;
 			wxPanel* AllPanel;
 			wxListBox* AllLogList;
@@ -69,6 +71,8 @@ namespace nes
 			wxCheckBox* EnableAutoScrollCheckbox;
 			wxButton* DumpLogs;
 			wxButton* ClearLogsButton;
+			wxStaticText* StackVisualizerTitle;
+			wxListBox* StackVisualization;
 			wxStatusBar* StatusBar;
 
 			// Virtual event handlers, overide them in your derived class

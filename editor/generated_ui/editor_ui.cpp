@@ -59,16 +59,30 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	GameWindow = new EditorGameWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	Container->Add( GameWindow, 1, wxALL|wxEXPAND, 5 );
 
-	wxBoxSizer* FileExplorerAndLog;
-	FileExplorerAndLog = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* FileExplorerLogStack;
+	FileExplorerLogStack = new wxBoxSizer( wxHORIZONTAL );
+
+	wxBoxSizer* FileBrowserContainer;
+	FileBrowserContainer = new wxBoxSizer( wxVERTICAL );
+
+	FileBrowserTitle = new wxStaticText( this, wxID_ANY, wxT("FILE BROWSER"), wxDefaultPosition, wxDefaultSize, 0 );
+	FileBrowserTitle->Wrap( -1 );
+	FileBrowserContainer->Add( FileBrowserTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	FileBrowser = new wxGenericDirCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_3D_INTERNAL|wxDIRCTRL_EDIT_LABELS|wxSUNKEN_BORDER, wxT("*.nes"), 0 );
 
 	FileBrowser->ShowHidden( false );
-	FileExplorerAndLog->Add( FileBrowser, 1, wxALL|wxEXPAND, 5 );
+	FileBrowserContainer->Add( FileBrowser, 1, wxALL|wxEXPAND, 5 );
 
-	wxBoxSizer* Column;
-	Column = new wxBoxSizer( wxVERTICAL );
+
+	FileExplorerLogStack->Add( FileBrowserContainer, 2, wxEXPAND, 5 );
+
+	wxBoxSizer* Logger;
+	Logger = new wxBoxSizer( wxVERTICAL );
+
+	LogOutputTitle = new wxStaticText( this, wxID_ANY, wxT("LOG OUTPUT"), wxDefaultPosition, wxDefaultSize, 0 );
+	LogOutputTitle->Wrap( -1 );
+	Logger->Add( LogOutputTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	DebugOutput = new wxNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM );
 	AllPanel = new wxPanel( DebugOutput, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -132,7 +146,7 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	ErrorLogSizer->Fit( ErrorPanel );
 	DebugOutput->AddPage( ErrorPanel, wxT("Error"), false );
 
-	Column->Add( DebugOutput, 1, wxEXPAND | wxALL, 5 );
+	Logger->Add( DebugOutput, 1, wxEXPAND | wxALL, 5 );
 
 	wxBoxSizer* Row;
 	Row = new wxBoxSizer( wxHORIZONTAL );
@@ -157,13 +171,26 @@ EmulatorEditorUI::EmulatorEditorUI( wxWindow* parent, wxWindowID id, const wxStr
 	Row->Add( ClearLogsButton, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
-	Column->Add( Row, 0, wxEXPAND, 5 );
+	Logger->Add( Row, 0, wxEXPAND, 5 );
 
 
-	FileExplorerAndLog->Add( Column, 4, wxEXPAND, 5 );
+	FileExplorerLogStack->Add( Logger, 7, wxEXPAND, 5 );
+
+	wxBoxSizer* Stack;
+	Stack = new wxBoxSizer( wxVERTICAL );
+
+	StackVisualizerTitle = new wxStaticText( this, wxID_ANY, wxT("CPU STACK"), wxDefaultPosition, wxDefaultSize, 0 );
+	StackVisualizerTitle->Wrap( -1 );
+	Stack->Add( StackVisualizerTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+	StackVisualization = new wxListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	Stack->Add( StackVisualization, 1, wxALL|wxEXPAND, 5 );
 
 
-	Container->Add( FileExplorerAndLog, 1, wxEXPAND, 5 );
+	FileExplorerLogStack->Add( Stack, 1, wxEXPAND, 5 );
+
+
+	Container->Add( FileExplorerLogStack, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( Container );
